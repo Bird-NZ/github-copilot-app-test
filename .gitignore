@@ -1,0 +1,24 @@
+# Secrets and credentials
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.env
+.env*
+
+# Python env/cache
+.venv/
+__pycache__/
+*.pyc
+
+# Runtime/generated artifacts
+out/
+tmp/
+generated_images/
+reminders.json
+*.log
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
