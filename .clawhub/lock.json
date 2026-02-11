@@ -20,6 +20,10 @@
     "nano-banana": {
       "version": "1.0.1",
       "installedAt": 1770789712388
+    },
+    "nano-banana-pro": {
+      "version": "1.0.1",
+      "installedAt": 1770789818570
     }
   }
 }
