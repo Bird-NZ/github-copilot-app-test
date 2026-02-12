@@ -28,6 +28,14 @@
     "gog": {
       "version": "1.0.0",
       "installedAt": 1770865786378
+    },
+    "twitter": {
+      "version": "1.1.0",
+      "installedAt": 1770895073991
+    },
+    "x-publisher": {
+      "version": "1.0.1",
+      "installedAt": 1770895076297
     }
   }
 }
