@@ -6,6 +6,7 @@ secrets/
 *.pfx
 *.env
 .env*
+client_secret.json
 
 # Python env/cache
 .venv/

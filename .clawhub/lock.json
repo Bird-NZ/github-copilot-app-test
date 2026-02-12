@@ -24,6 +24,10 @@
     "nano-banana-pro": {
       "version": "1.0.1",
       "installedAt": 1770789818570
+    },
+    "gog": {
+      "version": "1.0.0",
+      "installedAt": 1770865786378
     }
   }
 }
