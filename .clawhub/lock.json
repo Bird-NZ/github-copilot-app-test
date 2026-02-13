@@ -36,6 +36,10 @@
     "x-publisher": {
       "version": "1.0.1",
       "installedAt": 1770895076297
+    },
+    "gifgrep": {
+      "version": "1.0.1",
+      "installedAt": 1770951712716
     }
   }
 }
