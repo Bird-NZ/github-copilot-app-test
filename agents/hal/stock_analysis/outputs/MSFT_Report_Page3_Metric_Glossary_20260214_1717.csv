@@ -1,0 +1,11 @@
+Metric,What it means,Measurement period used
+Revenue Growth,Growth in company sales. In this report it uses a proxy to show recent top-line momentum.,TTM YoY proxy (latest 4 quarters vs prior 4 quarters). Refreshed at report run.
+EPS Growth,"Growth in earnings per share, indicating profit growth per share.",TTM YoY proxy (latest 4 reported EPS quarters vs prior 4). Refreshed at report run.
+EBITDA Margin,"Operating profitability before interest, tax, depreciation and amortization.",TTM margin from latest available fundamentals snapshot.
+Net Margin,Net profit after all expenses as a share of revenue.,TTM margin from latest available fundamentals snapshot.
+ROIC (fallback: ROE),"Capital efficiency (returns generated on invested capital). If ROIC unavailable, ROE is used as fallback.",Latest available annual/TTM-style field from provider snapshot.
+FCF Margin,Free cash flow generated per dollar of revenue.,TTM FCF ÷ TTM/annualized revenue from latest snapshot.
+Net Debt / EBITDA,Leverage ratio. Lower is generally safer; negative can imply net cash.,Latest available balance-sheet and EBITDA snapshot.
+Forward P/E,Valuation based on expected next-year earnings. Lower may imply cheaper valuation (context-dependent).,Forward estimate at report run; trailing P/E used only if forward unavailable.
+FCF Yield,Free cash flow relative to equity value (market cap). Higher can imply better cash return on price.,TTM FCF ÷ market cap at report run.
+SPX Baseline (Proxy),Benchmark level used for ranges. Built from median of SPY top holdings metrics.,Refreshed weekly; held constant for 7 days (see refresh/valid-until dates on page 1).

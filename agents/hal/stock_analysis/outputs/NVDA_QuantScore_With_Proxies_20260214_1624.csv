@@ -1,0 +1,11 @@
+Metric,Value,Weight,Score,Contribution,Source,Note,ValueFmt,ScoreFmt
+Revenue CAGR (3Y),0.625,8,10,0.8,info.revenueGrowth,Proxy: provider revenue growth field,62.50%,10
+EPS CAGR (3Y),0.667,10,10,1.0,info.earningsGrowth,Proxy: provider earnings growth field,66.70%,10
+EBITDA Margin,0.60220003,10,10,1.0,info.ebitdaMargins,Direct,60.22%,10
+Net Margin,0.53007,8,10,0.8,info.profitMargins,Direct,53.01%,10
+ROIC,1.07359,14,10,1.4,info.returnOnEquity,Proxy fallback for ROIC,107.36%,10
+FCF Margin,0.2847189531371296,12,10,1.2,info.freeCashflow / info.totalRevenue,Derived,28.47%,10
+Net Debt/EBITDA,-0.44177255765788004,10,10,1.0,"info.totalDebt, info.totalCash, info.ebitda",Derived,-0.44x,10
+Interest Coverage,456.2591113846154,8,10,0.8,info.ebitda / interestExpense,Proxy: EBITDA coverage,456.26x,10
+Forward P/E vs 5Y Median,0.5222465635359116,10,10,1.0,info.forwardPE / info.trailingPE,Proxy: trailing PE as historical anchor,0.52x,10
+FCF Yield,0.011971324568687127,10,1,0.1,info.freeCashflow / marketCap,Derived,1.20%,1

@@ -1,0 +1,11 @@
+Metric,Value,Where found
+Revenue CAGR (proxy: TTM YoY),62.50%,https://finance.yahoo.com/quote/NVDA/financials/
+EPS CAGR (proxy: TTM YoY),66.70%,https://finance.yahoo.com/quote/NVDA/earnings/
+EBITDA Margin,60.22%,https://finance.yahoo.com/quote/NVDA/key-statistics/
+Net Margin,53.01%,https://finance.yahoo.com/quote/NVDA/key-statistics/
+ROIC (fallback ROE),107.36%,https://finance.yahoo.com/quote/NVDA/key-statistics/
+FCF Margin,28.47%,https://finance.yahoo.com/quote/NVDA/cash-flow/ + /financials/
+Net Debt / EBITDA,-0.44x,https://finance.yahoo.com/quote/NVDA/balance-sheet/ + /key-statistics/
+Interest Coverage (proxy EBITDA/Interest),456.26x,https://finance.yahoo.com/quote/NVDA/financials/
+Forward P/E vs trailing P/E proxy,0.52x,https://finance.yahoo.com/quote/NVDA/key-statistics/
+FCF Yield,1.20%,https://finance.yahoo.com/quote/NVDA/key-statistics/
