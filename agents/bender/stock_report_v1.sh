@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
-TICKER="${1:-MSFT}"
-/home/mat/.openclaw/workspace/agents/hal/stock_analysis/.venv/bin/python \
-  /home/mat/.openclaw/workspace/stock_report_v1/generate_report.py "$TICKER"
+echo "stock_report_v1 is deprecated. Use /home/mat/.openclaw/workspace/agents/bender/stock_report_v2.sh" >&2
+exit 1

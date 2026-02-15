@@ -1,0 +1,163 @@
+{
+  "market": "NZ",
+  "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
+  "refreshedAt": "2026-02-14T22:09:15.481735+00:00",
+  "validUntil": "2026-02-21T22:09:15.481735+00:00",
+  "symbolsConfigured": [
+    "AIR.NZ",
+    "SPK.NZ",
+    "FPH.NZ",
+    "MEL.NZ",
+    "MFT.NZ",
+    "AIA.NZ",
+    "EBOS.NZ",
+    "GNE.NZ",
+    "SUM.NZ",
+    "RBD.NZ",
+    "IFT.NZ",
+    "MFM.NZ",
+    "OCA.NZ",
+    "KMD.NZ",
+    "VCT.NZ"
+  ],
+  "symbolsUsedCount": 15,
+  "baselines": {
+    "Revenue Growth": 0.065,
+    "EPS Growth": 0.11449999999999999,
+    "EBITDA Margin": 0.13535,
+    "Net Margin": 0.09984,
+    "ROIC": 0.053940002,
+    "FCF Margin": 0.007193082151101957,
+    "Net Debt / EBITDA": 2.7281235693779906,
+    "Forward P/E": 20.109501,
+    "FCF Yield": 0.002858459706280925
+  },
+  "ranges": {
+    "Revenue Growth": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.0455
+      },
+      "average": {
+        "gte": 0.0455,
+        "lte": 0.0845
+      },
+      "good": {
+        "gt": 0.0845
+      },
+      "sampleSize": 11
+    },
+    "EPS Growth": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.08014999999999999
+      },
+      "average": {
+        "gte": 0.08014999999999999,
+        "lte": 0.14884999999999998
+      },
+      "good": {
+        "gt": 0.14884999999999998
+      },
+      "sampleSize": 6
+    },
+    "EBITDA Margin": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.094745
+      },
+      "average": {
+        "gte": 0.094745,
+        "lte": 0.175955
+      },
+      "good": {
+        "gt": 0.175955
+      },
+      "sampleSize": 12
+    },
+    "Net Margin": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.06988799999999999
+      },
+      "average": {
+        "gte": 0.06988799999999999,
+        "lte": 0.129792
+      },
+      "good": {
+        "gt": 0.129792
+      },
+      "sampleSize": 12
+    },
+    "ROIC": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.0377580014
+      },
+      "average": {
+        "gte": 0.0377580014,
+        "lte": 0.0701220026
+      },
+      "good": {
+        "gt": 0.0701220026
+      },
+      "sampleSize": 12
+    },
+    "FCF Margin": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.005035157505771369
+      },
+      "average": {
+        "gte": 0.005035157505771369,
+        "lte": 0.009351006796432545
+      },
+      "good": {
+        "gt": 0.009351006796432545
+      },
+      "sampleSize": 12
+    },
+    "Net Debt / EBITDA": {
+      "direction": "lower",
+      "poor": {
+        "gt": 3.546560640191388
+      },
+      "average": {
+        "gte": 1.9096864985645934,
+        "lte": 3.546560640191388
+      },
+      "good": {
+        "lt": 1.9096864985645934
+      },
+      "sampleSize": 12
+    },
+    "Forward P/E": {
+      "direction": "lower",
+      "poor": {
+        "gt": 26.1423513
+      },
+      "average": {
+        "gte": 14.0766507,
+        "lte": 26.1423513
+      },
+      "good": {
+        "lt": 14.0766507
+      },
+      "sampleSize": 12
+    },
+    "FCF Yield": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.0020009217943966475
+      },
+      "average": {
+        "gte": 0.0020009217943966475,
+        "lte": 0.0037159976181652026
+      },
+      "good": {
+        "gt": 0.0037159976181652026
+      },
+      "sampleSize": 12
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "source_file": "UD_Domains.xlsx",
+  "source_sheet": "My_Domains",
+  "ingested_rows": 1043,
+  "unique_domains": 1043,
+  "method": "column_A_all_rows_except_header",
+  "generated_files": [
+    "domains_rows.txt",
+    "domains_unique.txt",
+    "domains_rows.csv",
+    "summary_by_tld.json"
+  ]
+}

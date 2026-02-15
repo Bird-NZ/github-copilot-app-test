@@ -8,8 +8,12 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 
 ROOT = Path('/home/mat/.openclaw/workspace')
-CACHE = ROOT / 'agents/hal/stock_analysis/outputs/spx_ranges_cache.json'
 OUTDIR = ROOT / 'agents/hal/stock_analysis/outputs'
+CACHE_BY_MARKET = {
+    'US': OUTDIR / 'market_ranges_us.json',
+    'AU': OUTDIR / 'market_ranges_au.json',
+    'NZ': OUTDIR / 'market_ranges_nz.json',
+}
 
 WEIGHTS = {
     'Revenue Growth': 10,
@@ -24,6 +28,28 @@ WEIGHTS = {
 }
 
 HIGHER = {'Revenue Growth','EPS Growth','EBITDA Margin','Net Margin','ROIC','FCF Margin','FCF Yield'}
+
+
+def normalize_symbol(sym: str) -> str:
+    s = sym.strip().upper()
+    if s.startswith('NZX:'):
+        return s.split(':', 1)[1] + '.NZ'
+    if s.startswith('ASX:'):
+        return s.split(':', 1)[1] + '.AX'
+    return s
+
+
+def resolve_market(sym: str, explicit: str | None = None) -> str | None:
+    if explicit:
+        ex = explicit.upper()
+        if ex in ('US','AU','NZ'):
+            return ex
+    s = sym.upper()
+    if s.endswith('.NZ'):
+        return 'NZ'
+    if s.endswith('.AX'):
+        return 'AU'
+    return None
 
 
 def sn(x):
@@ -94,8 +120,19 @@ def metric_score(metric, v, b):
     return max(0, min(100, s))
 
 
-def generate(symbol='MSFT'):
-    with open(CACHE) as f:
+def generate(symbol='MSFT', market=None):
+    symbol = normalize_symbol(symbol)
+    market = resolve_market(symbol, market)
+    if market is None:
+        raise SystemExit(
+            f"Market not specified for '{symbol}'. Please specify market as one of: US, AU, NZ, "
+            "or use ticker suffix (.AX/.NZ) or prefix (ASX:/NZX:)."
+        )
+    cache_path = CACHE_BY_MARKET[market]
+    if not cache_path.exists():
+        raise SystemExit(f'Missing baseline cache for {market}: {cache_path}. Run refresh_baselines.py first.')
+
+    with open(cache_path) as f:
         c = json.load(f)
     baselines, ranges = c['baselines'], c['ranges']
 
@@ -155,7 +192,7 @@ def generate(symbol='MSFT'):
     df = pd.DataFrame(rows, columns=['Metric',f'{symbol} Value','Baseline','Poor','Average','Good','Class','Weight %','Metric Score','Weighted Points'])
     final = df['Weighted Points'].fillna(0).sum()
 
-    footer = "Acronyms: TTM, YoY, EPS, EBITDA, ROIC, ROE, FCF, P/E, SPX, SPY"
+    footer = f"Acronyms: TTM, YoY, EPS, EBITDA, ROIC, ROE, FCF, P/E | Market baseline={market}"
     stamp = datetime.now().strftime('%Y%m%d_%H%M')
 
     # page 1
@@ -163,9 +200,9 @@ def generate(symbol='MSFT'):
     fig = plt.figure(figsize=(11.69,8.27), dpi=220)
     ax = fig.add_axes([0,0,1,1]); ax.axis('off')
     ax.add_patch(plt.Rectangle((0,0.91),1,0.09,color='#0b1f3a',transform=ax.transAxes))
-    fig.text(0.03,0.945,f'Page 1 — {symbol} Fundamental Classification + Weighted Score (0–100)',fontsize=15,color='white',weight='bold')
+    fig.text(0.03,0.945,f'Page 1 — {symbol} ({market}) Fundamental Classification + Weighted Score (0–100)',fontsize=14,color='white',weight='bold')
     fig.text(0.03,0.918,f"Range refresh: {c['refreshedAt']} | Valid until: {c['validUntil']}",fontsize=8.3,color='#dbe4f2')
-    fig.text(0.67,0.918,f"FINAL SCORE: {final:.1f}/100",fontsize=11,color='white',weight='bold')
+    fig.text(0.70,0.918,f"FINAL SCORE: {final:.1f}/100",fontsize=11,color='white',weight='bold')
     cell=[]
     for _,r in df.iterrows():
         cell.append([wrap(r['Metric'],18),r[f'{symbol} Value'],r['Baseline'],r['Poor'],r['Average'],r['Good'],r['Class'],f"{int(r['Weight %'])}%",'N/A' if pd.isna(r['Metric Score']) else f"{r['Metric Score']:.1f}",'N/A' if pd.isna(r['Weighted Points']) else f"{r['Weighted Points']:.1f}"])
@@ -188,7 +225,7 @@ def generate(symbol='MSFT'):
     fig=plt.figure(figsize=(11.69,8.27),dpi=220)
     axbg=fig.add_axes([0,0,1,1]); axbg.axis('off')
     axbg.add_patch(plt.Rectangle((0,0.91),1,0.09,color='#0b1f3a',transform=axbg.transAxes))
-    fig.text(0.03,0.945,f'Page 2 — {symbol} 3-Year Technical & Performance Chart Pack',fontsize=16,color='white',weight='bold')
+    fig.text(0.03,0.945,f'Page 2 — {symbol} ({market}) 3-Year Technical & Performance Chart Pack',fontsize=15,color='white',weight='bold')
     axbg.add_patch(plt.Rectangle((0.03,0.14),0.94,0.74,facecolor='white',edgecolor='#d9e1ea',lw=1.0,transform=axbg.transAxes))
     positions=[[0.06,0.53,0.42,0.30],[0.52,0.53,0.42,0.30],[0.06,0.18,0.42,0.30],[0.52,0.18,0.42,0.30]]
     axs=[fig.add_axes(p) for p in positions]
@@ -200,7 +237,7 @@ def generate(symbol='MSFT'):
     fig.text(0.03,0.05,footer,fontsize=7.6,color='#555')
     fig.savefig(p2,bbox_inches='tight'); plt.close(fig)
 
-    # page 3 old style
+    # page 3
     p3 = OUTDIR / f'{symbol}_v1_Page3_{stamp}.png'
     rows=[
       ('Revenue Growth','Growth in company sales; indicates top-line momentum.','TTM YoY proxy: latest 4 quarters vs prior 4 quarters.'),
@@ -212,12 +249,12 @@ def generate(symbol='MSFT'):
       ('Net Debt / EBITDA','Leverage measure; lower is generally safer.','Latest debt, cash, and EBITDA fields.'),
       ('Forward P/E','Valuation using expected next-year earnings.','Forward P/E at run time (trailing fallback if needed).'),
       ('FCF Yield','Free cash flow relative to market capitalization.','TTM FCF / market cap at run time.'),
-      ('SPX Baseline (Proxy)','Benchmark level for range classification.','Weekly refresh using SPY top-holdings median; held for 7 days.'),
+      (f'{market} Baseline (Proxy)','Benchmark level for range classification.','Weekly refresh per market universe; held for 7 days.'),
     ]
     fig=plt.figure(figsize=(11.69,8.27),dpi=220)
     ax=fig.add_axes([0,0,1,1]); ax.axis('off')
     ax.add_patch(plt.Rectangle((0,0.91),1,0.09,color='#0b1f3a',transform=ax.transAxes))
-    fig.text(0.03,0.945,f'Page 3 — {symbol} Metric Definitions and Measurement Periods',fontsize=16,color='white',weight='bold')
+    fig.text(0.03,0.945,f'Page 3 — {symbol} ({market}) Metric Definitions and Measurement Periods',fontsize=15,color='white',weight='bold')
     cell=[[wrap(a,24),wrap(b,62),wrap(c,52)] for a,b,c in rows]
     t2=ax.table(cellText=cell,colLabels=['Metric','What it means','Period measured over'],colWidths=[0.22,0.43,0.32],bbox=[0.03,0.14,0.94,0.73],cellLoc='left',colLoc='left')
     t2.auto_set_font_size(False); t2.set_fontsize(8.3); t2.scale(1,1.25)
@@ -230,9 +267,12 @@ def generate(symbol='MSFT'):
     print(p1)
     print(p2)
     print(p3)
+    print('MARKET', market)
     print('FINAL', round(final,1))
+
 
 if __name__ == '__main__':
     import sys
     sym = sys.argv[1] if len(sys.argv)>1 else 'MSFT'
-    generate(sym.upper())
+    mkt = sys.argv[2] if len(sys.argv)>2 else None
+    generate(sym, mkt)

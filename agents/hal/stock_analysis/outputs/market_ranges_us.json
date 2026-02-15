@@ -1,0 +1,168 @@
+{
+  "market": "US",
+  "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
+  "refreshedAt": "2026-02-14T22:08:59.945763+00:00",
+  "validUntil": "2026-02-21T22:08:59.945763+00:00",
+  "symbolsConfigured": [
+    "MSFT",
+    "AAPL",
+    "NVDA",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "BRK-B",
+    "AVGO",
+    "JPM",
+    "LLY",
+    "XOM",
+    "V",
+    "UNH",
+    "COST",
+    "MA",
+    "ORCL",
+    "JNJ",
+    "PG",
+    "HD",
+    "ABBV"
+  ],
+  "symbolsUsedCount": 20,
+  "baselines": {
+    "Revenue Growth": 0.139,
+    "EPS Growth": 0.174,
+    "EBITDA Margin": 0.36189498,
+    "Net Margin": 0.27746499999999996,
+    "ROIC": 0.34973999,
+    "FCF Margin": 0.11659870164587598,
+    "Net Debt / EBITDA": 0.43492017445482867,
+    "Forward P/E": 21.508239500000002,
+    "FCF Yield": 0.017983542230347607
+  },
+  "ranges": {
+    "Revenue Growth": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.0973
+      },
+      "average": {
+        "gte": 0.0973,
+        "lte": 0.18070000000000003
+      },
+      "good": {
+        "gt": 0.18070000000000003
+      },
+      "sampleSize": 20
+    },
+    "EPS Growth": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.12179999999999998
+      },
+      "average": {
+        "gte": 0.12179999999999998,
+        "lte": 0.22619999999999998
+      },
+      "good": {
+        "gt": 0.22619999999999998
+      },
+      "sampleSize": 19
+    },
+    "EBITDA Margin": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.25332648599999996
+      },
+      "average": {
+        "gte": 0.25332648599999996,
+        "lte": 0.470463474
+      },
+      "good": {
+        "gt": 0.470463474
+      },
+      "sampleSize": 20
+    },
+    "Net Margin": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.19422549999999997
+      },
+      "average": {
+        "gte": 0.19422549999999997,
+        "lte": 0.3607045
+      },
+      "good": {
+        "gt": 0.3607045
+      },
+      "sampleSize": 20
+    },
+    "ROIC": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.24481799299999998
+      },
+      "average": {
+        "gte": 0.24481799299999998,
+        "lte": 0.454661987
+      },
+      "good": {
+        "gt": 0.454661987
+      },
+      "sampleSize": 20
+    },
+    "FCF Margin": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.08161909115211317
+      },
+      "average": {
+        "gte": 0.08161909115211317,
+        "lte": 0.15157831213963877
+      },
+      "good": {
+        "gt": 0.15157831213963877
+      },
+      "sampleSize": 17
+    },
+    "Net Debt / EBITDA": {
+      "direction": "lower",
+      "poor": {
+        "gt": 0.5653962267912773
+      },
+      "average": {
+        "gte": 0.30444412211838007,
+        "lte": 0.5653962267912773
+      },
+      "good": {
+        "lt": 0.30444412211838007
+      },
+      "sampleSize": 19
+    },
+    "Forward P/E": {
+      "direction": "lower",
+      "poor": {
+        "gt": 27.960711350000004
+      },
+      "average": {
+        "gte": 15.05576765,
+        "lte": 27.960711350000004
+      },
+      "good": {
+        "lt": 15.05576765
+      },
+      "sampleSize": 20
+    },
+    "FCF Yield": {
+      "direction": "higher",
+      "poor": {
+        "lt": 0.012588479561243324
+      },
+      "average": {
+        "gte": 0.012588479561243324,
+        "lte": 0.02337860489945189
+      },
+      "good": {
+        "gt": 0.02337860489945189
+      },
+      "sampleSize": 17
+    }
+  }
+}
