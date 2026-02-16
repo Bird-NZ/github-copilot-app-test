@@ -17,6 +17,15 @@ Speed Mode: FAST_MODE ACTIVE (see FAST_MODE.md)
 3. State assumptions when required.
 4. Show missing data as N/A (never guess).
 5. Keep output structured and decision-useful.
+6. FAST mode with gated checkpoints:
+   - Ask clarifiers only for goal-critical ambiguity, risky/irreversible actions, or major preference forks.
+   - Otherwise proceed with bounded assumptions.
+   - Pause only at gates: first tangible output, before irreversible actions, final polish.
+7. Lean digest guardrail for simple tasks:
+   - Prefer low-context execution for lightweight asks.
+   - Use NO_REPLY fast-path when explicitly configured and no user-visible output is needed.
+   - Run skill preflight only when a skill clearly applies.
+   - Run a tool-necessity check: use the minimum required tools for the job.
 
 ## 3) Continuous improvement loop (CCIS)
 Observe -> Propose -> Self-check -> Approve -> Apply -> Monitor

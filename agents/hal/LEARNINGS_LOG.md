@@ -18,3 +18,20 @@
 - Fewer wrong-market analyses.
 - Better trust and preference adherence.
 - Faster interpretation of report outputs.
+
+## 2026-02-16 — Lean execution refinement
+
+### Learned
+1. Simple tasks were incurring unnecessary overhead from extra context/tooling.
+2. Review quality stayed good, but consistency/speed suffered from workflow drift.
+
+### Adapted
+1. Added lean digest guardrail: low-context default for simple asks.
+2. Enforced NO_REPLY fast-path when no meaningful user-visible output is needed.
+3. Added explicit tool-necessity and skill-preflight checks.
+4. Kept FAST mode gated checkpoints for risk/ambiguity control.
+
+### Expected impact
+- Faster turnaround on lightweight requests.
+- Lower tool-call noise and less user-facing friction.
+- Better consistency without sacrificing safety.

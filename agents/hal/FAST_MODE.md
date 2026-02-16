@@ -11,6 +11,13 @@ Increase improvement cycle speed ~10x while preserving safety and human approval
 3. Daily patch bundle (max 3 changes) for user approval
 4. Promote only after evidence gate passes
 
+## Lean digest guardrail (ACTIVE)
+- Default to low-context path for simple asks.
+- NO_REPLY fast-path when appropriate (no meaningful user-visible output required).
+- Skill preflight only if one skill clearly applies.
+- Tool-necessity check before calling tools; avoid extra calls for lightweight responses.
+- Preserve FAST mode gated checkpoints for risky/ambiguous decisions.
+
 ## Evidence gate (80/20)
 - 80% synthetic checks (edge cases, formatting, ambiguity routing)
 - 20% real conversation evidence before promotion

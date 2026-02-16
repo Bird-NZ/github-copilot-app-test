@@ -23,6 +23,12 @@
 - Status: APPROVED + ACTIVE
 - Added: 2026-02-15
 
+### CCIS-FAST-004 — Lean digest guardrail
+- Trigger: quality audit finding (overhead + workflow drift on simple outputs)
+- Change: enforce low-context mode for simple asks, NO_REPLY fast-path when appropriate, skill preflight only when clearly applicable, and tool-necessity checks before tool use.
+- Expected impact: faster responses, less unnecessary tool usage, improved consistency.
+- Status: APPROVED + APPLIED
+- Added: 2026-02-16
 
 ### CCIS-001 — Clarify market before unsuffixed ticker
 - Trigger: User requests stock analysis with ticker lacking .AX/.NZ and no explicit market.

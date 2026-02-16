@@ -1,0 +1,3 @@
+post_id,domain,claimed_price_usd,tx_hash,chain_id,source_url,author,posted_at,verification_status,verification_reason,matched_contract
+1,alpha.crypto,2500,,137,https://x.com/test/1,tester,2026-02-15T00:00:00Z,unverified,missing_tx_hash,
+2,beta.crypto,3000,0xabc,137,https://x.com/test/2,tester,2026-02-15T01:00:00Z,unverified,missing_rpc_url,

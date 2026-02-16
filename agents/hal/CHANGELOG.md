@@ -1,5 +1,13 @@
 # CHANGELOG.md — CCIS
 
+## 2026-02-16
+- Applied CCIS-FAST-004 Lean digest guardrail:
+  - low-context path for simple asks
+  - NO_REPLY fast-path when appropriate
+  - skill preflight only when clearly applicable
+  - tool-necessity checks before tool calls
+- Reinforced FAST mode gated checkpoints in operating protocol.
+
 ## 2026-02-15
 - Activated CCIS v1 files:
   - OPERATING_PROTOCOL.md

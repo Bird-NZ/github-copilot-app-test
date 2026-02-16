@@ -1,0 +1,26 @@
+{
+  "version": "2026-02-16",
+  "source": "https://unpkg.com/@unstoppabledomains/resolution@9.3.3/build/config/uns-config.json",
+  "chains": {
+    "1": {
+      "name": "ethereum",
+      "contracts": {
+        "UNSRegistry": "0x049aba7510f45BA5b64ea9E658E342F904DB358D",
+        "CNSRegistry": "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe",
+        "MintingManager": "0x2a7084870bB724175a3C96Da8FaA55128fa3E19D",
+        "ProxyReader": "0x578853aa776Eef10CeE6c4dd2B5862bdcE767A8B",
+        "Seaport": "0x0000000000000068F116a894984e2DB1123eB395"
+      }
+    },
+    "137": {
+      "name": "polygon",
+      "contracts": {
+        "UNSRegistry": "0xa9a6A3626993D487d2Dbda3173cf58cA1a9D9e9f",
+        "MintingManager": "0x7be83293BeeDc9Eba1bd76c66A65F10F3efaeC26",
+        "ProxyReader": "0x91EDd8708062bd4233f4Dd0FCE15A7cb4d500091",
+        "SeaportProxyBuyer": "0x8b031F472F7f90ac1fAE1616Ddf1283CDDe084bF",
+        "Seaport": "0x0000000000000068F116a894984e2DB1123eB395"
+      }
+    }
+  }
+}
