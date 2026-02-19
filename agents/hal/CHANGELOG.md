@@ -1,5 +1,12 @@
 # CHANGELOG.md — CCIS
 
+## 2026-02-19
+- Added robust weather retrieval utility at `data/weather_robust.py`:
+  - dual-source fetch (Open-Meteo + wttr.in)
+  - retry with backoff for transient failures
+  - geocoded location -> lat/lon normalization
+  - source freshness and confidence scoring
+
 ## 2026-02-16
 - Applied CCIS-FAST-004 Lean digest guardrail:
   - low-context path for simple asks
