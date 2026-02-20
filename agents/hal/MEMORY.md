@@ -12,3 +12,4 @@ Long-term curated memory for the HAL agent.
 - CCIS (continuous improvement system) is active. Track learnings and adaptations in OPERATING_PROTOCOL.md, IMPROVEMENT_QUEUE.md, WEEKLY_REVIEW.md, CHANGELOG.md, LEARNINGS_LOG.md.
 - User preference: do not over-index on stock reports; only discuss stock reports when explicitly asked.
 - User preference: do not send raw media links/paths in chat; send playable/openable media directly when possible.
+- User preference: always communicate with the user in English unless they specifically ask for a different language.

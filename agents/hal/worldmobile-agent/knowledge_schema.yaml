@@ -1,0 +1,54 @@
+version: 1
+agent: worldmobile-specialist
+layers:
+  - id: physical
+    name: Physical
+    components:
+      - air_nodes
+      - aether_nodes
+      - earth_nodes
+      - backhaul
+      - mesh_links
+  - id: network_core
+    name: Network Core
+    components:
+      - node_os_stacks
+      - identity_system
+      - access_control
+      - accounting_engine
+  - id: blockchain
+    name: Blockchain
+    components:
+      - world_mobile_chain
+      - smart_contracts
+      - explorers
+      - bridges
+  - id: economic
+    name: Economic
+    components:
+      - wmt_wmtx
+      - staking
+      - reward_engines
+      - billing_connectors
+  - id: user_layer
+    name: User Layer
+    components:
+      - app
+      - sim_esim
+      - developer_apis
+      - unity
+
+document_template:
+  required_fields:
+    - title
+    - layer
+    - component
+    - summary
+    - details
+    - dependencies
+    - risks
+    - source_url
+    - source_type
+    - last_verified
+    - confidence
+  confidence_values: [high, medium, low]

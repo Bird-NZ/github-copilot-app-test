@@ -1,0 +1,37 @@
+version: 1
+scope: worldmobile-ecosystem
+channels:
+  - x
+  - telegram
+  - discord
+  - youtube
+  - reddit
+  - news
+entities:
+  - world_mobile
+  - world_mobile_chain
+  - wmt
+  - wmtx
+  - earthnode
+  - airnode
+  - esim
+  - staking
+metrics:
+  - mention_volume_24h
+  - sentiment_score_weighted
+  - positive_ratio
+  - negative_ratio
+  - neutral_ratio
+  - engagement_weighted_mentions
+  - influencer_mentions
+  - narrative_clusters
+  - rumor_flags
+  - official_response_gap
+alert_thresholds:
+  severe_negative_sentiment: -0.35
+  volume_spike_multiplier: 2.0
+  rumor_confidence_min: 0.65
+storage:
+  raw_events: sentiment/raw/
+  daily_rollups: sentiment/daily/
+  weekly_rollups: sentiment/weekly/

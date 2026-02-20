@@ -1,0 +1,3 @@
+Reminder: create today's World Mobile Daily Sentiment & Ecosystem Risk Brief.
+Include: direction, top 3 narratives, risk signals, confidence, and source trace.
+Use the templates in worldmobile-agent/sentiment/ and explicitly flag uncertainty.
