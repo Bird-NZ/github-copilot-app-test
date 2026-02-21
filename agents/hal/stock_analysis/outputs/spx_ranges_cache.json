@@ -1,7 +1,7 @@
 {
   "method": "SPY top holdings (up to 60) median baseline; ranges set as 0.7x/1.3x bands",
-  "refreshedAt": "2026-02-14T03:46:34.041657+00:00",
-  "validUntil": "2026-02-21T03:46:34.041657+00:00",
+  "refreshedAt": "2026-02-21T03:42:53.339562+00:00",
+  "validUntil": "2026-02-28T03:42:53.339562+00:00",
   "symbolsUsedCount": 10,
   "baselines": {
     "Revenue Growth": 0.1655,
@@ -11,8 +11,8 @@
     "ROIC": 0.32719498999999996,
     "FCF Margin": 0.12362079384494004,
     "Net Debt / EBITDA": -0.18213648093414994,
-    "Forward P/E": 22.691695,
-    "FCF Yield": 0.013225322716101898
+    "Forward P/E": 23.230939499999998,
+    "FCF Yield": 0.012828820743613481
   },
   "ranges": {
     "Revenue Growth": {
@@ -116,28 +116,28 @@
     "Forward P/E": {
       "direction": "lower",
       "poor": {
-        "gt": 29.4992035
+        "gt": 30.20022135
       },
       "average": {
-        "gte": 15.884186499999998,
-        "lte": 29.4992035
+        "gte": 16.261657649999997,
+        "lte": 30.20022135
       },
       "good": {
-        "lt": 15.884186499999998
+        "lt": 16.261657649999997
       },
       "sampleSize": 10
     },
     "FCF Yield": {
       "direction": "higher",
       "poor": {
-        "lt": 0.009257725901271328
+        "lt": 0.008980174520529436
       },
       "average": {
-        "gte": 0.009257725901271328,
-        "lte": 0.01719291953093247
+        "gte": 0.008980174520529436,
+        "lte": 0.016677466966697526
       },
       "good": {
-        "gt": 0.01719291953093247
+        "gt": 0.016677466966697526
       },
       "sampleSize": 10
     }

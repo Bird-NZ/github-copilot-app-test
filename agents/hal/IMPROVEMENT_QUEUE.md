@@ -50,3 +50,10 @@
 - Expected impact: Better usability and fewer formatting complaints.
 - Status: APPROVED + IN PROGRESS (v3 generated; awaiting final polish feedback)
 - Added: 2026-02-15
+
+### CCIS-RSI-REVIEWER-001 — Reviewer bot recursive self-improvement loop
+- Trigger: User request to implement RSI for reviewer bot.
+- Change: Added `reviewer_bot/` package with rubric, failure taxonomy, promotion gate policy, reviewer template, and weekly RSI analysis script.
+- Expected impact: Auditable reviewer learning cycle, faster patch prioritization, safer promotions.
+- Status: APPROVED + APPLIED
+- Added: 2026-02-21

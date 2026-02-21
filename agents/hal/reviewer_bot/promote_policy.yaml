@@ -1,0 +1,11 @@
+version: 1
+promotion_gate:
+  min_tasks: 20
+  min_quality_delta: 0.15
+  max_safety_regression: 0.0
+  max_latency_increase_pct: 15
+  max_cost_increase_pct: 20
+
+notes:
+  - "Promote only if all thresholds pass."
+  - "If uncertain data is missing, decision should be HOLD."

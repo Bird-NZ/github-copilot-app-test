@@ -1,5 +1,14 @@
 # CHANGELOG.md — CCIS
 
+## 2026-02-21
+- Implemented `reviewer_bot/` RSI kit for reviewer workflow:
+  - rubric (`reviewer_rubric.yaml`)
+  - failure taxonomy (`failure_taxonomy.yaml`)
+  - promotion gate policy (`promote_policy.yaml`)
+  - reviewer prompt template (`templates/reviewer_prompt.md`)
+  - weekly analysis script (`rsi_cycle.py`)
+  - sample log + generated output examples
+
 ## 2026-02-19
 - Added robust weather retrieval utility at `data/weather_robust.py`:
   - dual-source fetch (Open-Meteo + wttr.in)

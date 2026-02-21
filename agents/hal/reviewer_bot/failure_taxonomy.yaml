@@ -1,0 +1,20 @@
+version: 1
+failure_tags:
+  hallucination:
+    description: "Claims not supported by evidence"
+    default_patch: "Require citation check before finalizing high-impact claims"
+  missed_requirement:
+    description: "One or more user requirements not addressed"
+    default_patch: "Add explicit requirement checklist and final coverage check"
+  overconfidence:
+    description: "States uncertain claims as certain"
+    default_patch: "Force confidence labels when source certainty < high"
+  tool_overuse:
+    description: "Unnecessary or excessive tool usage"
+    default_patch: "Run tool-necessity check; cap exploratory calls"
+  weak_clarification:
+    description: "Did not ask critical clarifying question"
+    default_patch: "Add ambiguity gate for goal-critical unknowns"
+  policy_risk:
+    description: "Potentially unsafe or policy-risky response"
+    default_patch: "Add pre-send policy checklist and block on violations"
