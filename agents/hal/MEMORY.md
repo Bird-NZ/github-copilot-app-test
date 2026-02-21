@@ -13,3 +13,4 @@ Long-term curated memory for the HAL agent.
 - User preference: do not over-index on stock reports; only discuss stock reports when explicitly asked.
 - User preference: do not send raw media links/paths in chat; send playable/openable media directly when possible.
 - User preference: always communicate with the user in English unless they specifically ask for a different language.
+- User preference: complete requested implementation tasks fully in one pass (start-to-finish) and only pause/ask when there is a high-security issue.

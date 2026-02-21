@@ -35,3 +35,19 @@
 - Faster turnaround on lightweight requests.
 - Lower tool-call noise and less user-facing friction.
 - Better consistency without sacrificing safety.
+
+## 2026-02-22 — Completion-discipline correction
+
+### Learned
+1. I can prematurely stop after partial setup (e.g., scheduling RSI) without verifying end-to-end completion (log production + confirmed writes).
+2. User expectation is explicit: complete tasks fully in one pass unless there is a genuine high-security blocker.
+
+### Adapted
+1. Added an execution rule: for implementation tasks, finish with end-to-end verification of the requested outcome (not just configuration changes).
+2. Added a mandatory completion checklist step: **configured -> executed -> validated artifact exists -> reported proof**.
+3. Enabled and verified automatic reviewer JSONL log writing so RSI has real daily input.
+
+### Expected impact
+- Fewer partial completions and fewer user follow-up corrections.
+- Higher trust via visible proof of done.
+- Faster iterative improvement because feedback loops are actually closed.

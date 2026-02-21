@@ -1,6 +1,10 @@
 # CHANGELOG.md — CCIS
 
 ## 2026-02-22
+- Added completion-discipline protocol updates after user feedback:
+  - Updated `OPERATING_PROTOCOL.md` with explicit end-to-end completion checklist for implementation tasks.
+  - Logged learning and adaptation in `LEARNINGS_LOG.md`.
+  - Added durable preference note in `MEMORY.md` to only pause on high-security blockers.
 - Enabled automatic reviewer log collection:
   - Updated cron job `Reviewer daily full audit digest + log writer` to append one JSONL entry per run to `data/review_log.jsonl`.
   - Bootstrapped `data/review_log.jsonl` and executed a forced run to verify append behavior.

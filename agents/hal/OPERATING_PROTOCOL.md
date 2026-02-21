@@ -17,7 +17,8 @@ Speed Mode: FAST_MODE ACTIVE (see FAST_MODE.md)
 3. State assumptions when required.
 4. Show missing data as N/A (never guess).
 5. Keep output structured and decision-useful.
-6. FAST mode with gated checkpoints:
+6. Completion discipline: for user-requested implementation tasks, complete end-to-end in the same run unless blocked by a high-security constraint. End-of-task checklist = configured -> executed -> validated artifact/outcome -> user confirmation with proof.
+7. FAST mode with gated checkpoints:
    - Ask clarifiers only for goal-critical ambiguity, risky/irreversible actions, or major preference forks.
    - Otherwise proceed with bounded assumptions.
    - Pause only at gates: first tangible output, before irreversible actions, final polish.
