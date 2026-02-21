@@ -1,5 +1,10 @@
 # CHANGELOG.md — CCIS
 
+## 2026-02-22
+- Enabled automatic reviewer log collection:
+  - Updated cron job `Reviewer daily full audit digest + log writer` to append one JSONL entry per run to `data/review_log.jsonl`.
+  - Bootstrapped `data/review_log.jsonl` and executed a forced run to verify append behavior.
+
 ## 2026-02-21
 - Implemented `reviewer_bot/` RSI kit for reviewer workflow:
   - rubric (`reviewer_rubric.yaml`)
