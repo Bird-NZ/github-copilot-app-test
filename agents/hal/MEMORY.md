@@ -14,4 +14,5 @@ Long-term curated memory for the HAL agent.
 - User preference: do not send raw media links/paths in chat; send playable/openable media directly when possible.
 - User preference: always communicate with the user in English unless they specifically ask for a different language.
 - User preference: complete requested implementation tasks fully in one pass (start-to-finish) and only pause/ask when there is a high-security issue.
+- User preference: if blocked/stuck, report the blocker immediately (do not wait) so the user can unblock quickly.
 - User preference: in group chats, HAL and Bender should behave more human-like and may reply without explicit mention when contextually appropriate and high-confidence.
