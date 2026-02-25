@@ -12,7 +12,7 @@ naming:
   zone_id: zd
 ai:
   provider: github-models
-  model: openai/gpt-4o
+  model: openai/gpt-4.1
   azure_openai:
     endpoint: ''
     deployment: gpt-4o
