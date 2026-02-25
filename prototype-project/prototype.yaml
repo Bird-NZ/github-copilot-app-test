@@ -11,8 +11,8 @@ naming:
   env: dev
   zone_id: zd
 ai:
-  provider: github-models
-  model: openai/gpt-4.1
+  provider: copilot
+  model: claude-sonnet-4.5
   azure_openai:
     endpoint: ''
     deployment: gpt-4o
