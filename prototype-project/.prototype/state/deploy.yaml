@@ -1,0 +1,217 @@
+iac_tool: terraform
+subscription: f8ebbbc3-d969-4acf-8510-e39847770f03
+resource_group: ''
+tenant: ''
+deployment_stages:
+- stage: 1
+  name: Foundation
+  category: infra
+  dir: concept/infra/terraform/stage-1-foundation
+  services:
+  - name: resource-group
+    computed_name: zd-rg-helloworld-dev-aue
+    resource_type: Microsoft.Resources/resourceGroups
+    sku: ''
+  - name: log-analytics
+    computed_name: zd-log-helloworld-dev-aue
+    resource_type: Microsoft.OperationalInsights/workspaces
+    sku: PerGB2018
+  - name: application-insights
+    computed_name: zd-appi-helloworld-dev-aue
+    resource_type: Microsoft.Insights/components
+    sku: ''
+  status: accepted
+  files:
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+  deploy_status: deployed
+  deploy_timestamp: '2026-02-26T09:07:59.237778+00:00'
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 2
+  name: Storage
+  category: data
+  dir: concept/infra/terraform/stage-2-storage
+  services:
+  - name: storage-account
+    computed_name: zdsthelloworlddevaue
+    resource_type: Microsoft.Storage/storageAccounts
+    sku: Standard_LRS
+  - name: blob-container
+    computed_name: function-output
+    resource_type: Microsoft.Storage/storageAccounts/blobServices/containers
+    sku: ''
+  - name: managed-identity
+    computed_name: zd-id-helloworld-dev-aue
+    resource_type: Microsoft.ManagedIdentity/userAssignedIdentities
+    sku: ''
+  status: accepted
+  files:
+  - concept/infra/terraform/stage-2-storage/providers.tf
+  - concept/infra/terraform/stage-2-storage/variables.tf
+  - concept/infra/terraform/stage-2-storage/locals.tf
+  - concept/infra/terraform/stage-2-storage/main.tf
+  - concept/infra/terraform/stage-2-storage/outputs.tf
+  - concept/infra/terraform/stage-2-storage/deploy.sh
+  deploy_status: deployed
+  deploy_timestamp: '2026-02-26T09:08:14.508459+00:00'
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 3
+  name: Function App
+  category: infra
+  dir: concept/infra/terraform/stage-3-function
+  services:
+  - name: app-service-plan
+    computed_name: zd-asp-helloworld-dev-aue
+    resource_type: Microsoft.Web/serverfarms
+    sku: Y1
+  - name: function-app
+    computed_name: zd-func-helloworld-dev-aue
+    resource_type: Microsoft.Web/sites
+    sku: Consumption
+  status: accepted
+  files:
+  - concept/infra/terraform/stage-3-function/providers.tf
+  - concept/infra/terraform/stage-3-function/variables.tf
+  - concept/infra/terraform/stage-3-function/locals.tf
+  - concept/infra/terraform/stage-3-function/data.tf
+  - concept/infra/terraform/stage-3-function/main.tf
+  - concept/infra/terraform/stage-3-function/identity.tf
+  - concept/infra/terraform/stage-3-function/outputs.tf
+  - concept/infra/terraform/stage-3-function/deploy.sh
+  deploy_status: deployed
+  deploy_timestamp: '2026-02-26T09:08:28.378439+00:00'
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 4
+  name: Function Code
+  category: app
+  dir: concept/apps/stage-4-function-code
+  services:
+  - name: hello-function
+    computed_name: hello
+    resource_type: Application/Function
+    sku: ''
+  status: accepted
+  files:
+  - concept/apps/stage-4-function-code/function_app.py
+  - concept/apps/stage-4-function-code/requirements.txt
+  - concept/apps/stage-4-function-code/host.json
+  - concept/apps/stage-4-function-code/local.settings.json
+  - concept/apps/stage-4-function-code/.funcignore
+  - concept/apps/stage-4-function-code/deploy.sh
+  - concept/apps/stage-4-function-code/README.md
+  deploy_status: failed
+  deploy_timestamp: '2026-02-26T09:08:57.871985+00:00'
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 5
+  name: Documentation
+  category: docs
+  dir: concept/docs
+  services: []
+  status: accepted
+  files:
+  - concept/docs/README.md
+  - concept/docs/ARCHITECTURE.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+preflight_results:
+- name: Azure Login
+  status: pass
+  message: Logged in.
+- name: Terraform
+  status: pass
+  message: Terraform v1.14.6
+- name: Provider Microsoft.Authorization
+  status: pass
+  message: Registered.
+- name: Provider Microsoft.Insights
+  status: pass
+  message: Registered.
+- name: Provider Microsoft.ManagedIdentity
+  status: pass
+  message: Registered.
+- name: Provider Microsoft.OperationalInsights
+  status: pass
+  message: Registered.
+- name: Provider Microsoft.Resources
+  status: pass
+  message: Registered.
+- name: Provider Microsoft.Storage
+  status: pass
+  message: Registered.
+- name: Provider Microsoft.Web
+  status: pass
+  message: Registered.
+- name: Terraform Validate (Stage 1)
+  status: pass
+  message: Syntax valid.
+- name: Terraform Validate (Stage 2)
+  status: pass
+  message: Syntax valid.
+- name: Terraform Validate (Stage 3)
+  status: pass
+  message: Syntax valid.
+deploy_log:
+- stage: 1
+  action: deploying
+  detail: ''
+  timestamp: '2026-02-26T09:07:49.918280+00:00'
+- stage: 1
+  action: deployed
+  detail: ''
+  timestamp: '2026-02-26T09:07:59.237796+00:00'
+- stage: 2
+  action: deploying
+  detail: ''
+  timestamp: '2026-02-26T09:08:00.470888+00:00'
+- stage: 2
+  action: deployed
+  detail: ''
+  timestamp: '2026-02-26T09:08:14.508477+00:00'
+- stage: 3
+  action: deploying
+  detail: ''
+  timestamp: '2026-02-26T09:08:15.769329+00:00'
+- stage: 3
+  action: deployed
+  detail: ''
+  timestamp: '2026-02-26T09:08:28.378460+00:00'
+- stage: 4
+  action: deploying
+  detail: ''
+  timestamp: '2026-02-26T09:08:29.769430+00:00'
+- stage: 4
+  action: failed
+  detail: ''
+  timestamp: '2026-02-26T09:08:57.872003+00:00'
+rollback_log: []
+captured_outputs:
+  terraform:
+    app_service_plan_id: /subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-helloworld-dev-aue/providers/Microsoft.Web/serverfarms/zd-asp-helloworld-dev-aue
+    app_service_plan_name: zd-asp-helloworld-dev-aue
+    function_app_hostname: zd-func-helloworld-dev-aue.azurewebsites.net
+    function_app_id: /subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-helloworld-dev-aue/providers/Microsoft.Web/sites/zd-func-helloworld-dev-aue
+    function_app_name: zd-func-helloworld-dev-aue
+    function_app_url: https://zd-func-helloworld-dev-aue.azurewebsites.net
+    managed_identity_client_id: e3e5e7f7-d735-4454-9744-0ed98023e7ef
+    managed_identity_principal_id: 1c98ecbe-8052-44eb-8373-2aea723cd11f
+  last_capture: '2026-02-26T09:08:29.754985+00:00'
+conversation_history: []
+_metadata:
+  created: '2026-02-26T09:07:28.592674+00:00'
+  last_updated: '2026-02-26T09:08:57.883242+00:00'
+  iteration: 0

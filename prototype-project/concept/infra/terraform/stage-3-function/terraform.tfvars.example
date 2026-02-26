@@ -1,0 +1,9 @@
+# Example Terraform variables file
+# Copy to terraform.tfvars and fill in your values
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+project_name    = "helloworld"
+environment     = "dev"
+location        = "australiaeast"
+region_short    = "aue"
+zone_id         = "zd"

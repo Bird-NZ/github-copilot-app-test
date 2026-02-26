@@ -1,0 +1,292 @@
+templates_used:
+- serverless-api
+- data-pipeline
+- web-app
+- ai-app
+- microservices
+iac_tool: terraform
+services_detected: []
+deployment_stages:
+- stage: 1
+  name: Foundation
+  category: infra
+  dir: concept/infra/terraform/stage-1-foundation
+  services:
+  - name: resource-group
+    computed_name: zd-rg-helloworld-dev-aue
+    resource_type: Microsoft.Resources/resourceGroups
+    sku: ''
+  - name: log-analytics
+    computed_name: zd-log-helloworld-dev-aue
+    resource_type: Microsoft.OperationalInsights/workspaces
+    sku: PerGB2018
+  - name: application-insights
+    computed_name: zd-appi-helloworld-dev-aue
+    resource_type: Microsoft.Insights/components
+    sku: ''
+  status: accepted
+  files: &id001
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+- stage: 2
+  name: Storage
+  category: data
+  dir: concept/infra/terraform/stage-2-storage
+  services:
+  - name: storage-account
+    computed_name: zdsthelloworlddevaue
+    resource_type: Microsoft.Storage/storageAccounts
+    sku: Standard_LRS
+  - name: blob-container
+    computed_name: function-output
+    resource_type: Microsoft.Storage/storageAccounts/blobServices/containers
+    sku: ''
+  - name: managed-identity
+    computed_name: zd-id-helloworld-dev-aue
+    resource_type: Microsoft.ManagedIdentity/userAssignedIdentities
+    sku: ''
+  status: accepted
+  files: &id002
+  - concept/infra/terraform/stage-2-storage/providers.tf
+  - concept/infra/terraform/stage-2-storage/variables.tf
+  - concept/infra/terraform/stage-2-storage/locals.tf
+  - concept/infra/terraform/stage-2-storage/main.tf
+  - concept/infra/terraform/stage-2-storage/outputs.tf
+  - concept/infra/terraform/stage-2-storage/deploy.sh
+- stage: 3
+  name: Function App
+  category: infra
+  dir: concept/infra/terraform/stage-3-function
+  services:
+  - name: app-service-plan
+    computed_name: zd-asp-helloworld-dev-aue
+    resource_type: Microsoft.Web/serverfarms
+    sku: Y1
+  - name: function-app
+    computed_name: zd-func-helloworld-dev-aue
+    resource_type: Microsoft.Web/sites
+    sku: Consumption
+  status: accepted
+  files: &id003
+  - concept/infra/terraform/stage-3-function/providers.tf
+  - concept/infra/terraform/stage-3-function/variables.tf
+  - concept/infra/terraform/stage-3-function/locals.tf
+  - concept/infra/terraform/stage-3-function/data.tf
+  - concept/infra/terraform/stage-3-function/main.tf
+  - concept/infra/terraform/stage-3-function/identity.tf
+  - concept/infra/terraform/stage-3-function/outputs.tf
+  - concept/infra/terraform/stage-3-function/deploy.sh
+- stage: 4
+  name: Function Code
+  category: app
+  dir: concept/apps/stage-4-function-code
+  services:
+  - name: hello-function
+    computed_name: hello
+    resource_type: Application/Function
+    sku: ''
+  status: accepted
+  files: &id004
+  - concept/apps/stage-4-function-code/function_app.py
+  - concept/apps/stage-4-function-code/requirements.txt
+  - concept/apps/stage-4-function-code/host.json
+  - concept/apps/stage-4-function-code/local.settings.json
+  - concept/apps/stage-4-function-code/.funcignore
+  - concept/apps/stage-4-function-code/deploy.sh
+  - concept/apps/stage-4-function-code/README.md
+- stage: 5
+  name: Documentation
+  category: docs
+  dir: concept/docs
+  services: []
+  status: accepted
+  files: &id005
+  - concept/docs/README.md
+  - concept/docs/ARCHITECTURE.md
+generation_log:
+- stage: 1
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+  - concept/infra/terraform/stage-1-foundation/README.md
+  timestamp: '2026-02-26T02:35:31.475044+00:00'
+- stage: 1
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+  timestamp: '2026-02-26T02:37:10.205388+00:00'
+- stage: 1
+  agent: terraform-agent
+  files: *id001
+  timestamp: '2026-02-26T02:37:47.143050+00:00'
+- stage: 2
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-2-storage/providers.tf
+  - concept/infra/terraform/stage-2-storage/variables.tf
+  - concept/infra/terraform/stage-2-storage/locals.tf
+  - concept/infra/terraform/stage-2-storage/main.tf
+  - concept/infra/terraform/stage-2-storage/identity.tf
+  - concept/infra/terraform/stage-2-storage/outputs.tf
+  - concept/infra/terraform/stage-2-storage/deploy.sh
+  timestamp: '2026-02-26T02:38:50.486087+00:00'
+- stage: 2
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-2-storage/providers.tf
+  - concept/infra/terraform/stage-2-storage/variables.tf
+  - concept/infra/terraform/stage-2-storage/locals.tf
+  - concept/infra/terraform/stage-2-storage/main.tf
+  - concept/infra/terraform/stage-2-storage/outputs.tf
+  - concept/infra/terraform/stage-2-storage/deploy.sh
+  timestamp: '2026-02-26T02:40:48.212750+00:00'
+- stage: 2
+  agent: terraform-agent
+  files: *id002
+  timestamp: '2026-02-26T02:41:56.027428+00:00'
+- stage: 3
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-3-function/providers.tf
+  - concept/infra/terraform/stage-3-function/variables.tf
+  - concept/infra/terraform/stage-3-function/locals.tf
+  - concept/infra/terraform/stage-3-function/data.tf
+  - concept/infra/terraform/stage-3-function/main.tf
+  - concept/infra/terraform/stage-3-function/outputs.tf
+  - concept/infra/terraform/stage-3-function/deploy.sh
+  - concept/infra/terraform/stage-3-function/README.md
+  - concept/infra/terraform/stage-3-function/terraform.tfvars.example
+  - concept/infra/terraform/stage-3-function/.gitignore
+  timestamp: '2026-02-26T02:43:23.454585+00:00'
+- stage: 3
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-3-function/providers.tf
+  - concept/infra/terraform/stage-3-function/variables.tf
+  - concept/infra/terraform/stage-3-function/data.tf
+  - concept/infra/terraform/stage-3-function/locals.tf
+  - concept/infra/terraform/stage-3-function/main.tf
+  - concept/infra/terraform/stage-3-function/identity.tf
+  - concept/infra/terraform/stage-3-function/outputs.tf
+  - concept/infra/terraform/stage-3-function/deploy.sh
+  timestamp: '2026-02-26T02:44:48.323262+00:00'
+- stage: 3
+  agent: terraform-agent
+  files: *id003
+  timestamp: '2026-02-26T02:45:53.415303+00:00'
+- stage: 4
+  agent: app-developer
+  files:
+  - concept/apps/stage-4-function-code/function_app.py
+  - concept/apps/stage-4-function-code/requirements.txt
+  - concept/apps/stage-4-function-code/host.json
+  - concept/apps/stage-4-function-code/.funcignore
+  - concept/apps/stage-4-function-code/.env.example
+  - concept/apps/stage-4-function-code/README.md
+  - concept/apps/stage-4-function-code/deploy.sh
+  - concept/apps/stage-4-function-code/outputs.json
+  timestamp: '2026-02-26T02:47:42.742703+00:00'
+- stage: 4
+  agent: app-developer
+  files:
+  - concept/apps/stage-4-function-code/function_app.py
+  - concept/apps/stage-4-function-code/requirements.txt
+  - concept/apps/stage-4-function-code/host.json
+  - concept/apps/stage-4-function-code/local.settings.json
+  - concept/apps/stage-4-function-code/.funcignore
+  - concept/apps/stage-4-function-code/.env.example
+  - concept/apps/stage-4-function-code/README.md
+  - concept/apps/stage-4-function-code/deploy.sh
+  timestamp: '2026-02-26T02:50:01.482488+00:00'
+- stage: 4
+  agent: app-developer
+  files: *id004
+  timestamp: '2026-02-26T02:51:48.835558+00:00'
+- stage: 5
+  agent: doc-agent
+  files: *id005
+  timestamp: '2026-02-26T02:52:57.193813+00:00'
+policy_checks:
+- stage: 3
+  violations:
+  - Possible hard-coded value detected — externalize secrets to Key Vault or use managed identity.
+  overrides: []
+  timestamp: '2026-02-26T02:43:23.473061+00:00'
+policy_overrides: []
+files_generated:
+- concept/infra/terraform/stage-1-foundation/providers.tf
+- concept/infra/terraform/stage-1-foundation/variables.tf
+- concept/infra/terraform/stage-1-foundation/locals.tf
+- concept/infra/terraform/stage-1-foundation/main.tf
+- concept/infra/terraform/stage-1-foundation/outputs.tf
+- concept/infra/terraform/stage-1-foundation/deploy.sh
+- concept/infra/terraform/stage-1-foundation/README.md
+- concept/infra/terraform/stage-2-storage/providers.tf
+- concept/infra/terraform/stage-2-storage/variables.tf
+- concept/infra/terraform/stage-2-storage/locals.tf
+- concept/infra/terraform/stage-2-storage/main.tf
+- concept/infra/terraform/stage-2-storage/identity.tf
+- concept/infra/terraform/stage-2-storage/outputs.tf
+- concept/infra/terraform/stage-2-storage/deploy.sh
+- concept/infra/terraform/stage-3-function/providers.tf
+- concept/infra/terraform/stage-3-function/variables.tf
+- concept/infra/terraform/stage-3-function/locals.tf
+- concept/infra/terraform/stage-3-function/data.tf
+- concept/infra/terraform/stage-3-function/main.tf
+- concept/infra/terraform/stage-3-function/outputs.tf
+- concept/infra/terraform/stage-3-function/deploy.sh
+- concept/infra/terraform/stage-3-function/README.md
+- concept/infra/terraform/stage-3-function/terraform.tfvars.example
+- concept/infra/terraform/stage-3-function/.gitignore
+- concept/infra/terraform/stage-3-function/identity.tf
+- concept/apps/stage-4-function-code/function_app.py
+- concept/apps/stage-4-function-code/requirements.txt
+- concept/apps/stage-4-function-code/host.json
+- concept/apps/stage-4-function-code/.funcignore
+- concept/apps/stage-4-function-code/.env.example
+- concept/apps/stage-4-function-code/README.md
+- concept/apps/stage-4-function-code/deploy.sh
+- concept/apps/stage-4-function-code/outputs.json
+- concept/apps/stage-4-function-code/local.settings.json
+- concept/docs/README.md
+- concept/docs/ARCHITECTURE.md
+review_decisions: []
+conversation_history: []
+resources:
+- resourceType: Microsoft.Resources/resourceGroups
+  sku: ''
+- resourceType: Microsoft.OperationalInsights/workspaces
+  sku: PerGB2018
+- resourceType: Microsoft.Insights/components
+  sku: ''
+- resourceType: Microsoft.Storage/storageAccounts
+  sku: Standard_LRS
+- resourceType: Microsoft.Storage/storageAccounts/blobServices/containers
+  sku: ''
+- resourceType: Microsoft.ManagedIdentity/userAssignedIdentities
+  sku: ''
+- resourceType: Microsoft.Web/serverfarms
+  sku: Y1
+- resourceType: Microsoft.Web/sites
+  sku: Consumption
+- resourceType: Application/Function
+  sku: ''
+_metadata:
+  created: '2026-02-26T02:32:32.730897+00:00'
+  last_updated: '2026-02-26T02:58:20.436706+00:00'
+  iteration: 0
+  scope: all

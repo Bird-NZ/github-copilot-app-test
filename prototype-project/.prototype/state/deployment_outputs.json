@@ -1,0 +1,13 @@
+{
+  "terraform": {
+    "app_service_plan_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-helloworld-dev-aue/providers/Microsoft.Web/serverfarms/zd-asp-helloworld-dev-aue",
+    "app_service_plan_name": "zd-asp-helloworld-dev-aue",
+    "function_app_hostname": "zd-func-helloworld-dev-aue.azurewebsites.net",
+    "function_app_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-helloworld-dev-aue/providers/Microsoft.Web/sites/zd-func-helloworld-dev-aue",
+    "function_app_name": "zd-func-helloworld-dev-aue",
+    "function_app_url": "https://zd-func-helloworld-dev-aue.azurewebsites.net",
+    "managed_identity_client_id": "e3e5e7f7-d735-4454-9744-0ed98023e7ef",
+    "managed_identity_principal_id": "1c98ecbe-8052-44eb-8373-2aea723cd11f"
+  },
+  "last_capture": "2026-02-26T09:08:29.754985+00:00"
+}

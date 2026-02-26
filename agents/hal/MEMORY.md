@@ -15,6 +15,7 @@ Long-term curated memory for the HAL agent.
 - User preference: always communicate with the user in English unless they specifically ask for a different language.
 - User preference: for the daily World Mobile update, send the update directly (no "Reminder: it’s time..." phrasing).
 - User preference: complete requested implementation tasks fully in one pass (start-to-finish) and only pause/ask when there is a high-security issue.
+- User preference: do not stop after recoverable errors; keep iterating autonomously until the requested outcome is complete, and only return early for true hard blockers or explicit user stop.
 - User preference: if blocked/stuck, report the blocker immediately (do not wait) so the user can unblock quickly.
 - User preference: in group chats, HAL and Bender should behave more human-like and may reply without explicit mention when contextually appropriate and high-confidence.
 - F1 API mode integration active from repo at /home/mat/.openclaw/workspace/agents/hal/f1-app, served locally on http://127.0.0.1:8010. For F1 questions, use POST /api/query with JSON {"query":"..."} first, then summarize answer naturally.

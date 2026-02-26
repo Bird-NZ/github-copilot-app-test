@@ -1,0 +1,14 @@
+{
+  "function_app_name": {
+    "value": "zd-func-helloworld-dev-aue"
+  },
+  "function_url": {
+    "value": "https://zd-func-helloworld-dev-aue.azurewebsites.net/api/hello"
+  },
+  "health_url": {
+    "value": "https://zd-func-helloworld-dev-aue.azurewebsites.net/api/health"
+  },
+  "deployment_timestamp": {
+    "value": "2025-06-15T12:34:56Z"
+  }
+}
