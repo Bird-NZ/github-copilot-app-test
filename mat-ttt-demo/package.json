@@ -1,0 +1,13 @@
+{
+  "name": "mat-ttt-demo",
+  "version": "1.0.0",
+  "description": "Low-cost multiplayer Tic-Tac-Toe demo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.8.1"
+  }
+}

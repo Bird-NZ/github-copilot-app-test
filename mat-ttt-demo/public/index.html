@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MAT TTT demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 640px; }
+    h1 { margin-bottom: 8px; }
+    .row { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+    input, button { padding: 8px 10px; font-size: 15px; }
+    #board { display: grid; grid-template-columns: repeat(3, 80px); gap: 8px; margin-top: 16px; }
+    .cell { width: 80px; height: 80px; font-size: 30px; font-weight: bold; }
+    #status { margin-top: 10px; min-height: 24px; }
+    #roomCode { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>MAT TTT demo</h1>
+  <div>Room: <span id="roomCode">-</span></div>
+  <div class="row">
+    <button id="createBtn">Create room</button>
+    <input id="codeInput" placeholder="Enter room code" maxlength="8" />
+    <button id="joinBtn">Join room</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+  <div id="status">Create or join a room.</div>
+  <div id="board"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let mySymbol = null;
+    let roomCode = null;
+    let state = { board: Array(9).fill(null), turn: 'X', winner: null, status: 'waiting', players: [] };
+
+    const statusEl = document.getElementById('status');
+    const roomCodeEl = document.getElementById('roomCode');
+    const boardEl = document.getElementById('board');
+
+    function render() {
+      boardEl.innerHTML = '';
+      state.board.forEach((val, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'cell';
+        btn.textContent = val || '';
+        btn.disabled = !!val || state.winner || state.status !== 'playing' || state.turn !== mySymbol;
+        btn.onclick = () => socket.emit('move', { code: roomCode, index: idx });
+        boardEl.appendChild(btn);
+      });
+
+      roomCodeEl.textContent = roomCode || '-';
+
+      if (!roomCode) {
+        statusEl.textContent = 'Create or join a room.';
+      } else if (state.status === 'waiting') {
+        statusEl.textContent = `Waiting for another player... You are ${mySymbol}.`;
+      } else if (state.winner === 'draw') {
+        statusEl.textContent = 'Draw game.';
+      } else if (state.winner) {
+        statusEl.textContent = `Winner: ${state.winner}. ${state.winner === mySymbol ? 'You won!' : 'You lost.'}`;
+      } else {
+        statusEl.textContent = `You are ${mySymbol}. Turn: ${state.turn}.`;
+      }
+    }
+
+    document.getElementById('createBtn').onclick = () => socket.emit('createRoom');
+    document.getElementById('joinBtn').onclick = () => {
+      const code = document.getElementById('codeInput').value;
+      socket.emit('joinRoom', code);
+    };
+    document.getElementById('resetBtn').onclick = () => roomCode && socket.emit('reset', roomCode);
+
+    socket.on('roomCreated', ({ code, symbol, game }) => {
+      roomCode = code;
+      mySymbol = symbol;
+      state = game;
+      render();
+    });
+
+    socket.on('roomJoined', ({ code, symbol, game }) => {
+      roomCode = code;
+      mySymbol = symbol;
+      state = game;
+      render();
+    });
+
+    socket.on('joinError', (msg) => { statusEl.textContent = msg; });
+    socket.on('state', (game) => { state = game; render(); });
+
+    render();
+  </script>
+</body>
+</html>
