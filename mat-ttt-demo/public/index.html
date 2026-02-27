@@ -17,14 +17,15 @@
 </head>
 <body>
   <h1>MAT TTT demo</h1>
-  <div>Room: <span id="roomCode">-</span></div>
+  <div>Mode: <span id="modeLabel">Online</span> | Room: <span id="roomCode">-</span></div>
   <div class="row">
+    <button id="localBtn">Play on one screen</button>
     <button id="createBtn">Create room</button>
     <input id="codeInput" placeholder="Enter room code" maxlength="8" />
     <button id="joinBtn">Join room</button>
     <button id="resetBtn">Reset</button>
   </div>
-  <div id="status">Create or join a room.</div>
+  <div id="status">Create or join a room, or choose one-screen mode.</div>
   <div id="board"></div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -32,11 +33,47 @@
     const socket = io();
     let mySymbol = null;
     let roomCode = null;
+    let localMode = false;
     let state = { board: Array(9).fill(null), turn: 'X', winner: null, status: 'waiting', players: [] };
 
     const statusEl = document.getElementById('status');
     const roomCodeEl = document.getElementById('roomCode');
+    const modeLabelEl = document.getElementById('modeLabel');
     const boardEl = document.getElementById('board');
+
+    function checkWinner(board) {
+      const lines = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      for (const [a,b,c] of lines) {
+        if (board[a] && board[a] === board[b] && board[b] === board[c]) return board[a];
+      }
+      if (board.every(Boolean)) return 'draw';
+      return null;
+    }
+
+    function startLocalMode() {
+      localMode = true;
+      mySymbol = null;
+      roomCode = null;
+      state = { board: Array(9).fill(null), turn: 'X', winner: null, status: 'playing', players: [] };
+      render();
+    }
+
+    function localMove(idx) {
+      if (state.winner || state.board[idx]) return;
+      state.board[idx] = state.turn;
+      const result = checkWinner(state.board);
+      if (result) {
+        state.winner = result;
+        state.status = 'finished';
+      } else {
+        state.turn = state.turn === 'X' ? 'O' : 'X';
+      }
+      render();
+    }
 
     function render() {
       boardEl.innerHTML = '';
@@ -44,15 +81,30 @@
         const btn = document.createElement('button');
         btn.className = 'cell';
         btn.textContent = val || '';
-        btn.disabled = !!val || state.winner || state.status !== 'playing' || state.turn !== mySymbol;
-        btn.onclick = () => socket.emit('move', { code: roomCode, index: idx });
+
+        if (localMode) {
+          btn.disabled = !!val || !!state.winner;
+          btn.onclick = () => localMove(idx);
+        } else {
+          btn.disabled = !!val || state.winner || state.status !== 'playing' || state.turn !== mySymbol;
+          btn.onclick = () => socket.emit('move', { code: roomCode, index: idx });
+        }
+
         boardEl.appendChild(btn);
       });
 
+      modeLabelEl.textContent = localMode ? 'One-screen local' : 'Online';
       roomCodeEl.textContent = roomCode || '-';
 
+      if (localMode) {
+        if (state.winner === 'draw') statusEl.textContent = 'Local game: Draw.';
+        else if (state.winner) statusEl.textContent = `Local game: ${state.winner} wins.`;
+        else statusEl.textContent = `Local game: ${state.turn}'s turn.`;
+        return;
+      }
+
       if (!roomCode) {
-        statusEl.textContent = 'Create or join a room.';
+        statusEl.textContent = 'Create or join a room, or choose one-screen mode.';
       } else if (state.status === 'waiting') {
         statusEl.textContent = `Waiting for another player... You are ${mySymbol}.`;
       } else if (state.winner === 'draw') {
@@ -64,14 +116,27 @@
       }
     }
 
-    document.getElementById('createBtn').onclick = () => socket.emit('createRoom');
+    document.getElementById('localBtn').onclick = startLocalMode;
+    document.getElementById('createBtn').onclick = () => {
+      localMode = false;
+      socket.emit('createRoom');
+    };
     document.getElementById('joinBtn').onclick = () => {
+      localMode = false;
       const code = document.getElementById('codeInput').value;
       socket.emit('joinRoom', code);
     };
-    document.getElementById('resetBtn').onclick = () => roomCode && socket.emit('reset', roomCode);
+    document.getElementById('resetBtn').onclick = () => {
+      if (localMode) {
+        state = { board: Array(9).fill(null), turn: 'X', winner: null, status: 'playing', players: [] };
+        render();
+      } else if (roomCode) {
+        socket.emit('reset', roomCode);
+      }
+    };
 
     socket.on('roomCreated', ({ code, symbol, game }) => {
+      localMode = false;
       roomCode = code;
       mySymbol = symbol;
       state = game;
@@ -79,6 +144,7 @@
     });
 
     socket.on('roomJoined', ({ code, symbol, game }) => {
+      localMode = false;
       roomCode = code;
       mySymbol = symbol;
       state = game;
@@ -86,7 +152,12 @@
     });
 
     socket.on('joinError', (msg) => { statusEl.textContent = msg; });
-    socket.on('state', (game) => { state = game; render(); });
+    socket.on('state', (game) => {
+      if (!localMode) {
+        state = game;
+        render();
+      }
+    });
 
     render();
   </script>
