@@ -154,8 +154,10 @@ function applyShot(room, shooter, target, x, y) {
     shooter.shots[y][x] = 1;
     room.lastEvent = `${shooter.type === 'BOT' ? 'Computer' : 'You'} missed.`;
     room.status = room.lastEvent;
-    room.turn = target.id;
   }
+
+  // Strict turn alternation: one shot each, then hand over turn
+  if (!room.winner) room.turn = target.id;
 }
 
 function maybeRunBot(room) {
@@ -172,7 +174,7 @@ function maybeRunBot(room) {
     applyShot(room, bot, human, x, y);
     emitRoom(room);
     maybeRunBot(room);
-  }, 650);
+  }, 280);
 }
 
 io.on('connection', socket => {
