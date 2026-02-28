@@ -152,7 +152,7 @@
         const v = state.you.shots[y][x];
         if (v === 1) b.classList.add('miss');
         if (v === 2) b.classList.add('hit');
-        b.disabled = !(state.phase === 'battle' && state.turn === s.id && v === 0 && !state.winner);
+        b.disabled = !(state.phase === 'battle' && state.turn === s.id && v === 0 && !state.winner && !state.processingTurn);
         b.onclick = () => s.emit('fire', { code: room, x, y });
       });
     };

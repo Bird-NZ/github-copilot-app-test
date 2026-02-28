@@ -81,6 +81,7 @@ function roomStateFor(room, forId) {
     winner: room.winner,
     status: room.status,
     lastEvent: room.lastEvent,
+    processingTurn: room.processingTurn,
     bothPresent: room.players.length === 2,
     opponentReady: !!(opp && opp.ready),
     you: me ? {
@@ -160,20 +161,20 @@ function applyShot(room, shooter, target, x, y) {
   if (!room.winner) room.turn = target.id;
 }
 
-function maybeRunBot(room) {
-  if (room.phase !== 'battle' || room.winner) return;
+function maybeRunBot(room, onDone = () => {}) {
+  if (room.phase !== 'battle' || room.winner) { onDone(); return; }
   const bot = room.players.find(p => p.type === 'BOT');
-  if (!bot || room.turn !== bot.id) return;
+  if (!bot || room.turn !== bot.id) { onDone(); return; }
 
   const human = room.players.find(p => p.type === 'HUMAN');
-  if (!human) return;
+  if (!human) { onDone(); return; }
 
   if (room.botTimer) clearTimeout(room.botTimer);
   room.botTimer = setTimeout(() => {
     const [x, y] = botChooseShot(bot);
     applyShot(room, bot, human, x, y);
     emitRoom(room);
-    maybeRunBot(room);
+    onDone();
   }, 280);
 }
 
@@ -192,7 +193,8 @@ io.on('connection', socket => {
       winner: null,
       status: 'Place ships and press Ready',
       lastEvent: 'Room created',
-      botTimer: null
+      botTimer: null,
+      processingTurn: false
     };
 
     if (mode === 'pvc') {
@@ -258,12 +260,25 @@ io.on('connection', socket => {
     const me = room.players.find(p => p.id === socket.id);
     const opp = room.players.find(p => p.id !== socket.id);
     if (!me || !opp || me.type !== 'HUMAN') return;
-    if (room.turn !== socket.id) return;
+    if (room.turn !== socket.id || room.processingTurn) return;
     if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) return;
+    if (me.shots[y][x] !== 0) return;
 
+    room.processingTurn = true;
     applyShot(room, me, opp, x, y);
+
+    // Immediately push locked state so player can't chain-click
     emitRoom(room);
-    maybeRunBot(room);
+
+    if (room.mode === 'pvc') {
+      maybeRunBot(room, () => {
+        room.processingTurn = false;
+        emitRoom(room);
+      });
+    } else {
+      room.processingTurn = false;
+      emitRoom(room);
+    }
   });
 
   socket.on('rematch', code => {
@@ -273,6 +288,7 @@ io.on('connection', socket => {
     room.winner = null;
     room.status = 'Place ships and press Ready';
     room.lastEvent = 'Rematch started.';
+    room.processingTurn = false;
     if (room.botTimer) clearTimeout(room.botTimer);
 
     for (const p of room.players) {
