@@ -82,3 +82,88 @@ This document defines the detailed design for a two-player online Battleships de
 - Optional auth/player profiles
 - Match history and leaderboard
 - Bot opponent mode
+
+## 12. Step-by-Step Manual Rebuild & Install Guide
+
+### 12.1 Environment
+- Machine: `DESKTOP-A4E586N`
+- Environment: WSL Linux shell
+- Azure login required: `az login`
+
+### 12.2 Prerequisites
+```bash
+# Azure CLI + Container Apps extension available
+az --version
+
+# Verify subscription
+az account show
+```
+
+### 12.3 Create project files
+```bash
+mkdir -p /home/mat/.openclaw/workspace/battleships-demo/public
+cd /home/mat/.openclaw/workspace/battleships-demo
+# Add: package.json, server.js, public/index.html, Dockerfile, .dockerignore
+```
+
+### 12.4 Azure resource setup (one-time)
+```bash
+RG="rg-mat-ttt-demo-aue"
+LOC="australiaeast"
+ENVN="env-mat-ttt-demo"
+ACR="mattttdemoacr02280946"
+
+az group create -n "$RG" -l "$LOC"
+```
+
+### 12.5 Build and push image
+```bash
+TAG="battleships-demo:$(date +%Y%m%d%H%M%S)"
+az acr build -r "$ACR" -t "$TAG" /home/mat/.openclaw/workspace/battleships-demo
+```
+
+### 12.6 Deploy to Container Apps
+```bash
+APP="mat-battleships-demo"
+USERN=$(az acr credential show -n "$ACR" --query username -o tsv)
+PASS=$(az acr credential show -n "$ACR" --query passwords[0].value -o tsv)
+
+# Create (first time)
+az containerapp create -g "$RG" -n "$APP" \
+  --environment "$ENVN" \
+  --image "$ACR.azurecr.io/$TAG" \
+  --target-port 3000 \
+  --ingress external \
+  --registry-server "$ACR.azurecr.io" \
+  --registry-username "$USERN" \
+  --registry-password "$PASS" \
+  --cpu 0.25 --memory 0.5Gi --min-replicas 0 --max-replicas 1
+
+# Update (subsequent deploys)
+az containerapp registry set -g "$RG" -n "$APP" \
+  --server "$ACR.azurecr.io" \
+  --username "$USERN" \
+  --password "$PASS"
+
+az containerapp update -g "$RG" -n "$APP" --image "$ACR.azurecr.io/$TAG"
+```
+
+### 12.7 Get live URL
+```bash
+az containerapp show -g "$RG" -n "$APP" --query properties.configuration.ingress.fqdn -o tsv
+```
+
+### 12.8 Rollback procedure
+```bash
+# Find older tag
+az acr repository show-tags -n "$ACR" --repository battleships-demo --orderby time_desc --top 10 -o table
+
+# Redeploy a previous tag
+OLD_TAG="battleships-demo:<previous-tag>"
+az containerapp update -g "$RG" -n "$APP" --image "$ACR.azurecr.io/$OLD_TAG"
+```
+
+### 12.9 Optional teardown
+```bash
+az group delete -n "$RG" --yes --no-wait
+```
