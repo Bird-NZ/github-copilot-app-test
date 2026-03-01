@@ -5,28 +5,34 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Battleships Demo</title>
   <style>
-    :root { --bg:#071326; --panel:#0c223f; --panel2:#12335e; --line:#6fb6ff55; --text:#eaf4ff; --muted:#a8c6e6; --ship:#8aa3bd; --hit:#ff5252; --miss:#7fd3ff; --accent:#ffd166; --cell: clamp(24px, 7.2vw, 34px); --gap: clamp(2px, 0.8vw, 4px); }
+    :root { --felt:#0f5b45; --felt2:#0a3f31; --wood:#3e2a1d; --line:#e8f2ff50; --text:#f4fbff; --muted:#c5d7e4; --ship:#9fb2c8; --hit:#ff2f2f; --miss:#f5f8ff; --accent:#ffd166; --cell: clamp(24px, 7.2vw, 34px); --gap: clamp(2px, 0.8vw, 4px); }
     * { box-sizing: border-box; }
-    body { margin:0; font-family:Inter,system-ui,Arial,sans-serif; color:var(--text); background:radial-gradient(circle at 20% 10%, #0f3a72 0, transparent 40%), radial-gradient(circle at 90% 0%, #0d2850 0, transparent 35%), linear-gradient(180deg, #050d1a, var(--bg)); min-height:100vh; padding:16px; }
-    .app { max-width:1040px; margin:0 auto; background:linear-gradient(180deg,var(--panel),#0a1d36); border:1px solid #2d5b8a; border-radius:16px; padding:16px; box-shadow:0 18px 40px #0008; }
+    body { margin:0; font-family:Inter,system-ui,Arial,sans-serif; color:var(--text); background:radial-gradient(circle at 10% 10%, #1d7a5f55 0, transparent 45%), radial-gradient(circle at 90% 90%, #0a3f31aa 0, transparent 35%), linear-gradient(180deg, #2d1f16, #1b130d 38%, #120c08); min-height:100vh; padding:16px; }
+    .app { max-width:1040px; margin:0 auto; background:linear-gradient(180deg,var(--felt),var(--felt2)); border:2px solid #d4b48366; border-radius:16px; padding:16px; box-shadow:0 18px 40px #0009, inset 0 0 0 1px #ffffff10; }
     h2 { margin:4px 0; } .subtitle { margin:0 0 12px; color:var(--muted); font-size:13px; }
     .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
-    button,input { padding:10px 12px; border-radius:10px; border:1px solid #3f6d98; background:#15385f; color:var(--text); font-weight:600; }
+    button,input { padding:10px 12px; border-radius:10px; border:1px solid #e7d3af55; background:#15382f; color:var(--text); font-weight:600; }
     input { min-width:130px; } button:hover { filter:brightness(1.08); }
-    .primary { background:linear-gradient(135deg,#1f5f97,#2979c5); }
+    .primary { background:linear-gradient(135deg,#1a6b54,#228b6f); }
     .accent { background:linear-gradient(135deg,#8a5a00,#c28d1e); border-color:#e9b94988; color:#fff5d8; }
-    .statusBar { background:#091a31; border:1px solid #2f5f8c; border-radius:12px; padding:10px; margin-bottom:12px; }
+    .statusBar { background:#0a2d24; border:1px solid #e7d3af44; border-radius:12px; padding:10px; margin-bottom:12px; }
     #meta { color:var(--muted); font-size:13px; } #status { font-size:14px; margin-top:4px; font-weight:700; color:#ffe5a6; }
     .boards { display:grid; grid-template-columns:1fr 1fr; gap:14px; } @media(max-width:900px){ .boards{grid-template-columns:1fr;} .app{padding:12px;} body{padding:10px;} .row button,.row input{flex:1 1 calc(50% - 8px);} }
-    .panel { background:linear-gradient(180deg,#0f2b4f,var(--panel2)); border:1px solid #2f5d87; border-radius:14px; padding:10px; }
+    .panel { background:linear-gradient(180deg,#0f4f3d,#0c3d30); border:1px solid #e7d3af4a; border-radius:14px; padding:10px; box-shadow: inset 0 0 0 1px #ffffff10; }
     .panel h4 { margin:0 0 8px; font-size:15px; }
     .boardShell { display:grid; grid-template-columns:18px auto; gap:6px; align-items:start; }
     .sideLabels { display:grid; grid-template-rows:repeat(10,var(--cell)); gap:var(--gap); font-size:12px; color:var(--muted); align-items:center; text-align:center; }
     .mainBoard { display:block; }
     .topLabels { display:grid; grid-template-columns:repeat(10,var(--cell)); gap:var(--gap); margin-bottom:4px; font-size:12px; color:var(--muted); text-align:center; }
     .grid { display:grid; grid-template-columns:repeat(10,var(--cell)); grid-auto-rows:var(--cell); gap:var(--gap); min-width:max-content; }
-    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:6px; background:linear-gradient(180deg,#0b3765,#0a2e57); cursor:pointer; position:relative; }
-    .cell.ship::before { content:""; position:absolute; inset:6px; border-radius:4px; background:var(--ship); box-shadow:inset 0 0 0 1px #ffffff44; }
+    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:6px; background:linear-gradient(180deg,#1f6d57,#175242); cursor:pointer; position:relative; }
+    .cell.ship::before { content:""; position:absolute; inset:6px 5px; border-radius:8px 8px 4px 4px; background:linear-gradient(180deg,#c9d5e4,#7f95ac); box-shadow:inset 0 0 0 1px #ffffff66, 0 1px 2px #0007; clip-path:polygon(50% 0%, 78% 12%, 92% 38%, 92% 100%, 8% 100%, 8% 38%, 22% 12%); }
+    .cell.ship::after { content:""; position:absolute; width:7px; height:7px; border-radius:2px; left:50%; top:50%; transform:translate(-50%,-42%); background:#3e4f62; box-shadow:0 0 0 1px #ffffff44; }
+    .cell.ship-1::before{ background:linear-gradient(180deg,#e4edf8,#a5bbd1); }
+    .cell.ship-2::before{ background:linear-gradient(180deg,#d8e3f0,#97aec5); }
+    .cell.ship-3::before{ background:linear-gradient(180deg,#d2deeb,#8ea3ba); }
+    .cell.ship-4::before{ background:linear-gradient(180deg,#c8d5e3,#849ab1); }
+    .cell.ship-5::before{ background:linear-gradient(180deg,#becddb,#7b92aa); }
     .cell.hit::before { content:""; position:absolute; width:14px; height:14px; border-radius:50%; background:var(--hit); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 2px #ffb0b055; }
     .cell.miss::before { content:""; position:absolute; width:12px; height:12px; border-radius:50%; background:var(--miss); left:50%; top:50%; transform:translate(-50%,-50%); }
     .cell:disabled { opacity:.78; cursor:not-allowed; }
@@ -37,7 +43,7 @@
 <body>
   <main class="app">
     <h2>Battleships Demo</h2>
-    <p class="subtitle">Mobile-first game inspired by classic naval board gameplay. (Rules-aligned update)</p>
+    <p class="subtitle">High-contrast felt-table style inspired by classic naval board gameplay.</p>
 
     <div class="row">
       <button id="create" class="primary">Create Room (2P)</button>
@@ -73,9 +79,9 @@
     </div>
 
     <div class="legend">
-      <span><i class="dot" style="background:#8aa3bd"></i>Ship</span>
-      <span><i class="dot" style="background:#ff5252"></i>Hit</span>
-      <span><i class="dot" style="background:#7fd3ff"></i>Miss</span>
+      <span><i class="dot" style="background:#b9cbe0"></i>Ships: Carrier, Battleship, Destroyer, Submarine, Patrol Boat</span>
+      <span><i class="dot" style="background:#ff2f2f"></i>Hit</span>
+      <span><i class="dot" style="background:#f5f8ff"></i>Miss</span>
     </div>
   </main>
 
@@ -145,7 +151,10 @@
       mk(your, (b, x, y) => {
         const v = state.you.board[y][x];
         const inc = state.you.incoming?.[y]?.[x] || 0;
-        if (v > 0) b.classList.add('ship');
+        if (v > 0) {
+          b.classList.add('ship');
+          b.classList.add(`ship-${v}`);
+        }
         if (inc === 1) b.classList.add('miss');
         if (inc === 2) b.classList.add('hit');
         b.disabled = true;
