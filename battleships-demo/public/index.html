@@ -28,11 +28,11 @@
     .mainBoard { display:block; }
     .gridWrap { position:relative; display:inline-block; }
     .shipsOverlay { position:absolute; inset:0; pointer-events:none; z-index:3; }
-    .shipToken { position:absolute; border-radius:999px; background:linear-gradient(180deg,#757b80,#3f464d); box-shadow: inset 0 0 0 1px #d9dde055, inset 0 -2px 4px #0008, 0 4px 6px #0008; }
-    .shipToken::before { content:""; position:absolute; left:18%; right:18%; top:32%; height:20%; border-radius:3px; background:linear-gradient(90deg,#23272b,#666c72); box-shadow:0 0 0 1px #ffffff22; }
-    .shipToken::after { content:""; position:absolute; width:8px; height:8px; border-radius:50%; background:#d9dee4; top:50%; left:22%; transform:translate(-50%,-50%); box-shadow: 10px 0 0 #d9dee4, 20px 0 0 #d9dee4; opacity:.9; }
-    .shipToken.v::before { left:32%; right:32%; top:18%; bottom:18%; width:auto; height:auto; }
-    .shipToken.v::after { top:22%; left:50%; transform:translate(-50%,-50%); box-shadow: 0 10px 0 #d9dee4, 0 20px 0 #d9dee4; }
+    .shipToken { position:absolute; border-radius:999px; background:linear-gradient(180deg,#949ba3 0%, #6e757e 35%, #454d55 70%, #2f363d 100%); box-shadow: inset 0 0 0 1px #f3f7ff33, inset 0 2px 3px #ffffff26, inset 0 -4px 7px #000a, 0 6px 10px #0009; }
+    .shipToken::before { content:""; position:absolute; left:14%; right:14%; top:24%; bottom:24%; border-radius:4px; background:linear-gradient(180deg,#2a3036,#59626b); box-shadow: inset 0 0 0 1px #dbe4ef22, inset 0 -2px 3px #0007; }
+    .shipToken::after { content:""; position:absolute; left:24%; right:24%; top:48%; height:2px; border-radius:2px; background:linear-gradient(90deg,#1f2429,#7f8992,#1f2429); opacity:.9; }
+    .shipToken.v::before { left:24%; right:24%; top:14%; bottom:14%; }
+    .shipToken.v::after { top:24%; bottom:24%; left:48%; width:2px; height:auto; }
     .shipToken.s1 { background:linear-gradient(180deg,#8b9096,#4a525a); }
     .shipToken.s2 { background:linear-gradient(180deg,#828890,#454d55); }
     .shipToken.s3 { background:linear-gradient(180deg,#7a8189,#404850); }
@@ -49,7 +49,7 @@
     .cell.ship.ship-v.ship-head::before { top:4px; border-top-left-radius:11px; border-top-right-radius:11px; }
     .cell.ship.ship-v.ship-tail::before { bottom:4px; border-bottom-left-radius:5px; border-bottom-right-radius:5px; }
     .cell.ship.ship-single::before { inset:4px; border-radius:10px 10px 5px 5px; }
-    .cell.ship:not(.hit):not(.miss)::after { content:""; position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:12px; height:4px; border-radius:3px; background:linear-gradient(90deg,#2d2f32,#6b7075); box-shadow:0 0 0 1px #ffffff33, 0 0 0 1px #0003 inset, 3px 0 0 -1px #23272b, -3px 0 0 -1px #23272b; z-index:2; }
+    .cell.ship:not(.hit):not(.miss)::after { content:""; position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:12px; height:4px; border-radius:3px; background:linear-gradient(90deg,#2d2f32,#6b7075); box-shadow:0 0 0 1px #0005 inset, 3px 0 0 -1px #23272b, -3px 0 0 -1px #23272b; z-index:2; }
     .cell.ship-1::before{ background:linear-gradient(180deg,#e8f0f8,#a8bdcf); }
     .cell.ship-2::before{ background:linear-gradient(180deg,#dce7f3,#9cb1c6); }
     .cell.ship-3::before{ background:linear-gradient(180deg,#d3dfec,#90a6bc); }
@@ -60,8 +60,8 @@
     .cell.ship-3:not(.hit):not(.miss)::after{ width:10px; }
     .cell.ship-4:not(.hit):not(.miss)::after{ width:10px; }
     .cell.ship-5:not(.hit):not(.miss)::after{ width:8px; }
-    .cell.hit::before { content:""; position:absolute; width:13px; height:13px; border-radius:50%; background:var(--hit); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 2px #ffc0c077; z-index:6; }
-    .cell.miss::before { content:""; position:absolute; width:11px; height:11px; border-radius:50%; background:var(--miss); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 1px #0004; z-index:6; }
+    .cell.hit::before { content:""; position:absolute; width:12px; height:12px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #ff8787 0 18%, #f03131 22% 55%, #930f0f 78% 100%); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 1px #ffd0d066, 0 2px 3px #0007; z-index:6; }
+    .cell.miss::before { content:""; position:absolute; width:11px; height:11px; border-radius:50%; background:radial-gradient(circle, #0f3d31 0 35%, #081f18 36% 100%); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:inset 0 0 0 1px #0007, 0 0 0 1px #d8c9a355; z-index:6; }
     .cell:disabled { opacity:.86; cursor:not-allowed; }
     .legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; color:var(--muted); font-size:12px; }
     .dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:5px; }
@@ -109,7 +109,7 @@
     <div class="legend">
       <span><i class="dot" style="background:#b9cbe0"></i>Ships: Carrier, Battleship, Destroyer, Submarine, Patrol Boat</span>
       <span><i class="dot" style="background:#ff2f2f"></i>Hit</span>
-      <span><i class="dot" style="background:#f5f8ff"></i>Miss</span>
+      <span><i class="dot" style="background:radial-gradient(circle, #0f3d31 0 35%, #081f18 36% 100%); border:1px solid #d8c9a355"></i>Miss (empty peg hole)</span>
     </div>
   </main>
 
