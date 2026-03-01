@@ -166,34 +166,73 @@
     function playSunk() { beep(320, 0.12, 'sawtooth', 0.03); setTimeout(() => beep(220, 0.12, 'sawtooth', 0.03), 130); }
 
     function shipSvg(id, dir) {
-      const turrets = { 1: 1, 2: 3, 3: 2, 4: 1, 5: 1 }[id] || 1;
-      if (dir === 'h') {
-        const t = Array.from({ length: turrets }, (_, i) => {
-          const x = 30 + i * (50 / Math.max(1, turrets - 1));
-          return `<circle cx='${x}' cy='14' r='2.2' fill='#232a31' stroke='#c8d0d8' stroke-width='0.5'/>`;
-        }).join('');
-        const deck = id === 1
-          ? "<rect x='20' y='11.5' width='66' height='5' rx='1.5' fill='none' stroke='#cfd7df' stroke-width='0.8' opacity='0.9'/>"
-          : "<rect x='26' y='11' width='46' height='6' rx='2' fill='url(#d)'/>";
-        return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 28'>
-          <defs><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#a7b0b9'/><stop offset='0.5' stop-color='#6f7882'/><stop offset='1' stop-color='#3e4650'/></linearGradient><linearGradient id='d' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#2f3740'/><stop offset='1' stop-color='#59636e'/></linearGradient></defs>
-          <path d='M2 14 Q8 3 28 3 H90 Q98 14 90 25 H28 Q8 25 2 14Z' fill='url(#h)' stroke='#d7dee6' stroke-opacity='0.55' stroke-width='0.8'/>
-          ${deck}
-          ${t}
-        </svg>`;
-      }
-      const t = Array.from({ length: turrets }, (_, i) => {
-        const y = 30 + i * (50 / Math.max(1, turrets - 1));
-        return `<circle cx='14' cy='${y}' r='2.2' fill='#232a31' stroke='#c8d0d8' stroke-width='0.5'/>`;
+      const meta = {
+        1: { turrets: 0, bridge: 2, deck: 'carrier' },
+        2: { turrets: 3, bridge: 2, deck: 'warship' },
+        3: { turrets: 2, bridge: 2, deck: 'warship' },
+        4: { turrets: 0, bridge: 1, deck: 'sub' },
+        5: { turrets: 1, bridge: 1, deck: 'patrol' }
+      }[id] || { turrets: 1, bridge: 1, deck: 'warship' };
+
+      const horizontal = dir === 'h';
+      const W = horizontal ? 100 : 28;
+      const H = horizontal ? 28 : 100;
+      const midA = horizontal ? 14 : 14;
+
+      const hull = horizontal
+        ? "M2 14 Q10 3 28 3 H90 Q98 14 90 25 H28 Q10 25 2 14Z"
+        : "M14 2 Q25 10 25 28 V90 Q14 98 3 90 V28 Q3 10 14 2Z";
+
+      const rivets = horizontal
+        ? Array.from({ length: 7 }, (_, i) => `<circle cx='${18 + i * 11}' cy='6' r='0.9' fill='#d9e1ea88'/><circle cx='${18 + i * 11}' cy='22' r='0.9' fill='#d9e1ea66'/>`).join('')
+        : Array.from({ length: 7 }, (_, i) => `<circle cx='6' cy='${18 + i * 11}' r='0.9' fill='#d9e1ea88'/><circle cx='22' cy='${18 + i * 11}' r='0.9' fill='#d9e1ea66'/>`).join('');
+
+      const turretNodes = Array.from({ length: meta.turrets }, (_, i) => {
+        const t = meta.turrets === 1 ? 0.5 : i / (meta.turrets - 1);
+        if (horizontal) {
+          const x = 34 + t * 34;
+          return `<g><circle cx='${x}' cy='14' r='2.8' fill='#2a3138' stroke='#c7d1da88' stroke-width='0.5'/><rect x='${x+1.6}' y='13.5' width='5' height='1' rx='0.5' fill='#20262d'/></g>`;
+        }
+        const y = 34 + t * 34;
+        return `<g><circle cx='14' cy='${y}' r='2.8' fill='#2a3138' stroke='#c7d1da88' stroke-width='0.5'/><rect x='13.5' y='${y+1.6}' width='1' height='5' rx='0.5' fill='#20262d'/></g>`;
       }).join('');
-      const deck = id === 1
-        ? "<rect x='11.5' y='20' width='5' height='66' rx='1.5' fill='none' stroke='#cfd7df' stroke-width='0.8' opacity='0.9'/>"
-        : "<rect x='11' y='26' width='6' height='46' rx='2' fill='url(#d)'/>";
-      return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 100'>
-        <defs><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#a7b0b9'/><stop offset='0.5' stop-color='#6f7882'/><stop offset='1' stop-color='#3e4650'/></linearGradient><linearGradient id='d' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#2f3740'/><stop offset='1' stop-color='#59636e'/></linearGradient></defs>
-        <path d='M14 2 Q25 8 25 28 V90 Q14 98 3 90 V28 Q3 8 14 2Z' fill='url(#h)' stroke='#d7dee6' stroke-opacity='0.55' stroke-width='0.8'/>
+
+      const bridges = Array.from({ length: meta.bridge }, (_, i) => {
+        const t = meta.bridge === 1 ? 0.5 : i / (meta.bridge - 1);
+        if (horizontal) {
+          const x = 42 + t * 16;
+          return `<rect x='${x-2}' y='11' width='4' height='6' rx='1' fill='#3a434d' stroke='#c7d1da66' stroke-width='0.4'/>`;
+        }
+        const y = 42 + t * 16;
+        return `<rect x='11' y='${y-2}' width='6' height='4' rx='1' fill='#3a434d' stroke='#c7d1da66' stroke-width='0.4'/>`;
+      }).join('');
+
+      const deck = meta.deck === 'carrier'
+        ? (horizontal
+          ? "<rect x='18' y='10.2' width='68' height='7.6' rx='1.4' fill='none' stroke='#d7dee7b0' stroke-width='0.7'/><line x1='22' y1='14' x2='82' y2='14' stroke='#d7dee780' stroke-width='0.6'/>"
+          : "<rect x='10.2' y='18' width='7.6' height='68' rx='1.4' fill='none' stroke='#d7dee7b0' stroke-width='0.7'/><line x1='14' y1='22' x2='14' y2='82' stroke='#d7dee780' stroke-width='0.6'/>")
+        : meta.deck === 'sub'
+          ? (horizontal
+            ? "<ellipse cx='50' cy='14' rx='12' ry='2.4' fill='none' stroke='#d7dee780' stroke-width='0.7'/><circle cx='53' cy='10.5' r='1.1' fill='#d0d7df99'/>"
+            : "<ellipse cx='14' cy='50' rx='2.4' ry='12' fill='none' stroke='#d7dee780' stroke-width='0.7'/><circle cx='10.5' cy='53' r='1.1' fill='#d0d7df99'/>")
+          : (horizontal
+            ? "<rect x='28' y='11' width='44' height='6' rx='2' fill='url(#deck)'/><line x1='28' y1='14' x2='72' y2='14' stroke='#1e242a66' stroke-width='0.8'/>"
+            : "<rect x='11' y='28' width='6' height='44' rx='2' fill='url(#deck)'/><line x1='14' y1='28' x2='14' y2='72' stroke='#1e242a66' stroke-width='0.8'/>");
+
+      return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}'>
+        <defs>
+          <linearGradient id='hull' x1='0' y1='0' x2='0' y2='1'>
+            <stop offset='0' stop-color='#b9c2cb'/><stop offset='0.4' stop-color='#7a848f'/><stop offset='1' stop-color='#434c57'/>
+          </linearGradient>
+          <linearGradient id='deck' x1='0' y1='0' x2='0' y2='1'>
+            <stop offset='0' stop-color='#2f3740'/><stop offset='1' stop-color='#5f6973'/>
+          </linearGradient>
+        </defs>
+        <path d='${hull}' fill='url(#hull)' stroke='#d7dee6' stroke-opacity='0.65' stroke-width='0.8'/>
         ${deck}
-        ${t}
+        ${bridges}
+        ${turretNodes}
+        ${rivets}
       </svg>`;
     }
 
