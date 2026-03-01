@@ -7,12 +7,13 @@ const server = http.createServer(app);
 const io = new Server(server);
 app.use(express.static('public'));
 
-const SIZE = 8;
+const SIZE = 10;
 const SHIPS = [
-  { id: 1, name: 'Destroyer', len: 2 },
-  { id: 2, name: 'Submarine', len: 3 },
-  { id: 3, name: 'Cruiser', len: 3 },
-  { id: 4, name: 'Battleship', len: 4 }
+  { id: 1, name: 'Carrier', len: 5 },
+  { id: 2, name: 'Battleship', len: 4 },
+  { id: 3, name: 'Destroyer', len: 3 },
+  { id: 4, name: 'Submarine', len: 3 },
+  { id: 5, name: 'Patrol Boat', len: 2 }
 ];
 
 const rooms = new Map();
@@ -34,6 +35,7 @@ function newPlayer(id, type = 'HUMAN') {
     board: emptyGrid(),
     shots: emptyGrid(), // 0 unknown, 1 miss, 2 hit
     ships: Object.fromEntries(SHIPS.map(s => [s.id, { name: s.name, len: s.len, hits: 0, sunk: false }])),
+    incoming: emptyGrid(), // 0 unknown, 1 miss received, 2 hit received
     botMemory: { targets: [] }
   };
 }
@@ -88,6 +90,7 @@ function roomStateFor(room, forId) {
       ready: me.ready,
       board: visibleBoard,
       shots: me.shots,
+      incoming: me.incoming,
       shipStatus: me.ships
     } : null,
     opponentBoardHitsOnly: hiddenOppBoard
@@ -102,6 +105,11 @@ function emitRoom(room) {
 
 function neighbors(x, y) {
   return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]].filter(([nx, ny]) => nx >= 0 && ny >= 0 && nx < SIZE && ny < SIZE);
+}
+
+function coordLabel(x, y) {
+  const letters = 'ABCDEFGHIJ';
+  return `${letters[x]}${y + 1}`;
 }
 
 function botChooseShot(bot) {
@@ -129,6 +137,7 @@ function applyShot(room, shooter, target, x, y) {
   const cell = target.board[y][x];
   if (cell > 0) {
     shooter.shots[y][x] = 2;
+    target.incoming[y][x] = 2;
     target.board[y][x] = -cell;
     const ship = target.ships[cell];
     ship.hits += 1;
@@ -139,7 +148,8 @@ function applyShot(room, shooter, target, x, y) {
       sunkName = ship.name;
     }
 
-    room.lastEvent = sunkName ? `${shooter.type === 'BOT' ? 'Computer' : 'You'} sank ${sunkName}!` : `${shooter.type === 'BOT' ? 'Computer' : 'You'} scored a hit.`;
+    const at = coordLabel(x, y);
+    room.lastEvent = sunkName ? `${shooter.type === 'BOT' ? 'Computer' : 'You'} sank ${sunkName} at ${at}!` : `${shooter.type === 'BOT' ? 'Computer' : 'You'} hit at ${at}.`;
     room.status = room.lastEvent;
 
     if (sunkName && allSunk(target)) {
@@ -153,7 +163,8 @@ function applyShot(room, shooter, target, x, y) {
     }
   } else {
     shooter.shots[y][x] = 1;
-    room.lastEvent = `${shooter.type === 'BOT' ? 'Computer' : 'You'} missed.`;
+    target.incoming[y][x] = 1;
+    room.lastEvent = `${shooter.type === 'BOT' ? 'Computer' : 'You'} missed at ${coordLabel(x, y)}.`;
     room.status = room.lastEvent;
   }
 
@@ -296,6 +307,7 @@ io.on('connection', socket => {
       p.board = emptyGrid();
       p.shots = emptyGrid();
       p.ships = Object.fromEntries(SHIPS.map(s => [s.id, { name: s.name, len: s.len, hits: 0, sunk: false }]));
+      p.incoming = emptyGrid();
       p.botMemory = { targets: [] };
       if (p.type === 'BOT') placeRandomShips(p.board);
     }
