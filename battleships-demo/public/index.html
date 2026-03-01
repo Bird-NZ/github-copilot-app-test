@@ -165,6 +165,38 @@
     function playHit() { beep(520, 0.12, 'square', 0.03); }
     function playSunk() { beep(320, 0.12, 'sawtooth', 0.03); setTimeout(() => beep(220, 0.12, 'sawtooth', 0.03), 130); }
 
+    function shipSvg(id, dir) {
+      const turrets = { 1: 1, 2: 3, 3: 2, 4: 1, 5: 1 }[id] || 1;
+      if (dir === 'h') {
+        const t = Array.from({ length: turrets }, (_, i) => {
+          const x = 30 + i * (50 / Math.max(1, turrets - 1));
+          return `<circle cx='${x}' cy='14' r='2.2' fill='#232a31' stroke='#c8d0d8' stroke-width='0.5'/>`;
+        }).join('');
+        const deck = id === 1
+          ? "<rect x='20' y='11.5' width='66' height='5' rx='1.5' fill='none' stroke='#cfd7df' stroke-width='0.8' opacity='0.9'/>"
+          : "<rect x='26' y='11' width='46' height='6' rx='2' fill='url(#d)'/>";
+        return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 28'>
+          <defs><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#a7b0b9'/><stop offset='0.5' stop-color='#6f7882'/><stop offset='1' stop-color='#3e4650'/></linearGradient><linearGradient id='d' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#2f3740'/><stop offset='1' stop-color='#59636e'/></linearGradient></defs>
+          <path d='M2 14 Q8 3 28 3 H90 Q98 14 90 25 H28 Q8 25 2 14Z' fill='url(#h)' stroke='#d7dee6' stroke-opacity='0.55' stroke-width='0.8'/>
+          ${deck}
+          ${t}
+        </svg>`;
+      }
+      const t = Array.from({ length: turrets }, (_, i) => {
+        const y = 30 + i * (50 / Math.max(1, turrets - 1));
+        return `<circle cx='14' cy='${y}' r='2.2' fill='#232a31' stroke='#c8d0d8' stroke-width='0.5'/>`;
+      }).join('');
+      const deck = id === 1
+        ? "<rect x='11.5' y='20' width='5' height='66' rx='1.5' fill='none' stroke='#cfd7df' stroke-width='0.8' opacity='0.9'/>"
+        : "<rect x='11' y='26' width='6' height='46' rx='2' fill='url(#d)'/>";
+      return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 100'>
+        <defs><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#a7b0b9'/><stop offset='0.5' stop-color='#6f7882'/><stop offset='1' stop-color='#3e4650'/></linearGradient><linearGradient id='d' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#2f3740'/><stop offset='1' stop-color='#59636e'/></linearGradient></defs>
+        <path d='M14 2 Q25 8 25 28 V90 Q14 98 3 90 V28 Q3 8 14 2Z' fill='url(#h)' stroke='#d7dee6' stroke-opacity='0.55' stroke-width='0.8'/>
+        ${deck}
+        ${t}
+      </svg>`;
+    }
+
     function renderShipTokens() {
       if (!state?.you?.board) { yourShips.innerHTML = ''; return; }
       const board = state.you.board;
@@ -204,6 +236,7 @@
           token.style.top = `${head.top - gridRect.top - 2}px`;
           token.style.width = dir === 'h' ? `${tail.right - head.left + 4}px` : `${head.width + 4}px`;
           token.style.height = dir === 'v' ? `${tail.bottom - head.top + 4}px` : `${head.height + 4}px`;
+          token.style.backgroundImage = `url("data:image/svg+xml;utf8,${encodeURIComponent(shipSvg(id, dir))}")`;
 
           const points = [];
           for (let i = 0; i < len; i++) points.push(dir === 'h' ? [x + i, y] : [x, y + i]);
