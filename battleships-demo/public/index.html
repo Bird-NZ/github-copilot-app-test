@@ -7,9 +7,9 @@
   <style>
     :root { --felt:#0f5b45; --felt2:#0a3f31; --wood:#5f3f28; --line:#f3f6ff66; --text:#f4fbff; --muted:#d6e1ea; --hit:#ff2d2d; --miss:#f5f8ff; --cell: clamp(24px, 7.2vw, 34px); --gap: clamp(2px, 0.8vw, 4px); }
     * { box-sizing: border-box; }
-    body { margin:0; font-family:Inter,system-ui,Arial,sans-serif; color:var(--text); min-height:100vh; padding:16px; background:linear-gradient(#00000066,#00000080), url('/assets/reference-bg.jpg') center/cover fixed no-repeat; }
-    .app { max-width:980px; margin:0 auto; background:linear-gradient(180deg,#0d4e3dF2,#0a3a2eF2); border:1px solid #d7b88a66; border-radius:14px; padding:16px; box-shadow:0 24px 50px #000a, inset 0 0 0 1px #ffffff12; backdrop-filter: blur(2px); }
-    h2 { margin:4px 0; letter-spacing:0.4px; } .subtitle { margin:0 0 12px; color:var(--muted); font-size:13px; }
+    body { margin:0; font-family:Inter,system-ui,Arial,sans-serif; color:var(--text); min-height:100vh; padding:16px; background:linear-gradient(#00000052,#00000072), url('/assets/style-target.jpg') center/cover fixed no-repeat; }
+    .app { max-width:980px; margin:0 auto; background:linear-gradient(180deg,#0d5743F3,#0a3d30F3); border:1px solid #d7b88a66; border-radius:20px; padding:16px; box-shadow:0 24px 50px #000a, inset 0 0 0 1px #ffffff10, inset 0 -12px 30px #0004; }
+    h2 { margin:4px 0; letter-spacing:1.4px; font-size:44px; line-height:1; text-transform:uppercase; color:#e8d9b6; text-shadow:0 2px 0 #0006; } .subtitle { margin:0 0 12px; color:#e6d8bc; font-size:13px; }
     .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
     button,input { padding:10px 12px; border-radius:10px; border:1px solid #ead5ad66; background:#173b31E6; color:var(--text); font-weight:600; }
     input { min-width:130px; } button:hover { filter:brightness(1.08); }
@@ -18,17 +18,17 @@
     .statusBar { background:#08271fD9; border:1px solid #e7d3af55; border-radius:10px; padding:10px; margin-bottom:12px; }
     #meta { color:var(--muted); font-size:13px; } #status { font-size:14px; margin-top:4px; font-weight:700; color:#ffe5a6; }
     .boards { display:grid; grid-template-columns:1fr 1fr; gap:14px; } @media(max-width:900px){ .boards{grid-template-columns:1fr;} .app{padding:12px;} body{padding:10px;} .row button,.row input{flex:1 1 calc(50% - 8px);} }
-    .panel { background:linear-gradient(180deg,#0f4e3d,#0d3e31); border:2px solid #6a4830; border-radius:12px; padding:10px; box-shadow: inset 0 0 0 1px #ffffff12, 0 8px 14px #0006; }
+    .panel { background:linear-gradient(180deg,#145e49,#0f493a); border:2px solid #c6ae84; border-radius:16px; padding:10px; box-shadow: inset 0 0 0 1px #fff2, inset 0 -8px 18px #0005, 0 10px 16px #0008; }
     .panel h4 { margin:0 0 8px; font-size:15px; }
     .fleetInfo { margin-top:8px; display:grid; gap:4px; font-size:12px; color:#d8e6f2; }
     .fleetRow { display:flex; justify-content:space-between; align-items:center; background:#07201999; border:1px solid #d7b88a33; border-radius:6px; padding:4px 6px; }
     .fleetBar { height:6px; border-radius:3px; background:linear-gradient(90deg,#bccdde,#6f87a0); }
     .boardShell { display:grid; grid-template-columns:18px auto; gap:6px; align-items:start; }
-    .sideLabels { display:grid; grid-template-rows:repeat(10,var(--cell)); gap:var(--gap); font-size:12px; color:#dce8f2; align-items:center; text-align:center; }
+    .sideLabels { display:grid; grid-template-rows:repeat(10,var(--cell)); gap:var(--gap); font-size:12px; color:#eadbb7; align-items:center; text-align:center; }
     .mainBoard { display:block; }
-    .topLabels { display:grid; grid-template-columns:repeat(10,var(--cell)); gap:var(--gap); margin-bottom:4px; font-size:12px; color:#dce8f2; text-align:center; }
-    .grid { display:grid; grid-template-columns:repeat(10,var(--cell)); grid-auto-rows:var(--cell); gap:var(--gap); min-width:max-content; padding:4px; border-radius:6px; background:linear-gradient(180deg,#1d6f58,#104636), repeating-linear-gradient(0deg, #ffffff0e 0 1px, #00000000 1px 10px), repeating-linear-gradient(90deg, #ffffff0d 0 1px, #00000000 1px 10px); box-shadow: inset 0 0 0 1px #ffffff1a, inset 0 10px 16px #ffffff10, inset 0 -12px 20px #00000044; }
-    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:2px; background:linear-gradient(180deg,#2b7e66,#1a5b48); cursor:pointer; position:relative; overflow:visible; box-shadow: inset 0 1px 1px #ffffff14; }
+    .topLabels { display:grid; grid-template-columns:repeat(10,var(--cell)); gap:var(--gap); margin-bottom:4px; font-size:12px; color:#eadbb7; text-align:center; }
+    .grid { display:grid; grid-template-columns:repeat(10,var(--cell)); grid-auto-rows:var(--cell); gap:var(--gap); min-width:max-content; padding:6px; border-radius:4px; background:linear-gradient(180deg,#1a6a54,#104837), repeating-linear-gradient(0deg, #ecdcb35c 0 1px, #00000000 1px 10px), repeating-linear-gradient(90deg, #ecdcb35c 0 1px, #00000000 1px 10px); box-shadow: inset 0 0 0 1px #e7d4ad66, inset 0 8px 14px #ffffff12, inset 0 -10px 16px #00000044; }
+    .cell { width:var(--cell); height:var(--cell); border:1px solid #eadbb75a; border-radius:1px; background:linear-gradient(180deg,#2d846b,#1b604c); cursor:pointer; position:relative; overflow:visible; box-shadow: inset 0 1px 1px #ffffff12; }
     .cell.ship::before { content:""; position:absolute; background:linear-gradient(180deg,#d7e0ea,#7e93a8); box-shadow:inset 0 0 0 1px #ffffff88, 0 1px 2px #0008; z-index:1; }
     .cell.ship.ship-h::before { top:5px; bottom:5px; left:-3px; right:-3px; border-radius:0; }
     .cell.ship.ship-v::before { left:5px; right:5px; top:-3px; bottom:-3px; border-radius:0; }
@@ -57,8 +57,8 @@
 </head>
 <body>
   <main class="app">
-    <h2>Battleships Demo</h2>
-    <p class="subtitle">High-contrast felt-table style inspired by classic naval board gameplay.</p>
+    <h2>BATTLESHIP</h2>
+    <p class="subtitle">Vintage tabletop edition — realistic felt board and ship silhouettes.</p>
 
     <div class="row">
       <button id="create" class="primary">Create Room (2P)</button>
