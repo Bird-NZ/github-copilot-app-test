@@ -20,26 +20,34 @@
     .boards { display:grid; grid-template-columns:1fr 1fr; gap:14px; } @media(max-width:900px){ .boards{grid-template-columns:1fr;} .app{padding:12px;} body{padding:10px;} .row button,.row input{flex:1 1 calc(50% - 8px);} }
     .panel { background:linear-gradient(180deg,#0f4e3d,#0d3e31); border:2px solid #6a4830; border-radius:12px; padding:10px; box-shadow: inset 0 0 0 1px #ffffff12, 0 8px 14px #0006; }
     .panel h4 { margin:0 0 8px; font-size:15px; }
+    .fleetInfo { margin-top:8px; display:grid; gap:4px; font-size:12px; color:#d8e6f2; }
+    .fleetRow { display:flex; justify-content:space-between; align-items:center; background:#07201999; border:1px solid #d7b88a33; border-radius:6px; padding:4px 6px; }
+    .fleetBar { height:6px; border-radius:3px; background:linear-gradient(90deg,#bccdde,#6f87a0); }
     .boardShell { display:grid; grid-template-columns:18px auto; gap:6px; align-items:start; }
     .sideLabels { display:grid; grid-template-rows:repeat(10,var(--cell)); gap:var(--gap); font-size:12px; color:#dce8f2; align-items:center; text-align:center; }
     .mainBoard { display:block; }
     .topLabels { display:grid; grid-template-columns:repeat(10,var(--cell)); gap:var(--gap); margin-bottom:4px; font-size:12px; color:#dce8f2; text-align:center; }
-    .grid { display:grid; grid-template-columns:repeat(10,var(--cell)); grid-auto-rows:var(--cell); gap:var(--gap); min-width:max-content; }
-    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:2px; background:linear-gradient(180deg,#17664f,#14513f); cursor:pointer; position:relative; overflow:visible; }
-    .cell.ship::before { content:""; position:absolute; background:linear-gradient(180deg,#d4dde8,#8498ac); box-shadow:inset 0 0 0 1px #ffffff77, 0 1px 2px #0008; z-index:1; }
+    .grid { display:grid; grid-template-columns:repeat(10,var(--cell)); grid-auto-rows:var(--cell); gap:var(--gap); min-width:max-content; padding:4px; border-radius:6px; background:linear-gradient(180deg,#1d6f58,#104636), repeating-linear-gradient(0deg, #ffffff0e 0 1px, #00000000 1px 10px), repeating-linear-gradient(90deg, #ffffff0d 0 1px, #00000000 1px 10px); box-shadow: inset 0 0 0 1px #ffffff1a, inset 0 10px 16px #ffffff10, inset 0 -12px 20px #00000044; }
+    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:2px; background:linear-gradient(180deg,#2b7e66,#1a5b48); cursor:pointer; position:relative; overflow:visible; box-shadow: inset 0 1px 1px #ffffff14; }
+    .cell.ship::before { content:""; position:absolute; background:linear-gradient(180deg,#d7e0ea,#7e93a8); box-shadow:inset 0 0 0 1px #ffffff88, 0 1px 2px #0008; z-index:1; }
     .cell.ship.ship-h::before { top:5px; bottom:5px; left:-3px; right:-3px; border-radius:0; }
     .cell.ship.ship-v::before { left:5px; right:5px; top:-3px; bottom:-3px; border-radius:0; }
-    .cell.ship.ship-h.ship-head::before { left:4px; border-top-left-radius:10px; border-bottom-left-radius:10px; }
+    .cell.ship.ship-h.ship-head::before { left:4px; border-top-left-radius:11px; border-bottom-left-radius:11px; }
     .cell.ship.ship-h.ship-tail::before { right:4px; border-top-right-radius:5px; border-bottom-right-radius:5px; }
-    .cell.ship.ship-v.ship-head::before { top:4px; border-top-left-radius:10px; border-top-right-radius:10px; }
+    .cell.ship.ship-v.ship-head::before { top:4px; border-top-left-radius:11px; border-top-right-radius:11px; }
     .cell.ship.ship-v.ship-tail::before { bottom:4px; border-bottom-left-radius:5px; border-bottom-right-radius:5px; }
     .cell.ship.ship-single::before { inset:4px; border-radius:10px 10px 5px 5px; }
-    .cell.ship:not(.hit):not(.miss)::after { content:""; position:absolute; width:6px; height:6px; border-radius:2px; left:50%; top:52%; transform:translate(-50%,-50%); background:#3f5063; box-shadow:0 0 0 1px #ffffff50; z-index:2; }
-    .cell.ship-1::before{ background:linear-gradient(180deg,#e5edf7,#a4b8cc); }
-    .cell.ship-2::before{ background:linear-gradient(180deg,#d9e4f1,#97acc1); }
-    .cell.ship-3::before{ background:linear-gradient(180deg,#cfdbe8,#8ea4ba); }
-    .cell.ship-4::before{ background:linear-gradient(180deg,#c5d2e0,#849ab1); }
-    .cell.ship-5::before{ background:linear-gradient(180deg,#bdcad8,#7b92aa); }
+    .cell.ship:not(.hit):not(.miss)::after { content:""; position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:12px; height:4px; border-radius:3px; background:linear-gradient(90deg,#2e3f52,#566a80); box-shadow:0 0 0 1px #ffffff44, 0 0 0 1px #0002 inset; z-index:2; }
+    .cell.ship-1::before{ background:linear-gradient(180deg,#e8f0f8,#a8bdcf); }
+    .cell.ship-2::before{ background:linear-gradient(180deg,#dce7f3,#9cb1c6); }
+    .cell.ship-3::before{ background:linear-gradient(180deg,#d3dfec,#90a6bc); }
+    .cell.ship-4::before{ background:linear-gradient(180deg,#c9d6e4,#879cb3); }
+    .cell.ship-5::before{ background:linear-gradient(180deg,#bfcedc,#7e94ab); }
+    .cell.ship-1:not(.hit):not(.miss)::after{ width:14px; }
+    .cell.ship-2:not(.hit):not(.miss)::after{ width:12px; }
+    .cell.ship-3:not(.hit):not(.miss)::after{ width:10px; }
+    .cell.ship-4:not(.hit):not(.miss)::after{ width:10px; }
+    .cell.ship-5:not(.hit):not(.miss)::after{ width:8px; }
     .cell.hit::before { content:""; position:absolute; width:13px; height:13px; border-radius:50%; background:var(--hit); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 2px #ffc0c077; }
     .cell.miss::before { content:""; position:absolute; width:11px; height:11px; border-radius:50%; background:var(--miss); left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 1px #0004; }
     .cell:disabled { opacity:.86; cursor:not-allowed; }
@@ -75,6 +83,7 @@
           <div id="yourSide" class="sideLabels"></div>
           <div class="mainBoard"><div id="yourTop" class="topLabels"></div><div id="your" class="grid"></div></div>
         </div>
+        <div id="fleetInfo" class="fleetInfo"></div>
       </section>
       <section class="panel">
         <h4>Target Board</h4>
@@ -103,6 +112,7 @@
     const target = document.getElementById('target');
     const status = document.getElementById('status');
     const meta = document.getElementById('meta');
+    const fleetInfo = document.getElementById('fleetInfo');
 
     function setupLabels(topId, sideId) {
       const top = document.getElementById(topId);
@@ -139,7 +149,7 @@
     function playSunk() { beep(320, 0.12, 'sawtooth', 0.03); setTimeout(() => beep(220, 0.12, 'sawtooth', 0.03), 130); }
 
     const render = () => {
-      if (!state) { mk(your, () => {}); mk(target, () => {}); return; }
+      if (!state) { mk(your, () => {}); mk(target, () => {}); fleetInfo.innerHTML = ''; return; }
 
       meta.textContent = `Room ${state.code} • Mode: ${state.mode === 'pvc' ? 'Single Player' : '2 Player'} • ${state.phase.toUpperCase()}`;
       const myTurn = state.turn && state.turn === s.id;
@@ -191,6 +201,13 @@
         b.disabled = !(state.phase === 'battle' && state.turn === s.id && v === 0 && !state.winner && !state.processingTurn);
         b.onclick = () => s.emit('fire', { code: room, x, y });
       });
+
+      const ships = Object.values(state.you.shipStatus || {});
+      fleetInfo.innerHTML = ships.map(sv => {
+        const left = Math.max(0, sv.len - sv.hits);
+        const pct = Math.max(0, Math.min(100, (left / sv.len) * 100));
+        return `<div class="fleetRow"><span>${sv.name}</span><span style="opacity:.85">${left}/${sv.len}</span></div><div class="fleetBar" style="width:${pct}%"></div>`;
+      }).join('');
     };
 
     document.getElementById('create').onclick = () => s.emit('createRoom', { mode: 'pvp' });
