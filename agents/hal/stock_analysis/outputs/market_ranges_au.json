@@ -1,8 +1,8 @@
 {
   "market": "AU",
   "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
-  "refreshedAt": "2026-02-21T22:11:26.263333+00:00",
-  "validUntil": "2026-02-28T22:11:26.263333+00:00",
+  "refreshedAt": "2026-02-28T22:11:24.790430+00:00",
+  "validUntil": "2026-03-07T22:11:24.790430+00:00",
   "symbolsConfigured": [
     "CBA.AX",
     "BHP.AX",
@@ -22,42 +22,42 @@
   ],
   "symbolsUsedCount": 15,
   "baselines": {
-    "Revenue Growth": 0.031,
-    "EPS Growth": -0.042499999999999996,
+    "Revenue Growth": 0.034,
+    "EPS Growth": -0.045,
     "EBITDA Margin": 0.100430004,
     "Net Margin": 0.17291,
-    "ROIC": 0.141985,
+    "ROIC": 0.13423000000000002,
     "FCF Margin": 0.1327606039044149,
     "Net Debt / EBITDA": 2.2435825622632537,
-    "Forward P/E": 19.327843,
-    "FCF Yield": 0.034989681081970946
+    "Forward P/E": 19.417091,
+    "FCF Yield": 0.042374945322840335
   },
   "ranges": {
     "Revenue Growth": {
       "direction": "higher",
       "poor": {
-        "lt": 0.021699999999999997
+        "lt": 0.0238
       },
       "average": {
-        "gte": 0.021699999999999997,
-        "lte": 0.0403
+        "gte": 0.0238,
+        "lte": 0.0442
       },
       "good": {
-        "gt": 0.0403
+        "gt": 0.0442
       },
       "sampleSize": 15
     },
     "EPS Growth": {
       "direction": "higher",
       "poor": {
-        "lt": -0.029749999999999995
+        "lt": -0.0315
       },
       "average": {
-        "gte": -0.029749999999999995,
-        "lte": -0.055249999999999994
+        "gte": -0.0315,
+        "lte": -0.058499999999999996
       },
       "good": {
-        "gt": -0.055249999999999994
+        "gt": -0.058499999999999996
       },
       "sampleSize": 14
     },
@@ -92,14 +92,14 @@
     "ROIC": {
       "direction": "higher",
       "poor": {
-        "lt": 0.09938949999999999
+        "lt": 0.093961
       },
       "average": {
-        "gte": 0.09938949999999999,
-        "lte": 0.1845805
+        "gte": 0.093961,
+        "lte": 0.17449900000000002
       },
       "good": {
-        "gt": 0.1845805
+        "gt": 0.17449900000000002
       },
       "sampleSize": 14
     },
@@ -134,28 +134,28 @@
     "Forward P/E": {
       "direction": "lower",
       "poor": {
-        "gt": 25.126195900000003
+        "gt": 25.2422183
       },
       "average": {
-        "gte": 13.5294901,
-        "lte": 25.126195900000003
+        "gte": 13.591963699999999,
+        "lte": 25.2422183
       },
       "good": {
-        "lt": 13.5294901
+        "lt": 13.591963699999999
       },
       "sampleSize": 15
     },
     "FCF Yield": {
       "direction": "higher",
       "poor": {
-        "lt": 0.02449277675737966
+        "lt": 0.029662461725988232
       },
       "average": {
-        "gte": 0.02449277675737966,
-        "lte": 0.04548658540656223
+        "gte": 0.029662461725988232,
+        "lte": 0.055087428919692434
       },
       "good": {
-        "gt": 0.04548658540656223
+        "gt": 0.055087428919692434
       },
       "sampleSize": 10
     }

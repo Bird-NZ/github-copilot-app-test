@@ -1,8 +1,8 @@
 {
   "market": "US",
   "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
-  "refreshedAt": "2026-02-21T22:11:10.012950+00:00",
-  "validUntil": "2026-02-28T22:11:10.012950+00:00",
+  "refreshedAt": "2026-02-28T22:11:06.347903+00:00",
+  "validUntil": "2026-03-07T22:11:06.347903+00:00",
   "symbolsConfigured": [
     "MSFT",
     "AAPL",
@@ -32,10 +32,10 @@
     "EBITDA Margin": 0.36600499,
     "Net Margin": 0.27746499999999996,
     "ROIC": 0.34710498,
-    "FCF Margin": 0.12362079384494004,
+    "FCF Margin": 0.1306428860440041,
     "Net Debt / EBITDA": 0.43492017445482867,
-    "Forward P/E": 22.008587,
-    "FCF Yield": 0.018929521775902694
+    "Forward P/E": 21.4848915,
+    "FCF Yield": 0.019246372428117657
   },
   "ranges": {
     "Revenue Growth": {
@@ -111,16 +111,16 @@
     "FCF Margin": {
       "direction": "higher",
       "poor": {
-        "lt": 0.08653455569145803
+        "lt": 0.09145002023080286
       },
       "average": {
-        "gte": 0.08653455569145803,
-        "lte": 0.16070703199842207
+        "gte": 0.09145002023080286,
+        "lte": 0.1698357518572053
       },
       "good": {
-        "gt": 0.16070703199842207
+        "gt": 0.1698357518572053
       },
-      "sampleSize": 18
+      "sampleSize": 19
     },
     "Net Debt / EBITDA": {
       "direction": "lower",
@@ -139,30 +139,30 @@
     "Forward P/E": {
       "direction": "lower",
       "poor": {
-        "gt": 28.6111631
+        "gt": 27.930358950000002
       },
       "average": {
-        "gte": 15.406010899999998,
-        "lte": 28.6111631
+        "gte": 15.03942405,
+        "lte": 27.930358950000002
       },
       "good": {
-        "lt": 15.406010899999998
+        "lt": 15.03942405
       },
       "sampleSize": 20
     },
     "FCF Yield": {
       "direction": "higher",
       "poor": {
-        "lt": 0.013250665243131884
+        "lt": 0.01347246069968236
       },
       "average": {
-        "gte": 0.013250665243131884,
-        "lte": 0.024608378308673504
+        "gte": 0.01347246069968236,
+        "lte": 0.025020284156552955
       },
       "good": {
-        "gt": 0.024608378308673504
+        "gt": 0.025020284156552955
       },
-      "sampleSize": 18
+      "sampleSize": 19
     }
   }
 }
