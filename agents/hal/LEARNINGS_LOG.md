@@ -51,3 +51,17 @@
 - Fewer partial completions and fewer user follow-up corrections.
 - Higher trust via visible proof of done.
 - Faster iterative improvement because feedback loops are actually closed.
+
+## 2026-03-01 — Restart completeness correction
+
+### Learned
+1. Restarting only the local app process can leave prior internet access broken when tunnel/proxy layers are not restored.
+2. User expectation is explicit: restart the whole previously running stack, not isolated components.
+
+### Adapted
+1. Added a restart rule: when a service was previously internet-reachable, bring up app + exposure layer together.
+2. Added a verification step before reporting done: confirm both local health and external/public reachability.
+
+### Expected impact
+- Fewer "it works locally but not publicly" regressions.
+- More reliable operational restarts with no missing layers.
