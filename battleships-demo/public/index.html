@@ -25,9 +25,16 @@
     .mainBoard { display:block; }
     .topLabels { display:grid; grid-template-columns:repeat(10,var(--cell)); gap:var(--gap); margin-bottom:4px; font-size:12px; color:#dce8f2; text-align:center; }
     .grid { display:grid; grid-template-columns:repeat(10,var(--cell)); grid-auto-rows:var(--cell); gap:var(--gap); min-width:max-content; }
-    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:2px; background:linear-gradient(180deg,#17664f,#14513f); cursor:pointer; position:relative; }
-    .cell.ship::before { content:""; position:absolute; inset:5px 4px; border-radius:7px 7px 3px 3px; background:linear-gradient(180deg,#d4dde8,#8498ac); box-shadow:inset 0 0 0 1px #ffffff77, 0 1px 2px #0008; clip-path:polygon(50% 0%, 80% 13%, 92% 38%, 92% 100%, 8% 100%, 8% 38%, 20% 13%); }
-    .cell.ship::after { content:""; position:absolute; width:6px; height:6px; border-radius:2px; left:50%; top:52%; transform:translate(-50%,-50%); background:#3f5063; box-shadow:0 0 0 1px #ffffff50; }
+    .cell { width:var(--cell); height:var(--cell); border:1px solid var(--line); border-radius:2px; background:linear-gradient(180deg,#17664f,#14513f); cursor:pointer; position:relative; overflow:visible; }
+    .cell.ship::before { content:""; position:absolute; background:linear-gradient(180deg,#d4dde8,#8498ac); box-shadow:inset 0 0 0 1px #ffffff77, 0 1px 2px #0008; z-index:1; }
+    .cell.ship.ship-h::before { top:5px; bottom:5px; left:-3px; right:-3px; border-radius:0; }
+    .cell.ship.ship-v::before { left:5px; right:5px; top:-3px; bottom:-3px; border-radius:0; }
+    .cell.ship.ship-h.ship-head::before { left:4px; border-top-left-radius:10px; border-bottom-left-radius:10px; }
+    .cell.ship.ship-h.ship-tail::before { right:4px; border-top-right-radius:5px; border-bottom-right-radius:5px; }
+    .cell.ship.ship-v.ship-head::before { top:4px; border-top-left-radius:10px; border-top-right-radius:10px; }
+    .cell.ship.ship-v.ship-tail::before { bottom:4px; border-bottom-left-radius:5px; border-bottom-right-radius:5px; }
+    .cell.ship.ship-single::before { inset:4px; border-radius:10px 10px 5px 5px; }
+    .cell.ship:not(.hit):not(.miss)::after { content:""; position:absolute; width:6px; height:6px; border-radius:2px; left:50%; top:52%; transform:translate(-50%,-50%); background:#3f5063; box-shadow:0 0 0 1px #ffffff50; z-index:2; }
     .cell.ship-1::before{ background:linear-gradient(180deg,#e5edf7,#a4b8cc); }
     .cell.ship-2::before{ background:linear-gradient(180deg,#d9e4f1,#97acc1); }
     .cell.ship-3::before{ background:linear-gradient(180deg,#cfdbe8,#8ea4ba); }
@@ -152,8 +159,25 @@
         const v = state.you.board[y][x];
         const inc = state.you.incoming?.[y]?.[x] || 0;
         if (v > 0) {
+          const same = (nx, ny) => ny >= 0 && ny < GRID_SIZE && nx >= 0 && nx < GRID_SIZE && state.you.board[ny][nx] === v;
+          const L = same(x - 1, y), R = same(x + 1, y), U = same(x, y - 1), D = same(x, y + 1);
+          const horizontal = L || R;
+          const vertical = U || D;
+
           b.classList.add('ship');
           b.classList.add(`ship-${v}`);
+
+          if (horizontal) {
+            b.classList.add('ship-h');
+            if (!L) b.classList.add('ship-head');
+            if (!R) b.classList.add('ship-tail');
+          } else if (vertical) {
+            b.classList.add('ship-v');
+            if (!U) b.classList.add('ship-head');
+            if (!D) b.classList.add('ship-tail');
+          } else {
+            b.classList.add('ship-single');
+          }
         }
         if (inc === 1) b.classList.add('miss');
         if (inc === 2) b.classList.add('hit');
