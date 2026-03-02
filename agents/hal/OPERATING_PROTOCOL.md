@@ -27,6 +27,10 @@ Speed Mode: FAST_MODE ACTIVE (see FAST_MODE.md)
    - Use NO_REPLY fast-path when explicitly configured and no user-visible output is needed.
    - Run skill preflight only when a skill clearly applies.
    - Run a tool-necessity check: use the minimum required tools for the job.
+8. Messaging failure triage (pairing-required loop breaker):
+   - If tool messaging fails with `gateway closed (1008): pairing required`, check `openclaw devices list` before asking the user to re-pair WhatsApp.
+   - If a pending device request exists for this agent/session, approve it (`openclaw devices approve <requestId>` or `--latest`) and retry the send.
+   - Only ask the user to re-run channel pairing after device-pair approval path is exhausted.
 
 ## 3) Continuous improvement loop (CCIS)
 Observe -> Propose -> Self-check -> Approve -> Apply -> Monitor

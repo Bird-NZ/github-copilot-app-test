@@ -1,5 +1,11 @@
 # CHANGELOG.md — CCIS
 
+## 2026-03-02
+- Applied messaging recovery improvement after repeated `pairing required` loop:
+  - Updated `OPERATING_PROTOCOL.md` with a mandatory loop-breaker triage: check/approve pending device pairing (`openclaw devices list/approve`) before asking user to re-pair WhatsApp.
+  - Logged incident learning + adaptation in `LEARNINGS_LOG.md`.
+  - Added durable memory note to prioritize device approval checks before user-side re-pair instructions.
+
 ## 2026-02-22
 - Added completion-discipline protocol updates after user feedback:
   - Updated `OPERATING_PROTOCOL.md` with explicit end-to-end completion checklist for implementation tasks.

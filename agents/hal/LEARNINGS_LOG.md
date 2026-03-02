@@ -65,3 +65,19 @@
 ### Expected impact
 - Fewer "it works locally but not publicly" regressions.
 - More reliable operational restarts with no missing layers.
+
+## 2026-03-02 — Pairing-required loop correction (messaging)
+
+### Learned
+1. `pairing required` can be caused by gateway device-scope upgrade/pending device approval, not only WhatsApp channel unlinking.
+2. Repeatedly asking the user to re-pair WhatsApp without checking pending device approvals creates unnecessary loops and frustration.
+
+### Adapted
+1. Added a mandatory triage rule: on `gateway closed (1008): pairing required`, check `openclaw devices list` immediately.
+2. If there is a pending request for this agent, approve it first, then retry send before requesting user-side re-pair.
+3. Escalate to user re-pair steps only when device approval does not clear the error.
+
+### Expected impact
+- Fewer repeated user-side reconnect loops.
+- Faster recovery for outbound messaging failures.
+- Better trust through issue ownership and direct remediation.
