@@ -5,6 +5,9 @@
   - Updated `OPERATING_PROTOCOL.md` with a mandatory loop-breaker triage: check/approve pending device pairing (`openclaw devices list/approve`) before asking user to re-pair WhatsApp.
   - Logged incident learning + adaptation in `LEARNINGS_LOG.md`.
   - Added durable memory note to prioritize device approval checks before user-side re-pair instructions.
+- Added global anti-loop hard encoding:
+  - Updated `OPERATING_PROTOCOL.md` with an anti-loop execution policy (failure classification, alternate-path requirement, max-repeat rule, escalation after two distinct failures, assistant-ownership-first).
+  - Added durable memory preference to avoid repeating the same user step without new evidence.
 
 ## 2026-02-22
 - Added completion-discipline protocol updates after user feedback:

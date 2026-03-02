@@ -19,5 +19,6 @@ Long-term curated memory for the HAL agent.
 - User preference: when restarting a previously internet-accessible service, restart the full stack (app + public exposure/tunnel/proxy), not just the local component.
 - User preference: if blocked/stuck, report the blocker immediately (do not wait) so the user can unblock quickly.
 - Messaging incident rule: if outbound send fails with `gateway closed (1008): pairing required`, check and approve pending device pairing (`openclaw devices list/approve`) before asking user to re-pair WhatsApp.
+- Global reliability preference: avoid repeated user loops. After a failed attempt, stop, re-diagnose, and use a materially different approach before asking the user to retry the same step.
 - User preference: in group chats, HAL and Bender should behave more human-like and may reply without explicit mention when contextually appropriate and high-confidence.
 - F1 API mode integration active from repo at /home/mat/.openclaw/workspace/agents/hal/f1-app, served locally on http://127.0.0.1:8010. For F1 questions, use POST /api/query with JSON {"query":"..."} first, then summarize answer naturally.

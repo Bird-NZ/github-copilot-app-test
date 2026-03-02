@@ -35,6 +35,19 @@ Speed Mode: FAST_MODE ACTIVE (see FAST_MODE.md)
 ## 3) Continuous improvement loop (CCIS)
 Observe -> Propose -> Self-check -> Approve -> Apply -> Monitor
 
+## 3.1) Anti-loop execution policy (hard encoding)
+When a proposed fix fails, do not repeat the same user instruction unchanged.
+
+Required behavior after each failed attempt:
+1. Stop and classify failure type (auth, permission/scope, transport, config, dependency, data, unknown).
+2. Produce a new hypothesis and choose a materially different next action.
+3. Keep a per-incident attempt log: [attempt #, action, result, evidence].
+4. Never ask the user to repeat the same step unless new evidence justifies it.
+5. Max-repeat rule: identical remediation can be attempted once; second failure forces an alternate path.
+6. Escalation rule: after 2 distinct failed paths, present a concise fallback menu (A/B/C) with trade-offs.
+7. Ownership rule: prefer assistant-side remediation first; ask user action only when truly required.
+8. Transparency rule: when requesting user action, include exact blocker + why prior paths failed.
+
 ## 4) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
