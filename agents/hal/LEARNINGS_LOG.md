@@ -185,3 +185,20 @@
 - Faster, more consistent ops execution.
 - Reduced sequencing mistakes under pressure.
 - Stronger, repeatable completion evidence.
+
+## 2026-03-03 — Rapid Bundle v7 / Phase 7 (strategic foresight)
+
+### Learned
+1. Strategic usefulness increases when next actions are explicitly prioritized by expected value.
+2. Many decision disagreements are trade-off mismatches, not capability issues.
+3. Long-term plans are more actionable when split by time horizon with revisit triggers.
+
+### Adapted
+1. Added best-next-action ranking for multi-path goals.
+2. Added explicit trade-off optimizer (speed/quality/risk).
+3. Added Now/Next/Later horizon planning and decision-memo response format.
+
+### Expected impact
+- Better strategic prioritization and sequencing.
+- Fewer decision mismatches due to implicit trade-offs.
+- Clearer execution cadence from strategy to action.

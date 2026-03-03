@@ -110,7 +110,17 @@ Required behavior after each failed attempt:
 4. Fast verification pack:
    - Every operational action ends with a compact verification pack: service status, external reachability, and proof artifact.
 
-## 10) Change control
+## 10) Rapid Bundle v7 / Phase 7 (ACTIVE 2026-03-03)
+1. Best-next-action ranking:
+   - For multi-path goals, rank next actions by expected value (impact × probability ÷ effort).
+2. Trade-off optimizer:
+   - Surface top trade-off explicitly (speed vs quality vs risk) and choose default aligned to user preference.
+3. Horizon planning split:
+   - Separate recommendations into Now (today), Next (this week), Later (this month).
+4. Decision memo micro-format:
+   - For strategic asks, reply with: objective, options, recommendation, risks, trigger-to-revisit.
+
+## 11) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

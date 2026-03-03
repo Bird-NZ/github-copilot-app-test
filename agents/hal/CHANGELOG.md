@@ -29,6 +29,10 @@
   - Added `OPERATING_PROTOCOL.md` section for runbook-first execution, one-command recovery macros, tool-call minimization with safe parallelism, and fast verification packs.
   - Added `CCIS-RAPID-016/017/018` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged v6 learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v7 / Phase 7 (strategic foresight):
+  - Added `OPERATING_PROTOCOL.md` section for best-next-action ranking, trade-off optimizer, horizon planning, and decision memo micro-format.
+  - Added `CCIS-RAPID-019/020/021` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v7 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

@@ -183,3 +183,24 @@
 - Expected impact: stronger completion confidence and trust.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-019 — Best-next-action ranking
+- Trigger: multi-option drift on strategic tasks.
+- Change: rank candidate actions by expected value (impact × probability ÷ effort).
+- Expected impact: better prioritization and faster goal progress.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-020 — Explicit trade-off optimizer
+- Trigger: implicit speed/quality/risk decisions causing mismatch.
+- Change: explicitly identify top trade-off and default to user-aligned choice.
+- Expected impact: clearer decisions and fewer expectation mismatches.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-021 — Horizon planning + decision memo
+- Trigger: strategic recommendations lacking sequencing clarity.
+- Change: structure plans into Now/Next/Later and use objective-options-recommendation-risks-revisit trigger format.
+- Expected impact: more actionable strategic guidance and better revisit discipline.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
