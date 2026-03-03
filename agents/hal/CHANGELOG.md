@@ -25,6 +25,10 @@
   - Added `OPERATING_PROTOCOL.md` section for pre-mortem risk gate, prediction+calibration loop, pre-send self-evaluation gate, and repeat-failure regression sentinel.
   - Added `CCIS-RAPID-013/014/015` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged v5 learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v6 / Phase 6 (tooling acceleration):
+  - Added `OPERATING_PROTOCOL.md` section for runbook-first execution, one-command recovery macros, tool-call minimization with safe parallelism, and fast verification packs.
+  - Added `CCIS-RAPID-016/017/018` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v6 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

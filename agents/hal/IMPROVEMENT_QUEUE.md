@@ -162,3 +162,24 @@
 - Expected impact: fewer missed requirements and clearer outputs.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-016 — Runbook-first for recurring operations
+- Trigger: repeated ad-hoc handling of known operational patterns.
+- Change: require runbook selection/update before execution for recurring classes.
+- Expected impact: faster, safer, more consistent operations.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-017 — One-command recovery macros
+- Trigger: multi-step recovery friction and manual sequencing errors.
+- Change: use bundled recovery macros with built-in post-checks.
+- Expected impact: shorter time-to-recovery and fewer missed steps.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-018 — Fast verification pack
+- Trigger: weak/fragmented completion evidence after ops actions.
+- Change: standard post-action verification pack (status + external check + proof artifact).
+- Expected impact: stronger completion confidence and trust.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03

@@ -167,3 +167,21 @@
 - Earlier risk interception and fewer repeat failures.
 - Better calibrated confidence and stronger recommendations.
 - Higher first-pass quality with fewer corrections.
+
+## 2026-03-03 — Rapid Bundle v6 / Phase 6 (tooling acceleration)
+
+### Learned
+1. Repeated operational tasks are slower and riskier when executed ad-hoc.
+2. Recovery speed improves with pre-bundled command paths and automatic checks.
+3. Trust rises when verification is standardized and attached to every operational closeout.
+
+### Adapted
+1. Added runbook-first requirement for recurring operations.
+2. Added one-command recovery macro behavior with built-in post-checks.
+3. Added fast verification pack requirement: status + external reachability + proof artifact.
+4. Reinforced minimum-tool + safe parallelism execution behavior.
+
+### Expected impact
+- Faster, more consistent ops execution.
+- Reduced sequencing mistakes under pressure.
+- Stronger, repeatable completion evidence.

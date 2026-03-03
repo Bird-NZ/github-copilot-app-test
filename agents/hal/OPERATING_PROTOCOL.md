@@ -100,7 +100,17 @@ Required behavior after each failed attempt:
 4. Regression sentinel:
    - If the same failure pattern repeats within 7 days, auto-escalate to protocol patch candidate in IMPROVEMENT_QUEUE.md.
 
-## 9) Change control
+## 9) Rapid Bundle v6 / Phase 6 (ACTIVE 2026-03-03)
+1. Reusable runbook-first execution:
+   - For recurring task classes (messaging recovery, public service restart, deploy verification), use/update a named runbook before ad-hoc flow.
+2. One-command recovery macros:
+   - Prefer bundled command sequences for common recoveries; include post-checks automatically.
+3. Tool-call minimization with parallelism:
+   - Use minimum viable tool set; run independent checks in parallel where safe.
+4. Fast verification pack:
+   - Every operational action ends with a compact verification pack: service status, external reachability, and proof artifact.
+
+## 10) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.
