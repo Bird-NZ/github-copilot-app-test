@@ -48,7 +48,17 @@ Required behavior after each failed attempt:
 7. Ownership rule: prefer assistant-side remediation first; ask user action only when truly required.
 8. Transparency rule: when requesting user action, include exact blocker + why prior paths failed.
 
-## 4) Change control
+## 4) Rapid Bundle v1 (ACTIVE 2026-03-03)
+1. Preflight coverage check (before analysis/audit/scoring tasks):
+   - Confirm minimum evidence scope before conclusions.
+   - If evidence is sparse, widen time window and label output LOW CONFIDENCE.
+2. Failure incident trace (on errors/blockers):
+   - Report concise trace: cause class -> attempt 1 -> attempt 2 -> next path.
+   - Do not request repeated user action without new evidence.
+3. Done-proof closeout (before declaring completion):
+   - Must provide concrete proof artifact/state (URL, command output, file, or status check) matching the requested outcome.
+
+## 5) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

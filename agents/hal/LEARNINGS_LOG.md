@@ -81,3 +81,19 @@
 - Fewer repeated user-side reconnect loops.
 - Faster recovery for outbound messaging failures.
 - Better trust through issue ownership and direct remediation.
+
+## 2026-03-03 — Rapid Bundle v1 activation
+
+### Learned
+1. Conservative rollout wording can feel like delay when user asks for immediate capability gains.
+2. High-confidence quality upgrades should be applied same-day, then validated live.
+
+### Adapted
+1. Activated Rapid Mode override with same-day patch behavior.
+2. Applied three immediate gates: preflight coverage, mandatory incident trace, and done-proof closeout.
+3. Set 24h delta reporting with immediate rollback-on-regression.
+
+### Expected impact
+- Faster visible improvements with lower user friction.
+- Fewer repeated loops and clearer failure handling.
+- Higher trust in completion claims via explicit proof.

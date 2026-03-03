@@ -57,3 +57,24 @@
 - Expected impact: Auditable reviewer learning cycle, faster patch prioritization, safer promotions.
 - Status: APPROVED + APPLIED
 - Added: 2026-02-21
+
+### CCIS-RAPID-001 — Preflight coverage gate for sparse evidence
+- Trigger: low-evidence audits/analysis causing weak confidence and over-trust risk.
+- Change: Require minimum evidence check before conclusions; auto-widen lookback and label LOW CONFIDENCE when sparse.
+- Expected impact: fewer thin-evidence conclusions and clearer confidence signaling.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-002 — Mandatory incident trace on failures
+- Trigger: repeat-loop risk during troubleshooting.
+- Change: On error/blocker, report cause class + attempts + next path before requesting user action.
+- Expected impact: less repetition, higher transparency, faster unblocking.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-003 — Done-proof gate before completion
+- Trigger: partial completions or weak completion claims.
+- Change: Require concrete proof artifact/state before declaring done.
+- Expected impact: better completion integrity and trust.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03

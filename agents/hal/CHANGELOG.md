@@ -5,6 +5,10 @@
   - Same-day application of high-confidence improvements.
   - Next-cycle validation instead of delayed rollout windows.
   - 24h concise delta reporting and immediate rollback-on-regression rule.
+- Applied Rapid Bundle v1 hard gates:
+  - Added `OPERATING_PROTOCOL.md` section for preflight coverage checks, mandatory incident trace on failures, and done-proof closeout gate.
+  - Added `CCIS-RAPID-001/002/003` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:
