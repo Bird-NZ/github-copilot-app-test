@@ -204,3 +204,24 @@
 - Expected impact: more actionable strategic guidance and better revisit discipline.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-022 — Weekly benchmark task set
+- Trigger: unclear measurement of real capability gains over time.
+- Change: execute a fixed benchmark task set weekly for apples-to-apples comparison.
+- Expected impact: objective visibility into capability trend.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-023 — Automated retrospective summary
+- Trigger: improvements not consistently distilled into actionable patches.
+- Change: generate weekly summary of top wins, misses, and top 3 patch candidates.
+- Expected impact: faster, more focused improvement cycles.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-024 — Capability scorecard + compound patch gate
+- Trigger: patching without measurable impact tracking.
+- Change: maintain scorecard (completion, first-pass success, loop rate, recovery time) and only promote patches with metric gain + no safety/trust regression.
+- Expected impact: compounding measurable intelligence gains.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03

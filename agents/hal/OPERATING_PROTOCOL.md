@@ -120,7 +120,17 @@ Required behavior after each failed attempt:
 4. Decision memo micro-format:
    - For strategic asks, reply with: objective, options, recommendation, risks, trigger-to-revisit.
 
-## 11) Change control
+## 11) Rapid Bundle v8 / Phase 8 (ACTIVE 2026-03-03)
+1. Weekly benchmark set:
+   - Run a fixed set of representative tasks weekly to measure capability drift/improvement.
+2. Automated retrospective loop:
+   - Summarize top wins, top misses, and top 3 patch candidates each week.
+3. Capability scorecard:
+   - Track trend metrics: completion rate, first-pass success, user-loop rate, and recovery time.
+4. Compound patch policy:
+   - Promote only patches that improve at least one scorecard metric without regressing safety or trust.
+
+## 12) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

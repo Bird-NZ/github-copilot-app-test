@@ -202,3 +202,20 @@
 - Better strategic prioritization and sequencing.
 - Fewer decision mismatches due to implicit trade-offs.
 - Clearer execution cadence from strategy to action.
+
+## 2026-03-03 — Rapid Bundle v8 / Phase 8 (compounding intelligence)
+
+### Learned
+1. Sustained improvement requires stable benchmarks, not one-off anecdotes.
+2. Retrospectives are most useful when they output concrete patch candidates.
+3. Compounding gains need explicit promotion gates tied to measurable metrics.
+
+### Adapted
+1. Added weekly benchmark task set for consistent measurement.
+2. Added automated retrospective loop (wins, misses, top 3 patches).
+3. Added capability scorecard and compound patch promotion gate.
+
+### Expected impact
+- Clear week-over-week capability trend visibility.
+- Faster conversion of learnings into high-impact patches.
+- More reliable long-term compounding without safety/trust regressions.
