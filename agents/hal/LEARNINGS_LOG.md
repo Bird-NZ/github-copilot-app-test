@@ -149,3 +149,21 @@
 - Better fit-to-intent responses with less rework.
 - Faster progress through proactive recommendations.
 - Clearer tracking of actual outcome movement.
+
+## 2026-03-03 — Rapid Bundle v5 / Phase 5 (forecasting + self-evaluation)
+
+### Learned
+1. Many failures are predictable before execution if risks are named explicitly.
+2. Confidence quality improves when predictions are tracked against outcomes.
+3. A short pre-send quality sweep can catch requirement misses and unnecessary user burden.
+
+### Adapted
+1. Added pre-mortem risk gate for non-trivial tasks.
+2. Added prediction + calibration loop with explicit success probabilities.
+3. Added pre-send self-evaluation gate.
+4. Added regression sentinel to auto-escalate repeated failure patterns.
+
+### Expected impact
+- Earlier risk interception and fewer repeat failures.
+- Better calibrated confidence and stronger recommendations.
+- Higher first-pass quality with fewer corrections.

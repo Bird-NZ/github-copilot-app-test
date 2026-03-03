@@ -21,6 +21,10 @@
   - Added `OPERATING_PROTOCOL.md` section for intent profile gate, proactive next-step rule, outcome delta closeout, and same-run preference reinforcement.
   - Added `CCIS-RAPID-010/011/012` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged v4 learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v5 / Phase 5 (forecasting + self-evaluation):
+  - Added `OPERATING_PROTOCOL.md` section for pre-mortem risk gate, prediction+calibration loop, pre-send self-evaluation gate, and repeat-failure regression sentinel.
+  - Added `CCIS-RAPID-013/014/015` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v5 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

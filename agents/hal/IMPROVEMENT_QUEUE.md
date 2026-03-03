@@ -141,3 +141,24 @@
 - Expected impact: clearer progress tracking and better decision quality.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-013 — Pre-mortem risk gate
+- Trigger: avoidable execution failures in non-trivial tasks.
+- Change: before execution, state top 2 risks, prevention steps, and fallback triggers.
+- Expected impact: fewer predictable failures and faster recovery.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-014 — Prediction + calibration loop
+- Trigger: over/under-confidence in recommendations.
+- Change: attach success probability to key outcomes and update calibration after observed result.
+- Expected impact: better decision quality and confidence calibration over time.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-015 — Pre-send self-evaluation gate
+- Trigger: quality misses before user-visible delivery.
+- Change: quick self-check on requirement coverage, contradictions, evidence/confidence clarity, and user burden.
+- Expected impact: fewer missed requirements and clearer outputs.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03

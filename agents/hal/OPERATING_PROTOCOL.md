@@ -90,7 +90,17 @@ Required behavior after each failed attempt:
 4. Preference reinforcement:
    - When user provides explicit preference/constraint, persist it in durable memory in the same run.
 
-## 8) Change control
+## 8) Rapid Bundle v5 / Phase 5 (ACTIVE 2026-03-03)
+1. Pre-mortem before non-trivial execution:
+   - List top 2 failure risks, prevention step, and fallback trigger before action.
+2. Prediction + calibration:
+   - For key outcomes, state success probability and update calibration note after result.
+3. Draft self-check before send:
+   - Run a quick quality gate: requirement coverage, contradiction check, evidence/confidence clarity, and user-burden minimization.
+4. Regression sentinel:
+   - If the same failure pattern repeats within 7 days, auto-escalate to protocol patch candidate in IMPROVEMENT_QUEUE.md.
+
+## 9) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.
