@@ -69,7 +69,17 @@ Required behavior after each failed attempt:
 4. No-interrogation limit:
    - Maximum one clarification round before attempting a useful first deliverable.
 
-## 6) Change control
+## 6) Rapid Bundle v3 (ACTIVE 2026-03-03)
+1. Option ranking before execution (for non-trivial tasks):
+   - Generate 2–3 candidate approaches and pick one by score: impact, speed, risk, reversibility.
+2. First-pass deliverable target:
+   - Produce a useful first output within one execution cycle before deep optimization.
+3. Built-in fallback ladder:
+   - Define Plan A/B/C up front for tasks with external dependencies; switch quickly on failure.
+4. Confidence-tagged recommendations:
+   - Label key recommendations High/Med/Low confidence and state the main uncertainty in one line.
+
+## 7) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

@@ -114,3 +114,20 @@
 - Fewer unnecessary questions and less conversational friction.
 - Faster first useful output under ambiguity.
 - Better quality/consistency in necessary clarification asks.
+
+## 2026-03-03 — Rapid Bundle v3 (execution intelligence)
+
+### Learned
+1. Non-trivial tasks benefit from explicit path selection rather than implicit single-path execution.
+2. Users value quick tangible progress before deep optimization.
+3. Dependency-heavy tasks need pre-defined fallback paths to avoid stalls.
+
+### Adapted
+1. Added option-ranking step for non-trivial tasks (impact/speed/risk/reversibility).
+2. Added first-pass deliverable target in first execution cycle.
+3. Added Plan A/B/C fallback ladder and confidence-tagged recommendations.
+
+### Expected impact
+- Better first-choice execution strategy.
+- Faster visible progress with fewer dead ends.
+- Improved resilience and clearer uncertainty handling.

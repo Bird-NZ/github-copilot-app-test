@@ -99,3 +99,24 @@
 - Expected impact: better momentum and reduced conversation drag.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-007 — Option ranking before execution
+- Trigger: inconsistent approach selection on non-trivial tasks.
+- Change: score 2–3 candidate paths by impact/speed/risk/reversibility and choose explicitly.
+- Expected impact: higher-quality path choice and fewer dead-end attempts.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-008 — First-pass deliverable target
+- Trigger: delays from over-optimization before showing value.
+- Change: require a useful first output in the first execution cycle, then iterate.
+- Expected impact: faster visible progress and better user feedback loops.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-009 — Built-in fallback ladder + confidence tags
+- Trigger: slow pivots when dependencies fail or uncertainty is high.
+- Change: define Plan A/B/C for dependency-heavy tasks and tag recommendations with confidence + primary uncertainty.
+- Expected impact: quicker recovery, clearer decisions, better trust calibration.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
