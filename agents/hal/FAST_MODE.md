@@ -1,6 +1,7 @@
 # FAST_MODE.md — CCIS Fast Mode (ACTIVE)
 
 Activated: 2026-02-15 (NZ)
+Rapid Mode Override: ACTIVE (2026-03-03 NZ)
 
 ## Objective
 Increase improvement cycle speed ~10x while preserving safety and human approval.
@@ -10,6 +11,12 @@ Increase improvement cycle speed ~10x while preserving safety and human approval
 2. Log issue -> fix candidate -> confidence
 3. Daily patch bundle (max 3 changes) for user approval
 4. Promote only after evidence gate passes
+
+## Rapid Mode Override (ACTIVE)
+- Apply high-confidence operational improvements same-day.
+- Validate on the next real task cycle (no unnecessary waiting window).
+- Report a concise delta update within 24h.
+- If regression appears, rollback immediately and present an alternate path.
 
 ## Lean digest guardrail (ACTIVE)
 - Default to low-context path for simple asks.

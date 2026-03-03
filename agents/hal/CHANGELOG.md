@@ -1,5 +1,11 @@
 # CHANGELOG.md — CCIS
 
+## 2026-03-03
+- Enabled Rapid Mode override in `FAST_MODE.md`:
+  - Same-day application of high-confidence improvements.
+  - Next-cycle validation instead of delayed rollout windows.
+  - 24h concise delta reporting and immediate rollback-on-regression rule.
+
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:
   - Updated `OPERATING_PROTOCOL.md` with a mandatory loop-breaker triage: check/approve pending device pairing (`openclaw devices list/approve`) before asking user to re-pair WhatsApp.
