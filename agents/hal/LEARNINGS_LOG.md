@@ -236,3 +236,22 @@
 - Faster execution with bounded risk.
 - Better transparency during long tasks.
 - Stronger user control while maintaining high autonomy.
+
+## 2026-03-03 — Rapid Bundle v10 / Phase 10 (self-optimizing governance)
+
+### Learned
+1. Long-term gains require strict promotion governance, not just more patches.
+2. Trust can erode if speed optimizations outpace safety/clarity/user-control safeguards.
+3. Policy sprawl reduces effectiveness unless rules are periodically consolidated.
+
+### Adapted
+1. Added auto-priority patch queue by expected value.
+2. Added hard safety/trust promotion gate.
+3. Added automatic rollback trigger on regression.
+4. Added improvement overhead budget guardrail.
+5. Added monthly protocol consolidation rule.
+
+### Expected impact
+- Higher quality improvements with lower regression risk.
+- Better sustained trust while performance improves.
+- Cleaner operating policy with lower maintenance drag.

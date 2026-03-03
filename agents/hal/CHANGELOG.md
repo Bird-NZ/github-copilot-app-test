@@ -41,6 +41,10 @@
   - Added `OPERATING_PROTOCOL.md` section for autonomous execution tiers, parallel workstream orchestration, checkpointed long-run execution, and human override contract.
   - Added `CCIS-RAPID-025/026/027` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged v9 learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v10 / Phase 10 (self-optimizing governance):
+  - Added `OPERATING_PROTOCOL.md` section for auto-priority patch queue, safety/trust promotion gate, automatic rollback trigger, improvement overhead budget, and monthly protocol consolidation.
+  - Added `CCIS-RAPID-028/029/030` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v10 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

@@ -246,3 +246,24 @@
 - Expected impact: better transparency and tighter human control.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-028 — Auto-priority patch queue
+- Trigger: patch backlog growth without strict prioritization.
+- Change: rank candidates by expected value and promote highest-impact low-risk first.
+- Expected impact: faster net capability gain per cycle.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-029 — Safety/trust promotion gate
+- Trigger: risk of optimizing speed at expense of reliability/clarity/control.
+- Change: block promotions that regress safety, clarity, or user control.
+- Expected impact: sustained trust while improving performance.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-030 — Auto-rollback + monthly consolidation
+- Trigger: patch regressions and policy bloat over time.
+- Change: auto-rollback on metric regression; monthly rule consolidation to remove duplicates/low-value rules.
+- Expected impact: resilient long-term compounding with low policy entropy.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03

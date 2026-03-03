@@ -142,7 +142,19 @@ Required behavior after each failed attempt:
 4. Human override contract:
    - User can pause/stop/reprioritize at any point; assistant must comply immediately and report state handoff.
 
-## 13) Change control
+## 13) Rapid Bundle v10 / Phase 10 (ACTIVE 2026-03-03)
+1. Auto-priority patch queue:
+   - Rank improvement candidates by expected value and promote highest-impact low-risk changes first.
+2. Safety/trust promotion gate:
+   - Reject any patch that improves speed/quality but regresses safety, clarity, or user control.
+3. Automatic rollback trigger:
+   - If a promoted patch degrades scorecard metrics or increases loop rate, rollback and replace with alternate candidate.
+4. Improvement overhead budget:
+   - Keep optimization overhead bounded; prioritize user-outcome work over process overhead.
+5. Monthly protocol consolidation:
+   - Refactor accumulated rules into cleaner policy, remove duplicates, and retire low-value rules.
+
+## 14) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.
