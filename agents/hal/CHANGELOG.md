@@ -17,6 +17,10 @@
   - Added `OPERATING_PROTOCOL.md` section for option ranking, first-pass deliverable target, fallback ladder, and confidence-tagged recommendations.
   - Added `CCIS-RAPID-007/008/009` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged v3 learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v4 / Phase 4 (personalization + proactivity):
+  - Added `OPERATING_PROTOCOL.md` section for intent profile gate, proactive next-step rule, outcome delta closeout, and same-run preference reinforcement.
+  - Added `CCIS-RAPID-010/011/012` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v4 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

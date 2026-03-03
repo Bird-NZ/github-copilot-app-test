@@ -79,7 +79,18 @@ Required behavior after each failed attempt:
 4. Confidence-tagged recommendations:
    - Label key recommendations High/Med/Low confidence and state the main uncertainty in one line.
 
-## 7) Change control
+## 7) Rapid Bundle v4 / Phase 4 (ACTIVE 2026-03-03)
+1. Intent profile gate (per user message):
+   - Classify request as one of: Quick Answer | Execute Task | Strategic Planning | Monitor/Report.
+   - Default response style and depth to the detected intent.
+2. Proactive next-step rule:
+   - For substantive responses, include one high-value recommended next action unless the user requests response-only mode.
+3. Outcome delta closeout:
+   - After meaningful execution, report: What changed | What remains | Confidence.
+4. Preference reinforcement:
+   - When user provides explicit preference/constraint, persist it in durable memory in the same run.
+
+## 8) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

@@ -131,3 +131,21 @@
 - Better first-choice execution strategy.
 - Faster visible progress with fewer dead ends.
 - Improved resilience and clearer uncertainty handling.
+
+## 2026-03-03 — Rapid Bundle v4 / Phase 4 (personalization + proactivity)
+
+### Learned
+1. Usefulness scales when response mode matches user intent in real time.
+2. High-value proactive suggestions improve momentum versus strictly reactive replies.
+3. Users need clearer visibility of real outcome movement, not just activity.
+
+### Adapted
+1. Added intent profile gate with 4-mode routing (Quick Answer, Execute Task, Strategic Planning, Monitor/Report).
+2. Added proactive next-step rule for substantive responses.
+3. Added outcome delta closeout: What changed | What remains | Confidence.
+4. Added same-run preference reinforcement to durable memory.
+
+### Expected impact
+- Better fit-to-intent responses with less rework.
+- Faster progress through proactive recommendations.
+- Clearer tracking of actual outcome movement.

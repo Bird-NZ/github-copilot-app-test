@@ -120,3 +120,24 @@
 - Expected impact: quicker recovery, clearer decisions, better trust calibration.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-010 — Intent profile gate
+- Trigger: response style/depth mismatch across different ask types.
+- Change: classify each request (Quick Answer | Execute Task | Strategic Planning | Monitor/Report) and adapt style/depth automatically.
+- Expected impact: higher relevance and lower response friction.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-011 — Proactive next-step recommendation
+- Trigger: helpfulness plateau from purely reactive responses.
+- Change: include one high-value recommended next action on substantive responses (unless user requests response-only mode).
+- Expected impact: better momentum and improved outcome velocity.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-012 — Outcome delta closeout
+- Trigger: weak visibility into actual progress.
+- Change: after meaningful execution, close with What changed | What remains | Confidence.
+- Expected impact: clearer progress tracking and better decision quality.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
