@@ -37,6 +37,10 @@
   - Added `OPERATING_PROTOCOL.md` section for weekly benchmark set, automated retrospective loop, capability scorecard, and compound patch promotion gate.
   - Added `CCIS-RAPID-022/023/024` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged v8 learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v9 / Phase 9 (autonomous execution architecture):
+  - Added `OPERATING_PROTOCOL.md` section for autonomous execution tiers, parallel workstream orchestration, checkpointed long-run execution, and human override contract.
+  - Added `CCIS-RAPID-025/026/027` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v9 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

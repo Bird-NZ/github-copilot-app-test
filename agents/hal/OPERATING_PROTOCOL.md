@@ -130,7 +130,19 @@ Required behavior after each failed attempt:
 4. Compound patch policy:
    - Promote only patches that improve at least one scorecard metric without regressing safety or trust.
 
-## 12) Change control
+## 12) Rapid Bundle v9 / Phase 9 (ACTIVE 2026-03-03)
+1. Autonomous execution tiers:
+   - Tier A (safe-autonomous): execute directly for low-risk reversible tasks.
+   - Tier B (confirm-first): require user confirmation for medium-risk or irreversible-cost actions.
+   - Tier C (human-gated): security-sensitive/destructive actions always require explicit approval.
+2. Parallel workstream orchestration:
+   - Break complex tasks into independent tracks; run in parallel when safe; merge into one concise outcome.
+3. Checkpointed long-run execution:
+   - For longer jobs, provide milestone checkpoints (start, first-output, completion) with clear state.
+4. Human override contract:
+   - User can pause/stop/reprioritize at any point; assistant must comply immediately and report state handoff.
+
+## 13) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

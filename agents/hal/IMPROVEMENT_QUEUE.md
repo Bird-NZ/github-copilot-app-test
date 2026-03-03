@@ -225,3 +225,24 @@
 - Expected impact: compounding measurable intelligence gains.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-025 — Autonomous execution tiers
+- Trigger: ambiguity about when to execute directly vs confirm first.
+- Change: classify actions into Tier A/B/C with explicit execution permissions and approval thresholds.
+- Expected impact: higher throughput while preserving safety and control.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-026 — Parallel workstream orchestration
+- Trigger: long sequential execution on decomposable tasks.
+- Change: split independent tracks and run safely in parallel; merge into unified result.
+- Expected impact: faster end-to-end completion.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-027 — Checkpointed long-run + override contract
+- Trigger: reduced visibility/control during long tasks.
+- Change: milestone checkpoint updates and strict pause/stop/reprioritize compliance with state handoff.
+- Expected impact: better transparency and tighter human control.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
