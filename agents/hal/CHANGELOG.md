@@ -9,6 +9,10 @@
   - Added `OPERATING_PROTOCOL.md` section for preflight coverage checks, mandatory incident trace on failures, and done-proof closeout gate.
   - Added `CCIS-RAPID-001/002/003` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
   - Logged learning/adaptation entry in `LEARNINGS_LOG.md`.
+- Applied Rapid Bundle v2 (clarification quality):
+  - Added `OPERATING_PROTOCOL.md` section for clarification decision gate, assumption contract, focused-question format, and one-round clarification cap.
+  - Added `CCIS-RAPID-004/005/006` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged v2 learning/adaptation entry in `LEARNINGS_LOG.md`.
 
 ## 2026-03-02
 - Applied messaging recovery improvement after repeated `pairing required` loop:

@@ -58,7 +58,18 @@ Required behavior after each failed attempt:
 3. Done-proof closeout (before declaring completion):
    - Must provide concrete proof artifact/state (URL, command output, file, or status check) matching the requested outcome.
 
-## 5) Change control
+## 5) Rapid Bundle v2 (ACTIVE 2026-03-03)
+1. Clarification decision gate:
+   - Ask a clarification only if missing info changes correctness, safety, or irreversible cost.
+   - Otherwise proceed with bounded assumptions.
+2. Assumption contract:
+   - When proceeding without clarification, state assumptions in one short line and continue execution.
+3. Clarification quality format:
+   - If a question is required, ask one focused question with 2–4 concrete options (include a default/recommended option).
+4. No-interrogation limit:
+   - Maximum one clarification round before attempting a useful first deliverable.
+
+## 6) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

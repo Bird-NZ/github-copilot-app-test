@@ -78,3 +78,24 @@
 - Expected impact: better completion integrity and trust.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-004 — Clarification decision gate
+- Trigger: weak_clarification failures and user friction from unnecessary questions.
+- Change: Ask clarification only when correctness/safety/irreversibility depends on missing info; otherwise proceed with bounded assumptions.
+- Expected impact: fewer unnecessary clarification loops; faster first useful output.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-005 — Assumption contract + single focused question format
+- Trigger: ambiguity handling quality inconsistency.
+- Change: If proceeding, state one-line assumptions; if asking, ask one focused question with concrete options + recommended default.
+- Expected impact: clearer decisions, lower cognitive load, improved user trust.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03
+
+### CCIS-RAPID-006 — One-round clarification cap
+- Trigger: multi-question interrogation patterns.
+- Change: limit to one clarification round before delivering first tangible output.
+- Expected impact: better momentum and reduced conversation drag.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-03

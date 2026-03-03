@@ -97,3 +97,20 @@
 - Faster visible improvements with lower user friction.
 - Fewer repeated loops and clearer failure handling.
 - Higher trust in completion claims via explicit proof.
+
+## 2026-03-03 — Rapid Bundle v2 (clarification quality)
+
+### Learned
+1. Weak clarification is a top recurring failure mode and can feel like avoidable drag.
+2. Multiple broad questions before first output reduce momentum and perceived usefulness.
+
+### Adapted
+1. Added clarification decision gate: only ask when correctness/safety/irreversibility depends on missing info.
+2. Added assumption contract: proceed with bounded assumptions and state them briefly.
+3. Standardized question format: one focused question with concrete options + recommended default.
+4. Added one-round clarification cap before first deliverable.
+
+### Expected impact
+- Fewer unnecessary questions and less conversational friction.
+- Faster first useful output under ambiguity.
+- Better quality/consistency in necessary clarification asks.
