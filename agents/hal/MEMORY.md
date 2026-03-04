@@ -16,6 +16,7 @@ Long-term curated memory for the HAL agent.
 - User preference: always communicate with the user in English unless they specifically ask for a different language.
 - User preference: app-building conversations should use adaptive mixed-mode by phase (Founder + Product + CTO + Hands-off), not a single fixed style.
 - User preference: use each app build as a process-learning loop; adapt and update the process together based on what we learn.
+- User preference: in normal app-build flow, always provide a direct link/reference to the produced design doc.
 - User preference: for the daily World Mobile update, send the update directly (no "Reminder: it’s time..." phrasing).
 - User preference: complete requested implementation tasks fully in one pass (start-to-finish) and only pause/ask when there is a high-security issue.
 - User preference: do not stop after recoverable errors; keep iterating autonomously until the requested outcome is complete, and only return early for true hard blockers or explicit user stop.
