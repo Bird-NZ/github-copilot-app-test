@@ -267,3 +267,24 @@
 - Expected impact: resilient long-term compounding with low policy entropy.
 - Status: APPROVED + APPLIED
 - Added: 2026-03-03
+
+### CCIS-RAPID-034 — UI spec freeze gate
+- Trigger: approved concept images drifting from final built UI.
+- Change: require a concrete UI contract (tokens/components/layout rules) before implementation.
+- Expected impact: higher fidelity between concept approval and shipped interface.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-04
+
+### CCIS-RAPID-035 — Mid-build visual checkpoint
+- Trigger: visual mismatch discovered too late (post-deploy/user testing).
+- Change: mandatory scaffold-stage visual review prior to final polish/deploy.
+- Expected impact: earlier correction, fewer late UI rework cycles.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-04
+
+### CCIS-RAPID-036 — Pre-release visual parity blocker
+- Trigger: deploy marked complete while UI differs materially from approved references.
+- Change: require component parity checklist + desktop/mobile interaction parity before completion status.
+- Expected impact: fewer “works but doesn’t match approved design” deliveries.
+- Status: APPROVED + APPLIED
+- Added: 2026-03-04

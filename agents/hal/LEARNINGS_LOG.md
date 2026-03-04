@@ -255,3 +255,22 @@
 - Higher quality improvements with lower regression risk.
 - Better sustained trust while performance improves.
 - Cleaner operating policy with lower maintenance drag.
+
+## 2026-03-04 — Connect4 build loop learnings (design-to-build fidelity)
+
+### Learned
+1. Pre-build planning quality improved significantly (specs, architecture, SKU/cost, enterprise doc), but final UI fidelity still drifted from approved concept images.
+2. Concept approval without a concrete UI contract causes implementation interpretation variance.
+3. Late discovery of visual mismatch creates avoidable hotfix loops.
+4. Functional pass (smoke/deploy) is not sufficient for acceptance when UX parity is a core requirement.
+
+### Adapted
+1. Added UI spec freeze gate before implementation.
+2. Added mandatory mid-build visual checkpoint.
+3. Added pre-release visual parity checklist as a completion blocker.
+4. Reinforced delivery rule: do not mark complete until visual parity + interaction parity are validated.
+
+### Expected impact
+- Higher concept-to-build visual consistency.
+- Fewer late-stage UI correction cycles.
+- Better first-pass acceptance for UX-driven app builds.

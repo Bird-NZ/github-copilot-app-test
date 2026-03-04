@@ -1,5 +1,11 @@
 # CHANGELOG.md — CCIS
 
+## 2026-03-04
+- Formalized Connect4-derived process learnings:
+  - Updated `OPERATING_PROTOCOL.md` with an active UI parity gate set (UI spec freeze, mid-build visual checkpoint, pre-release visual parity blocker).
+  - Added `CCIS-RAPID-034/035/036` as APPROVED+APPLIED in `IMPROVEMENT_QUEUE.md`.
+  - Logged Connect4 design-to-build fidelity learnings and adaptations in `LEARNINGS_LOG.md`.
+
 ## 2026-03-03
 - Enabled Rapid Mode override in `FAST_MODE.md`:
   - Same-day application of high-confidence improvements.

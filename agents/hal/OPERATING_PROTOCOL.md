@@ -154,7 +154,17 @@ Required behavior after each failed attempt:
 5. Monthly protocol consolidation:
    - Refactor accumulated rules into cleaner policy, remove duplicates, and retire low-value rules.
 
-## 14) Change control
+## 14) Connect4-derived UI parity gate (ACTIVE 2026-03-04)
+1. UI spec freeze before implementation:
+   - After concept approval, create a concrete UI contract (tokens, typography, spacing, component list) before coding.
+2. Mid-build visual checkpoint:
+   - Run a visual review at scaffold stage (before final polish) to catch design drift early.
+3. Pre-release visual parity checklist:
+   - Required checks: component parity (Match/Partial/Fail), desktop click behavior, and mobile layout sanity.
+4. Deployment block on visual mismatch:
+   - Do not mark build complete if implemented UI materially diverges from approved reference visuals.
+
+## 15) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.
