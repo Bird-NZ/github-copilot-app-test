@@ -18,6 +18,7 @@ Long-term curated memory for the HAL agent.
 - User preference: use each app build as a process-learning loop; adapt and update the process together based on what we learn.
 - User preference: in normal app-build flow, always provide a direct link/reference to the produced design doc.
 - User preference: for each app build, use Google Drive root folder `AppDev`; create a dated subfolder per app build and upload all artifacts there.
+- User preference: app design docs should be enterprise-style (title page, sign-off blocks, structured sections) and include Azure execution/build command appendix.
 - User preference: for the daily World Mobile update, send the update directly (no "Reminder: it’s time..." phrasing).
 - User preference: complete requested implementation tasks fully in one pass (start-to-finish) and only pause/ask when there is a high-security issue.
 - User preference: do not stop after recoverable errors; keep iterating autonomously until the requested outcome is complete, and only return early for true hard blockers or explicit user stop.
