@@ -165,7 +165,15 @@ Required behavior after each failed attempt:
 4. Deployment block on visual mismatch:
    - Do not mark build complete if implemented UI materially diverges from approved reference visuals.
 
-## 15) Change control
+## 15) Copilot prompt production gate (ACTIVE 2026-03-08)
+For Copilot prompt deliverables, require both gates before “production-ready”:
+1. Gate A — Prompt mechanics excellence:
+   - Iterative synthetic testing/refinement until excellence threshold is met.
+2. Gate B — Source-verified research:
+   - Verify factual/current claims against authoritative sources and mark confidence per section.
+If Gate B is not completed, label output as Draft (not production-ready).
+
+## 16) Change control
 - Every change gets an entry in CHANGELOG.md.
 - Candidate changes go to IMPROVEMENT_QUEUE.md.
 - Approved changes only.

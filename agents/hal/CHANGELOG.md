@@ -1,5 +1,10 @@
 # CHANGELOG.md — CCIS
 
+## 2026-03-08
+- Added Copilot prompt production gate:
+  - Updated `OPERATING_PROTOCOL.md` with a 2-layer production rule for Copilot prompt work (mechanics excellence + source-verified research).
+  - Updated `MEMORY.md` to persist the same preference for future prompt tasks.
+
 ## 2026-03-04
 - Formalized Connect4-derived process learnings:
   - Updated `OPERATING_PROTOCOL.md` with an active UI parity gate set (UI spec freeze, mid-build visual checkpoint, pre-release visual parity blocker).

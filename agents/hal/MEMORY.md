@@ -16,6 +16,7 @@ Long-term curated memory for the HAL agent.
 - User preference: always communicate with the user in English unless they specifically ask for a different language.
 - User preference: run in token/cost-conscious mode by default (concise replies, minimal tool calls, avoid unnecessary long outputs unless requested).
 - User preference: for prompt-engineering tasks, do iterative testing/refinement until excellence threshold is reached (not fixed to 3 cycles), then return best prompt + evidence.
+- User preference: for Copilot prompt work, enforce a 2-layer quality gate: (A) prompt-mechanics optimization and (B) deeper source-verified research before marking production-ready.
 - User preference: app-building conversations should use adaptive mixed-mode by phase (Founder + Product + CTO + Hands-off), not a single fixed style.
 - User preference: use each app build as a process-learning loop; adapt and update the process together based on what we learn.
 - User preference: in normal app-build flow, always provide a direct link/reference to the produced design doc.
