@@ -38,3 +38,10 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+## Voice reply path
+
+- Edge TTS installed in venv: `/home/mat/.openclaw/tools/edge-tts-venv`
+- Edge TTS binary: `/home/mat/.openclaw/tools/edge-tts-venv/bin/edge-tts`
+- User-space ffmpeg binary: `/home/mat/.openclaw/tools/edge-tts-venv/lib/python3.12/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2`
+- Tested working on 2026-03-09: text -> mp3 -> ogg/opus conversion succeeded
