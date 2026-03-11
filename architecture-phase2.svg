@@ -1,110 +1,118 @@
 <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Phase 2 Enterprise Decision Intelligence at Scale architecture diagram">
   <defs>
+    <linearGradient id="bgBand2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#eef4ff"/>
+    </linearGradient>
     <style>
-      .title{font:700 42px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .title{font:700 44px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
       .subtitle{font:400 20px 'Segoe UI',Arial,sans-serif;fill:#475569}
-      .lane{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2;rx:24}
-      .laneTitle{font:700 24px 'Segoe UI',Arial,sans-serif;fill:#1e293b}
-      .boxGray{fill:#ffffff;stroke:#94a3b8;stroke-width:2;rx:18}
-      .boxBlue{fill:#eff6ff;stroke:#60a5fa;stroke-width:2;rx:18}
-      .boxTeal{fill:#ecfeff;stroke:#14b8a6;stroke-width:2;rx:18}
-      .boxPurple{fill:#f5f3ff;stroke:#8b5cf6;stroke-width:2;rx:18}
-      .boxNeutral{fill:#ffffff;stroke:#cbd5e1;stroke-width:2;rx:18}
-      .band{fill:#eef2ff;stroke:#818cf8;stroke-width:2;rx:22}
-      .h1{font:700 19px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
-      .h2{font:400 15px 'Segoe UI',Arial,sans-serif;fill:#475569}
+      .lane{fill:#f8fafc;stroke:#d6dee8;stroke-width:2;rx:24}
+      .laneTitle{font:700 24px 'Segoe UI',Arial,sans-serif;fill:#1f2937}
+      .panelBlue{fill:#eef6ff;stroke:#5aa2f8;stroke-width:2.2;rx:20}
+      .panelTeal{fill:#ecfeff;stroke:#22c7b8;stroke-width:2.2;rx:20}
+      .panelPurple{fill:#f6f2ff;stroke:#9b7cf7;stroke-width:2.2;rx:20}
+      .panelNeutral{fill:#ffffff;stroke:#cdd7e3;stroke-width:2;rx:18}
+      .source{fill:#ffffff;stroke:#a8b4c3;stroke-width:2;rx:18}
+      .outcome{fill:#fbfdff;stroke:#d8e0ea;stroke-width:2;rx:18}
+      .band{fill:url(#bgBand2);stroke:#7c9cff;stroke-width:2;rx:22}
+      .h1{font:700 18px 'Segoe UI',Arial,sans-serif;fill:#0f172a}
+      .h2{font:400 15px 'Segoe UI',Arial,sans-serif;fill:#556274}
       .chip{font:600 14px 'Segoe UI',Arial,sans-serif;fill:#334155}
-      .arrow{stroke:#64748b;stroke-width:4;fill:none;marker-end:url(#arrow)}
-      .arrow2{stroke:#94a3b8;stroke-width:3;fill:none;marker-end:url(#arrow2)}
-      .dash{stroke:#94a3b8;stroke-width:2.5;fill:none;stroke-dasharray:8 6;marker-end:url(#arrow2)}
+      .arrow{stroke:#66758a;stroke-width:4;fill:none;marker-end:url(#arrow)}
+      .arrowSoft{stroke:#97a5b6;stroke-width:3;fill:none;marker-end:url(#arrowSoft)}
+      .arrowDash{stroke:#97a5b6;stroke-width:2.5;fill:none;stroke-dasharray:8 6;marker-end:url(#arrowSoft)}
+      .legend{font:600 13px 'Segoe UI',Arial,sans-serif;fill:#64748b}
     </style>
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#64748b"/></marker>
-    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#66758a"/></marker>
+    <marker id="arrowSoft" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#97a5b6"/></marker>
   </defs>
   <rect width="1920" height="1080" fill="#ffffff"/>
   <text x="70" y="72" class="title">Phase 2 — Enterprise Decision Intelligence at Scale</text>
   <text x="70" y="106" class="subtitle">Extend the foundation with Databricks, Fabric, grounded AI, and action-oriented commercial workflows</text>
 
-  <rect x="40" y="150" width="255" height="720" class="lane"/>
+  <rect x="40" y="150" width="250" height="720" class="lane"/>
   <text x="62" y="192" class="laneTitle">Source Systems</text>
-  <rect x="62" y="225" width="211" height="68" class="boxGray"/><text x="88" y="266" class="h1">CRM / Customer</text>
-  <rect x="62" y="307" width="211" height="68" class="boxGray"/><text x="96" y="348" class="h1">ERP / Finance</text>
-  <rect x="62" y="389" width="211" height="68" class="boxGray"/><text x="92" y="430" class="h1">Pricing Systems</text>
-  <rect x="62" y="471" width="211" height="68" class="boxGray"/><text x="78" y="512" class="h1">Sales Performance</text>
-  <rect x="62" y="553" width="211" height="68" class="boxGray"/><text x="83" y="594" class="h1">Product / Margin</text>
-  <rect x="62" y="635" width="211" height="68" class="boxGray"/><text x="94" y="676" class="h1">Market / External</text>
-  <rect x="62" y="717" width="211" height="68" class="boxGray"/><text x="82" y="758" class="h1">Docs / Notes / Policy</text>
+  <rect x="62" y="225" width="206" height="68" class="source"/><text x="88" y="266" class="h1">CRM / Customer</text>
+  <rect x="62" y="307" width="206" height="68" class="source"/><text x="96" y="348" class="h1">ERP / Finance</text>
+  <rect x="62" y="389" width="206" height="68" class="source"/><text x="92" y="430" class="h1">Pricing Systems</text>
+  <rect x="62" y="471" width="206" height="68" class="source"/><text x="78" y="512" class="h1">Sales Performance</text>
+  <rect x="62" y="553" width="206" height="68" class="source"/><text x="83" y="594" class="h1">Product / Margin</text>
+  <rect x="62" y="635" width="206" height="68" class="source"/><text x="94" y="676" class="h1">Market / External</text>
+  <rect x="62" y="717" width="206" height="68" class="source"/><text x="82" y="758" class="h1">Docs / Notes / Policy</text>
 
-  <rect x="325" y="150" width="300" height="720" class="lane"/>
-  <text x="347" y="192" class="laneTitle">Ingestion &amp; Integration</text>
-  <rect x="365" y="255" width="220" height="94" class="boxBlue"/>
-  <text x="402" y="297" class="h1">Fabric Data Factory</text><text x="419" y="324" class="h2">pipelines and ingestion</text>
-  <rect x="365" y="400" width="220" height="94" class="boxBlue"/>
-  <text x="403" y="442" class="h1">Azure Data Factory</text><text x="392" y="469" class="h2">orchestration and movement</text>
-  <rect x="365" y="545" width="220" height="94" class="boxTeal"/>
-  <text x="392" y="587" class="h1">Databricks Workflows</text><text x="395" y="614" class="h2">jobs, notebooks, pipelines</text>
+  <rect x="315" y="150" width="285" height="720" class="lane"/>
+  <text x="337" y="192" class="laneTitle">Ingestion &amp; Integration</text>
+  <rect x="353" y="250" width="209" height="94" class="panelBlue"/>
+  <text x="391" y="292" class="h1">Fabric Data Factory</text><text x="409" y="319" class="h2">pipelines and ingestion</text>
+  <rect x="353" y="395" width="209" height="94" class="panelBlue"/>
+  <text x="390" y="437" class="h1">Azure Data Factory</text><text x="381" y="464" class="h2">orchestration and movement</text>
+  <rect x="353" y="540" width="209" height="94" class="panelTeal"/>
+  <text x="381" y="582" class="h1">Databricks Workflows</text><text x="383" y="609" class="h2">jobs, notebooks, pipelines</text>
 
-  <rect x="655" y="150" width="365" height="720" class="lane"/>
-  <text x="677" y="192" class="laneTitle">Enterprise Data Foundation</text>
-  <rect x="705" y="265" width="265" height="102" class="boxBlue"/>
-  <text x="739" y="308" class="h1">Azure Data Lake Storage Gen2</text><text x="765" y="335" class="h2">bronze / silver / gold zones</text>
-  <rect x="705" y="430" width="265" height="112" class="boxBlue"/>
-  <text x="788" y="475" class="h1">Microsoft Fabric</text><text x="748" y="502" class="h2">lakehouse / warehouse / semantic</text>
-  <rect x="760" y="610" width="155" height="64" class="boxNeutral"/>
-  <text x="780" y="649" class="chip">governed data products</text>
+  <rect x="625" y="150" width="365" height="720" class="lane"/>
+  <text x="647" y="192" class="laneTitle">Enterprise Data Foundation</text>
+  <rect x="680" y="255" width="255" height="108" class="panelBlue"/>
+  <text x="715" y="300" class="h1">Azure Data Lake Storage Gen2</text><text x="742" y="328" class="h2">bronze / silver / gold zones</text>
+  <rect x="680" y="430" width="255" height="118" class="panelBlue"/>
+  <text x="764" y="478" class="h1">Microsoft Fabric</text><text x="722" y="506" class="h2">lakehouse / warehouse / semantic</text>
+  <rect x="748" y="620" width="118" height="64" class="panelNeutral"/>
+  <text x="766" y="659" class="chip">data products</text>
 
-  <rect x="1050" y="150" width="360" height="720" class="lane"/>
-  <text x="1072" y="192" class="laneTitle">Advanced Engineering &amp; Intelligence</text>
-  <rect x="1095" y="230" width="270" height="94" class="boxTeal"/>
-  <text x="1172" y="272" class="h1">Azure Databricks</text><text x="1120" y="299" class="h2">feature engineering, forecasting, optimization</text>
-  <rect x="1095" y="380" width="270" height="94" class="boxTeal"/>
-  <text x="1178" y="422" class="h1">Azure AI Search</text><text x="1120" y="449" class="h2">grounding over docs, notes, and policy</text>
-  <rect x="1095" y="530" width="270" height="100" class="boxTeal"/>
-  <text x="1150" y="573" class="h1">Azure OpenAI Service</text><text x="1114" y="600" class="h2">copilot reasoning, summaries, recommendations</text>
+  <rect x="1015" y="150" width="360" height="720" class="lane"/>
+  <text x="1037" y="192" class="laneTitle">Advanced Engineering &amp; Intelligence</text>
+  <rect x="1060" y="225" width="270" height="96" class="panelTeal"/>
+  <text x="1136" y="267" class="h1">Azure Databricks</text><text x="1081" y="294" class="h2">feature engineering, forecasting, optimization</text>
+  <rect x="1060" y="380" width="270" height="96" class="panelTeal"/>
+  <text x="1142" y="422" class="h1">Azure AI Search</text><text x="1086" y="449" class="h2">grounding over docs, notes, and policy</text>
+  <rect x="1060" y="535" width="270" height="102" class="panelTeal"/>
+  <text x="1115" y="578" class="h1">Azure OpenAI Service</text><text x="1078" y="606" class="h2">copilot reasoning, summaries, recommendations</text>
 
-  <rect x="1440" y="150" width="440" height="720" class="lane"/>
-  <text x="1462" y="192" class="laneTitle">Consumption, Action &amp; Outcomes</text>
-  <rect x="1475" y="235" width="370" height="88" class="boxPurple"/>
-  <text x="1620" y="275" class="h1">Power BI</text><text x="1548" y="301" class="h2">executive dashboards and governed insight</text>
-  <rect x="1475" y="360" width="370" height="96" class="boxPurple"/>
-  <text x="1564" y="403" class="h1">Commercial Copilot Portal</text><text x="1544" y="430" class="h2">Azure App Service / Container Apps</text>
-  <rect x="1475" y="493" width="370" height="88" class="boxPurple"/>
-  <text x="1511" y="533" class="h1">Teams / CRM / Workflow Integration</text><text x="1566" y="559" class="h2">operational delivery channel</text>
-  <rect x="1475" y="618" width="370" height="88" class="boxPurple"/>
-  <text x="1608" y="658" class="h1">Business Users</text><text x="1528" y="684" class="h2">execs, pricing, sales, account teams, ops</text>
-  <rect x="1475" y="731" width="370" height="110" class="boxNeutral"/>
-  <text x="1608" y="772" class="h1">Business Outcomes</text>
-  <text x="1510" y="802" class="h2">• Advanced modelling and forecasting</text>
-  <text x="1510" y="827" class="h2">• Grounded enterprise AI decision support</text>
+  <rect x="1400" y="150" width="480" height="720" class="lane"/>
+  <text x="1422" y="192" class="laneTitle">Consumption, Action &amp; Outcomes</text>
+  <rect x="1445" y="230" width="390" height="84" class="panelPurple"/>
+  <text x="1601" y="270" class="h1">Power BI</text><text x="1517" y="296" class="h2">executive dashboards and governed insight</text>
+  <rect x="1445" y="350" width="390" height="94" class="panelPurple"/>
+  <text x="1534" y="392" class="h1">Commercial Copilot Portal</text><text x="1515" y="419" class="h2">App Service / Container Apps</text>
+  <rect x="1445" y="480" width="390" height="84" class="panelPurple"/>
+  <text x="1480" y="520" class="h1">Teams / CRM / Workflow Integration</text><text x="1537" y="546" class="h2">operational delivery channel</text>
+  <rect x="1445" y="600" width="390" height="84" class="panelPurple"/>
+  <text x="1580" y="640" class="h1">Business Users</text><text x="1498" y="666" class="h2">execs, pricing, sales, account teams, ops</text>
+  <rect x="1445" y="715" width="390" height="125" class="outcome"/>
+  <text x="1565" y="756" class="h1">Business Outcomes</text>
+  <text x="1480" y="792" class="h2">• Advanced modelling and forecasting</text>
+  <text x="1480" y="821" class="h2">• Grounded enterprise AI decision support</text>
 
-  <path d="M273 259 C320 259, 325 302, 365 302" class="dash"/>
-  <path d="M273 341 C320 341, 325 302, 365 302" class="dash"/>
-  <path d="M273 423 C320 423, 325 447, 365 447" class="dash"/>
-  <path d="M273 505 C320 505, 325 447, 365 447" class="dash"/>
-  <path d="M273 587 C320 587, 325 592, 365 592" class="dash"/>
-  <path d="M273 669 C320 669, 325 592, 365 592" class="dash"/>
-  <path d="M273 751 C520 751, 890 427, 1095 427" class="dash"/>
+  <path d="M268 259 C305 259, 315 297, 353 297" class="arrowDash"/>
+  <path d="M268 341 C305 341, 315 297, 353 297" class="arrowDash"/>
+  <path d="M268 423 C305 423, 315 442, 353 442" class="arrowDash"/>
+  <path d="M268 505 C305 505, 315 442, 353 442" class="arrowDash"/>
+  <path d="M268 587 C305 587, 315 587, 353 587" class="arrowDash"/>
+  <path d="M268 669 C305 669, 315 587, 353 587" class="arrowDash"/>
+  <path d="M268 751 C515 751, 830 428, 1060 428" class="arrowDash"/>
 
-  <path d="M585 302 L705 316" class="arrow"/>
-  <path d="M585 447 L705 316" class="arrow"/>
-  <path d="M585 592 L705 316" class="arrow2"/>
-  <path d="M837 367 L837 430" class="arrow"/>
-  <path d="M837 542 L837 610" class="arrow2"/>
-  <path d="M970 316 L1095 277" class="arrow"/>
-  <path d="M970 486 L1095 580" class="arrow"/>
-  <path d="M1230 324 L1230 380" class="arrow"/>
-  <path d="M1230 474 L1230 530" class="arrow"/>
-  <path d="M1365 580 L1475 408" class="arrow"/>
-  <path d="M1365 580 L1475 537" class="arrow"/>
-  <path d="M970 486 L1475 279" class="arrow2"/>
-  <path d="M1845 408 L1845 537" class="arrow2"/>
-  <path d="M1845 537 L1845 662" class="arrow2"/>
+  <path d="M562 297 L680 309" class="arrow"/>
+  <path d="M562 442 L680 309" class="arrow"/>
+  <path d="M562 587 L680 309" class="arrowSoft"/>
+  <path d="M807 363 L807 430" class="arrow"/>
+  <path d="M807 548 L807 620" class="arrowSoft"/>
+  <path d="M935 309 L1060 273" class="arrow"/>
+  <path d="M935 489 L1060 586" class="arrow"/>
+  <path d="M1195 321 L1195 380" class="arrow"/>
+  <path d="M1195 476 L1195 535" class="arrow"/>
+  <path d="M1330 586 L1445 397" class="arrow"/>
+  <path d="M1330 586 L1445 522" class="arrow"/>
+  <path d="M935 489 L1445 272" class="arrowSoft"/>
+  <path d="M1835 397 L1835 522" class="arrowSoft"/>
+  <path d="M1835 522 L1835 642" class="arrowSoft"/>
 
   <rect x="40" y="905" width="1840" height="110" class="band"/>
   <text x="65" y="948" class="laneTitle">Security, Governance, Compliance &amp; Operations</text>
-  <rect x="470" y="930" width="190" height="48" class="boxNeutral"/><text x="511" y="960" class="chip">Microsoft Entra ID</text>
-  <rect x="685" y="930" width="170" height="48" class="boxNeutral"/><text x="731" y="960" class="chip">Azure Key Vault</text>
-  <rect x="880" y="930" width="250" height="48" class="boxNeutral"/><text x="918" y="960" class="chip">Azure Monitor / App Insights</text>
-  <rect x="1155" y="930" width="190" height="48" class="boxNeutral"/><text x="1198" y="960" class="chip">Microsoft Purview</text>
-  <rect x="1370" y="930" width="170" height="48" class="boxNeutral"/><text x="1421" y="960" class="chip">RBAC / Audit</text>
+  <rect x="470" y="930" width="190" height="48" class="panelNeutral"/><text x="511" y="960" class="chip">Microsoft Entra ID</text>
+  <rect x="685" y="930" width="170" height="48" class="panelNeutral"/><text x="731" y="960" class="chip">Azure Key Vault</text>
+  <rect x="880" y="930" width="250" height="48" class="panelNeutral"/><text x="918" y="960" class="chip">Azure Monitor / App Insights</text>
+  <rect x="1155" y="930" width="190" height="48" class="panelNeutral"/><text x="1198" y="960" class="chip">Microsoft Purview</text>
+  <rect x="1370" y="930" width="170" height="48" class="panelNeutral"/><text x="1421" y="960" class="chip">RBAC / Audit</text>
+
+  <text x="1558" y="955" class="legend">From insight to action</text>
 </svg>
