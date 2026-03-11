@@ -46,6 +46,7 @@ Add whatever helps you do your job. This is your cheat sheet.
 - User-space ffmpeg binary: `/home/mat/.openclaw/tools/edge-tts-venv/lib/python3.12/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2`
 - Tested working on 2026-03-09: text -> mp3 -> ogg/opus conversion succeeded
 - Important follow-up learned on 2026-03-09: `openclaw agent --deliver` can move media back to WhatsApp, but it still runs an agent turn rather than acting like a raw send primitive. So for voice-note delivery, verify not just media generation but the exact delivery behavior/content before treating the loop as finished.
+- Observed on 2026-03-11: longer WhatsApp voice replies can get truncated around ~1:30–1:50. Practical mitigation: keep spoken replies to roughly `<= 900 chars / <= 90 sec` and intentionally split longer answers into multiple voice notes.
 
 ## YouTube transcript / video text path
 
