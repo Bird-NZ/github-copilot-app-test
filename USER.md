@@ -10,6 +10,10 @@ _Learn about the person you're helping. Update this as you go._
 
 ## Context
 
+- Wants to stay current on AI: overnight changes, weekly shifts, what the story is, and how new capabilities can be used.
+- Interested in OpenClaw best practices, interesting real-world uses, and workflows that fit their setup/profile.
+- Values practical leverage: concrete examples, useful delegation patterns, and systems that feel like real working assistants rather than toy demos.
+
 _(What do they care about? What projects are they working on? What annoys them? What makes them laugh? Build this over time.)_
 
 ---
