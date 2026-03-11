@@ -46,3 +46,13 @@ Add whatever helps you do your job. This is your cheat sheet.
 - User-space ffmpeg binary: `/home/mat/.openclaw/tools/edge-tts-venv/lib/python3.12/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2`
 - Tested working on 2026-03-09: text -> mp3 -> ogg/opus conversion succeeded
 - Important follow-up learned on 2026-03-09: `openclaw agent --deliver` can move media back to WhatsApp, but it still runs an agent turn rather than acting like a raw send primitive. So for voice-note delivery, verify not just media generation but the exact delivery behavior/content before treating the loop as finished.
+
+## YouTube transcript / video text path
+
+- Video text venv: `/home/mat/.openclaw/tools/video-text-venv`
+- Installed tools: `youtube-transcript-api`, `yt-dlp`
+- Fast transcript fetch script: `/home/mat/.openclaw/workspace/scripts/youtube_transcript_fetch.py`
+- Best current workflow on this machine:
+  1. use `youtube_transcript_fetch.py` for direct transcript extraction when captions exist
+  2. use `yt-dlp` as fallback for tougher YouTube retrieval cases
+  3. if captions are missing, add audio-download + transcription as the next fallback instead of stopping
