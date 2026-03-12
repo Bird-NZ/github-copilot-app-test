@@ -1,0 +1,113 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title{font:700 46px Arial,sans-serif;fill:#111827}
+      .sub{font:400 22px Arial,sans-serif;fill:#374151}
+      .box{fill:#fff;stroke:#4b5563;stroke-width:2.5;rx:8}
+      .soft{fill:#f9fafb;stroke:#9ca3af;stroke-width:2;rx:8}
+      .cluster{fill:#fcfffe;stroke:#0f766e;stroke-width:3;rx:16}
+      .boundary{fill:none;stroke:#0f766e;stroke-width:4;stroke-dasharray:6 6;rx:16}
+      .label{font:700 18px Arial,sans-serif;fill:#111827}
+      .small{font:400 14px Arial,sans-serif;fill:#374151}
+      .section{font:700 20px Arial,sans-serif;fill:#0f172a}
+      .clusterTitle{font:700 18px Arial,sans-serif;fill:#0f766e}
+      .arrow{stroke:#1f6fb2;stroke-width:4;fill:none;marker-end:url(#a)}
+      .arrow2{stroke:#6b7280;stroke-width:3;fill:none;marker-end:url(#b)}
+      .dash{stroke:#9ca3af;stroke-width:2.5;fill:none;stroke-dasharray:8 6;marker-end:url(#b)}
+    </style>
+    <marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#1f6fb2"/></marker>
+    <marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/></marker>
+  </defs>
+  <rect width="1920" height="1080" fill="white"/>
+  <text x="50" y="60" class="title">Technical Architecture: Global Ingredients Commercial Decision Platform</text>
+  <text x="50" y="102" class="sub">Phase 2 — Enterprise Decision Intelligence at Scale (Fabric + Databricks + Grounded AI)</text>
+
+  <rect x="390" y="140" width="1470" height="840" class="boundary"/>
+  <text x="420" y="180" class="section">Azure Subscription Boundary — Enterprise Decision Intelligence Platform</text>
+  <text x="420" y="208" class="small">Advanced analytics, grounded AI, and action-oriented commercial workflows</text>
+
+  <rect x="50" y="220" width="230" height="100" class="box"/>
+  <text x="85" y="275" class="label">CRM / Customer</text>
+  <rect x="50" y="345" width="230" height="100" class="box"/>
+  <text x="94" y="400" class="label">ERP / Finance</text>
+  <rect x="50" y="470" width="230" height="100" class="box"/>
+  <text x="90" y="525" class="label">Pricing Systems</text>
+  <rect x="50" y="595" width="230" height="100" class="box"/>
+  <text x="81" y="650" class="label">Market / External</text>
+  <rect x="50" y="720" width="230" height="100" class="box"/>
+  <text x="78" y="775" class="label">Docs / Notes / Policy</text>
+
+  <rect x="470" y="260" width="250" height="110" class="box"/>
+  <text x="506" y="314" class="label">Fabric Data Factory</text>
+  <text x="527" y="342" class="small">ingestion and pipelines</text>
+  <rect x="470" y="430" width="250" height="110" class="box"/>
+  <text x="507" y="484" class="label">Azure Data Factory</text>
+  <text x="507" y="512" class="small">integration and movement</text>
+  <rect x="470" y="600" width="250" height="110" class="box"/>
+  <text x="499" y="654" class="label">Databricks Workflows</text>
+  <text x="518" y="682" class="small">jobs and orchestration</text>
+
+  <rect x="820" y="230" width="320" height="110" class="box"/>
+  <text x="879" y="284" class="label">Azure Data Lake Gen2</text>
+  <text x="905" y="312" class="small">bronze / silver / gold</text>
+  <rect x="820" y="410" width="320" height="110" class="box"/>
+  <text x="917" y="464" class="label">Microsoft Fabric</text>
+  <text x="878" y="492" class="small">lakehouse / warehouse / semantic</text>
+
+  <rect x="1220" y="210" width="340" height="520" class="cluster"/>
+  <text x="1245" y="245" class="clusterTitle">Advanced Analytics &amp; Grounded AI</text>
+  <rect x="1248" y="275" width="284" height="98" class="box"/>
+  <text x="1328" y="328" class="label">Azure Databricks</text>
+  <text x="1289" y="356" class="small">forecasting, segmentation, optimization</text>
+  <rect x="1248" y="420" width="284" height="98" class="box"/>
+  <text x="1336" y="473" class="label">Azure AI Search</text>
+  <text x="1298" y="501" class="small">grounding over docs and commercial context</text>
+  <rect x="1248" y="565" width="284" height="108" class="box"/>
+  <text x="1316" y="621" class="label">Azure OpenAI</text>
+  <text x="1290" y="649" class="small">copilot reasoning and recommendations</text>
+
+  <rect x="1620" y="210" width="200" height="520" class="cluster"/>
+  <text x="1645" y="245" class="clusterTitle">Consumption Layer</text>
+  <rect x="1650" y="275" width="140" height="84" class="soft"/>
+  <text x="1690" y="324" class="label">Power BI</text>
+  <rect x="1650" y="395" width="140" height="84" class="soft"/>
+  <text x="1665" y="444" class="label">Copilot Portal</text>
+  <rect x="1650" y="515" width="140" height="84" class="soft"/>
+  <text x="1683" y="564" class="label">CRM / Teams</text>
+  <rect x="1650" y="635" width="140" height="84" class="soft"/>
+  <text x="1668" y="684" class="label">Business Users</text>
+
+  <rect x="470" y="800" width="250" height="110" class="soft"/>
+  <text x="522" y="854" class="label">Entra ID / Key Vault</text>
+  <rect x="820" y="800" width="320" height="110" class="soft"/>
+  <text x="940" y="854" class="label">Purview</text>
+  <rect x="1220" y="800" width="340" height="110" class="soft"/>
+  <text x="1330" y="854" class="label">Monitor / Audit</text>
+  <rect x="1620" y="800" width="200" height="110" class="soft"/>
+  <text x="1676" y="846" class="label">Outcomes</text>
+  <text x="1647" y="875" class="small">better decisions, faster action</text>
+
+  <path d="M280 270 L470 315" class="arrow2"/>
+  <path d="M280 395 L470 315" class="arrow2"/>
+  <path d="M280 520 L470 485" class="arrow2"/>
+  <path d="M280 645 L470 655" class="arrow2"/>
+  <path d="M280 770 C430 770, 1080 470, 1248 470" class="dash"/>
+
+  <path d="M720 315 L820 285" class="arrow"/>
+  <path d="M720 485 L820 285" class="arrow"/>
+  <path d="M720 655 L820 285" class="arrow2"/>
+  <path d="M980 340 L980 410" class="arrow"/>
+  <path d="M1140 285 L1248 324" class="arrow"/>
+  <path d="M1140 465 L1248 619" class="arrow"/>
+  <path d="M1390 373 L1390 420" class="arrow2"/>
+  <path d="M1390 518 L1390 565" class="arrow"/>
+  <path d="M1532 619 L1650 437" class="arrow"/>
+  <path d="M1532 619 L1650 557" class="arrow"/>
+  <path d="M1140 465 L1650 317" class="arrow2"/>
+  <path d="M1790 437 L1790 557" class="arrow2"/>
+  <path d="M1790 557 L1790 677" class="arrow2"/>
+
+  <text x="748" y="275" class="small">enterprise data ingestion</text>
+  <text x="995" y="388" class="small">governed data products</text>
+  <text x="1552" y="603" class="small">grounded AI recommendations</text>
+</svg>
