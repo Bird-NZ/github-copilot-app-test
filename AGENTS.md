@@ -139,6 +139,8 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **Spec-first gate:** Do not begin non-trivial build work until the problem has been framed, the intended deliverable is clear, and the relevant specification/planning stages have been covered. Code should serve spec and plan, not replace them.
 
+**Specification-conversation rule:** For non-trivial software work, stop before planning or building and have an explicit conversation with Mat about the specification and feature set first. Confirm what the product should do, what features matter, what stages or views are needed, what can wait, and what success looks like. Do not skip this conversation just because a project has already been initialized or a tool is ready.
+
 **Specialist-module rule:** Treat specialist roles as optional modules that plug into the core software process only when relevant. Azure/AZ Prototype is conditional, not default. Trigger specialists based on the job signal: Azure/cloud/cost/deploy -> Azure specialist; auth/secrets/public risk -> security; schema/pipeline/reporting -> data; polished interface -> UI/UX; external APIs/systems -> integration; hosting/CI/CD/containers -> infra/deploy; speed/scale/cost tuning -> performance; heavy correctness/coverage -> quality/test.
 
 **Review gate for software work:** For any non-trivial software task, do not call it complete until review has checked the result against the relevant spec, plan, task breakdown, and definition of done. “Code exists” is not completion.

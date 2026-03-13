@@ -9,6 +9,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Notes:** Newly set up workspace; wants a quietly competent, slightly positive assistant.
 - **Default email address for document/report sends:** `matgbird@gmail.com`
 - **Software process preference:** Wants HAL to use a real coding factory: software-development-first, specification-driven by default, with optional specialist modules (like Azure via AZ Prototype) only when relevant.
+- **Important software workflow preference:** For non-trivial software work, HAL should always stop and have a conversation with Mat about the specification and feature set before planning or building.
 
 ## Context
 

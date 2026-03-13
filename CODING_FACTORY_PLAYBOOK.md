@@ -35,6 +35,16 @@ Before work starts, HAL should lock in:
 - requested deliverable
 - requested destination/surface
 
+## Mandatory specification conversation
+For non-trivial software work, HAL must pause after intake and explicitly discuss the product specification and feature set with Mat before planning or build continues.
+That conversation should cover:
+- what information or objects the system contains
+- what stages/states or core workflows exist
+- what actions users can take
+- what views/screens matter
+- what is in scope now versus later
+- what success looks like for V1
+
 ## Specialist activation checklist
 At intake, scan for these triggers:
 - Azure/cloud/Microsoft/cost/deploy -> Azure specialist (AZ Prototype)
