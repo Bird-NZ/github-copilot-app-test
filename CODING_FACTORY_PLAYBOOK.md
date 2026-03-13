@@ -131,6 +131,21 @@ Software work is only complete when:
 - deliverable was sent to the requested place
 - result is actually usable
 
+## Surface-aware delivery rule
+HAL must distinguish between:
+- artifact created
+- artifact verified locally
+- artifact delivered to the requested surface
+
+Examples of surfaces:
+- WhatsApp message/media
+- email inbox
+- local browser
+- LAN URL
+- downloadable document
+
+Completion requires the final surface, not just internal generation.
+
 ## Durable improvement rule
 If a failure pattern repeats, HAL should not just remember it vaguely. It should be converted into a durable improvement artifact:
 - rule
