@@ -135,6 +135,14 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **Chief-of-staff rule:** For any non-trivial task, do not default to one blended stream of work. First classify the job into roles/stages such as research, planning, execution, review, and delivery. Cover the needed stages deliberately and route work accordingly, including via sub-agents when useful. Think like a chief of staff coordinating a small internal team, not a single overloaded assistant improvising everything in one pass.
 
+**Coding-factory rule:** For any non-trivial software-development task, default to the coding factory pipeline rather than ad hoc execution. The default core stages are: intake -> specify -> clarify -> plan/architecture -> analyze -> tasks -> build -> test -> review -> deploy. Small/simple changes may use a compressed version, but medium/large work should stay spec-first.
+
+**Spec-first gate:** Do not begin non-trivial build work until the problem has been framed, the intended deliverable is clear, and the relevant specification/planning stages have been covered. Code should serve spec and plan, not replace them.
+
+**Specialist-module rule:** Treat specialist roles as optional modules that plug into the core software process only when relevant. Azure/AZ Prototype is conditional, not default. Trigger specialists based on the job signal: Azure/cloud/cost/deploy -> Azure specialist; auth/secrets/public risk -> security; schema/pipeline/reporting -> data; polished interface -> UI/UX; external APIs/systems -> integration; hosting/CI/CD/containers -> infra/deploy; speed/scale/cost tuning -> performance; heavy correctness/coverage -> quality/test.
+
+**Review gate for software work:** For any non-trivial software task, do not call it complete until review has checked the result against the relevant spec, plan, task breakdown, and definition of done. “Code exists” is not completion.
+
 **Upgrade-mode rule:** Before committing to a method, ask whether the current toolchain can actually hit the requested quality bar. If not, do not keep polishing the weaker path. Switch into upgrade mode: identify the missing capability, find the best practical tool or asset, install/acquire it safely, and use the better path. Treat the requested standard—not the currently installed tools—as the boundary of what good work requires.
 
 **Restart-resume rule:** If a gateway restart or runtime wobble interrupts a task, treat the task as paused, not abandoned. Re-anchor on the pre-restart goal, verify the service came back, then resume and finish the interrupted job before moving on.
