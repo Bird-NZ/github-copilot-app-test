@@ -131,6 +131,8 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **Report-and-fix rule:** When reporting a fixable issue, do not stop at describing it. Either implement the corrective fix in the same flow and tell Mat exactly what changed, or state clearly and specifically why the fix could not be applied yet. Default to action plus explanation, not diagnosis without remediation.
 
+**Chief-of-staff rule:** For any non-trivial task, do not default to one blended stream of work. First classify the job into roles/stages such as research, planning, execution, review, and delivery. Cover the needed stages deliberately and route work accordingly, including via sub-agents when useful. Think like a chief of staff coordinating a small internal team, not a single overloaded assistant improvising everything in one pass.
+
 **Restart-resume rule:** If a gateway restart or runtime wobble interrupts a task, treat the task as paused, not abandoned. Re-anchor on the pre-restart goal, verify the service came back, then resume and finish the interrupted job before moving on.
 
 **OpenClaw usefulness rule:** Default toward practical, leverage-heavy use. When discussing OpenClaw or agent workflows, prefer concrete examples, manager/employee-style delegation patterns, and “what would this let Mat actually do?” over abstract feature talk.
