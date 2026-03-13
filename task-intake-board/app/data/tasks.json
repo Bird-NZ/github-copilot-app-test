@@ -1,0 +1,47 @@
+[
+  {
+    "id": "task-001",
+    "title": "Mission Control V1",
+    "brief": "Build the first usable mission control dashboard for HAL and Mat.",
+    "priority": "High",
+    "owner": "HAL",
+    "stage": "planning",
+    "waitingOnMat": false,
+    "nextAction": "Confirm LAN access from another device.",
+    "dependencies": [],
+    "artifacts": ["/home/mat/.openclaw/workspace/mission-control/BUILD_SPEC.md"],
+    "approvalStatus": "Approved",
+    "createdAt": "2026-03-13T17:00:00+13:00",
+    "updatedAt": "2026-03-13T17:00:00+13:00"
+  },
+  {
+    "id": "task-002",
+    "title": "Task Intake Board",
+    "brief": "Create the first coding-factory test project with a board for intake and workflow visibility.",
+    "priority": "High",
+    "owner": "HAL",
+    "stage": "building",
+    "waitingOnMat": false,
+    "nextAction": "Implement create and stage-update flows.",
+    "dependencies": ["Specification conversation complete"],
+    "artifacts": ["/home/mat/.openclaw/workspace/specs/001-task-intake-board/spec.md", "/home/mat/.openclaw/workspace/specs/001-task-intake-board/plan.md"],
+    "approvalStatus": "Approved",
+    "createdAt": "2026-03-13T18:00:00+13:00",
+    "updatedAt": "2026-03-13T18:00:00+13:00"
+  },
+  {
+    "id": "task-003",
+    "title": "Diagram quality upgrade",
+    "brief": "Upgrade architecture diagram workflow to proper slide-quality output.",
+    "priority": "Medium",
+    "owner": "HAL",
+    "stage": "waiting-on-mat",
+    "waitingOnMat": true,
+    "nextAction": "Wait for tooling direction or final quality target.",
+    "dependencies": ["Proper diagram toolchain"],
+    "artifacts": ["/home/mat/.openclaw/workspace/architecture-phase1-pro.png"],
+    "approvalStatus": "Pending",
+    "createdAt": "2026-03-12T10:00:00+13:00",
+    "updatedAt": "2026-03-13T10:00:00+13:00"
+  }
+]
