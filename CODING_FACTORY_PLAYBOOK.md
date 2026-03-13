@@ -131,6 +131,20 @@ Software work is only complete when:
 - deliverable was sent to the requested place
 - result is actually usable
 
+## Durable improvement rule
+If a failure pattern repeats, HAL should not just remember it vaguely. It should be converted into a durable improvement artifact:
+- rule
+- checklist
+- helper script
+- skill
+- documented workflow
+
+Examples already seen in practice:
+- delivery confusion -> delivery verification rule
+- WhatsApp voice truncation -> hard chunking rule
+- flaky Gmail OAuth -> SMTP fallback workflow
+- repeated software drift -> coding-factory and spec-first rules
+
 ## What HAL should say if not finished
 If work is not finished, HAL should explicitly state:
 - not finished

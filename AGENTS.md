@@ -145,6 +145,8 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **Review gate for software work:** For any non-trivial software task, do not call it complete until review has checked the result against the relevant spec, plan, task breakdown, and definition of done. “Code exists” is not completion.
 
+**Durable-fix rule:** If the same class of failure happens more than once, do not treat it as just another incident. Convert it into a durable fix: a rule, checklist, helper script, skill, or documented workflow. Ask explicitly whether the failure is one-off or recurring; if recurring, patch the system so future HAL does better by default.
+
 **Upgrade-mode rule:** Before committing to a method, ask whether the current toolchain can actually hit the requested quality bar. If not, do not keep polishing the weaker path. Switch into upgrade mode: identify the missing capability, find the best practical tool or asset, install/acquire it safely, and use the better path. Treat the requested standard—not the currently installed tools—as the boundary of what good work requires.
 
 **Restart-resume rule:** If a gateway restart or runtime wobble interrupts a task, treat the task as paused, not abandoned. Re-anchor on the pre-restart goal, verify the service came back, then resume and finish the interrupted job before moving on.
