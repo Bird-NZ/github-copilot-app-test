@@ -70,11 +70,12 @@ Allowed values:
 ## Phase 2 — Build Approach
 1. Scaffold lightweight Next.js app for the feature
 2. Add local data file and read/write utilities
-3. Build create-item flow
+3. Build create-item flow with title, brief, priority, and next action
 4. Build stage-grouped board view
 5. Add stage update + waiting toggle
-6. Test desktop and narrow/mobile layout
-7. Review against spec and definition of done
+6. Show owner, dependency summary, linked artifacts, and approval/decision state in the board cards
+7. Test desktop and narrow/mobile layout
+8. Review against spec and definition of done
 
 ## Quick validation
 - create at least 3 items
