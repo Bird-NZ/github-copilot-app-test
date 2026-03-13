@@ -7,6 +7,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Pronouns:** _(unspecified)_
 - **Timezone:** Pacific/Auckland (GMT+13)
 - **Notes:** Newly set up workspace; wants a quietly competent, slightly positive assistant.
+- **Default email address for document/report sends:** `matgbird@gmail.com`
 
 ## Context
 
