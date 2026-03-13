@@ -1,0 +1,55 @@
+Mission Control LAN Setup Instructions
+
+1. Keep the app running in WSL
+   - Open WSL and run:
+     cd /home/mat/.openclaw/workspace/mission-control/app
+     npm run dev:lan
+
+2. Test it on the same machine first
+   - In your normal Windows browser, open:
+     http://localhost:3210
+
+3. Open PowerShell as Administrator
+   - Important: this must be Administrator PowerShell, not a normal one
+
+4. Run the LAN-enable script
+   - Paste this exactly:
+     powershell -ExecutionPolicy Bypass -File "\\wsl.localhost\Ubuntu\home\mat\.openclaw\workspace\mission-control\windows-enable-lan.ps1"
+
+5. What that script does
+   - Creates a Windows port proxy from the Windows host to the WSL app
+   - Adds a Windows firewall rule allowing inbound TCP 3210
+
+6. Use this LAN address from other devices
+   - Likely Windows LAN IP:
+     10.0.0.36
+   - URL:
+     http://10.0.0.36:3210
+
+7. Test from another PC in the house
+   - Open:
+     http://10.0.0.36:3210
+
+8. Test from your phone on home Wi-Fi
+   - While connected to the same home network, open:
+     http://10.0.0.36:3210
+
+If it does not work, check these in order:
+- The WSL app is still running
+- http://localhost:3210 works on the Windows machine
+- The PowerShell script was run as Administrator
+- The other PC or phone is on the same LAN / Wi-Fi
+
+To turn LAN exposure off later
+- Run this in Administrator PowerShell:
+  powershell -ExecutionPolicy Bypass -File "\\wsl.localhost\Ubuntu\home\mat\.openclaw\workspace\mission-control\windows-disable-lan.ps1"
+
+Related files
+- Build spec:
+  /home/mat/.openclaw/workspace/mission-control/BUILD_SPEC.md
+- Launch notes:
+  /home/mat/.openclaw/workspace/mission-control/LAUNCH.md
+- Enable script:
+  /home/mat/.openclaw/workspace/mission-control/windows-enable-lan.ps1
+- Disable script:
+  /home/mat/.openclaw/workspace/mission-control/windows-disable-lan.ps1
