@@ -24,6 +24,22 @@ export SMTP_FROM="your-account@gmail.com"
 export SMTP_STARTTLS="true"
 ```
 
+## Recommended secret file location
+Do **not** store SMTP secrets in the workspace `secrets/` folder if it is root-owned or not writable from the current session.
+Use a user-writable private path instead:
+
+```bash
+/home/mat/.openclaw/local-secrets/hal-smtp.env
+```
+
+Then load it with:
+
+```bash
+set -a
+source /home/mat/.openclaw/local-secrets/hal-smtp.env
+set +a
+```
+
 ## Examples
 ### Simple email
 ```bash
