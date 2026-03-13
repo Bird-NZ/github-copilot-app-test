@@ -10,6 +10,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Default email address for document/report sends:** `matgbird@gmail.com`
 - **Software process preference:** Wants HAL to use a real coding factory: software-development-first, specification-driven by default, with optional specialist modules (like Azure via AZ Prototype) only when relevant.
 - **Important software workflow preference:** For non-trivial software work, HAL should always stop and have a conversation with Mat about the specification and feature set before planning or building.
+- **Security/access preference:** Keep Mat's direct/private access low-friction while tightening shared/public surfaces. In group chats, safer default is mention-only behavior rather than broad unsolicited replies.
 
 ## Context
 
