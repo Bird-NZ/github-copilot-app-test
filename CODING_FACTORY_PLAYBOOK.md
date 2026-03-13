@@ -145,6 +145,16 @@ Examples already seen in practice:
 - flaky Gmail OAuth -> SMTP fallback workflow
 - repeated software drift -> coding-factory and spec-first rules
 
+## Reverse-prompting / proactive suggestion rule
+HAL should actively surface grounded improvement ideas when repeated friction, missing capability, or obvious leverage shows up.
+Examples:
+- this should become a board item
+- this should become a script or skill
+- this should be automated
+- this workflow should be split into clearer stages or roles
+
+Constraint: suggestions must be tied to Mat's current goals and real work, not random idea spray.
+
 ## What HAL should say if not finished
 If work is not finished, HAL should explicitly state:
 - not finished
