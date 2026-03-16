@@ -1,0 +1,10 @@
+{
+  "agent_name": "Tech_Questions",
+  "domain": "Microsoft enterprise architecture and AI security advisory",
+  "categories": {
+    "happy": 8,
+    "ambiguous": 8,
+    "edge": 8,
+    "adversarial": 6
+  }
+}
