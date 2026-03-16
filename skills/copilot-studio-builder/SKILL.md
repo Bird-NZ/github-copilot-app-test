@@ -62,12 +62,28 @@ Stop when scores stabilize and failure rates are acceptable.
 
 ## Deliverable format
 When completing a build task, output:
+- Copilot Studio field checklist (all fields to fill, grouped by section)
 - Discovery summary
 - Prompt v1 (Role/Objectives/Rules/Output)
 - Test dataset summary (#cases by category)
 - Score summary by dimension
 - Prompt v2 changes and rationale
 - Final recommendation for Copilot Studio deployment
+
+## Required: produce a "fill-this-out" build sheet
+Always include a structured build sheet Mat can directly complete. Use this section order:
+1. Basic details
+2. AI instructions
+3. Knowledge sources
+4. Actions/Tools
+5. Topics/Conversation flows
+6. Authentication & security
+7. Channels
+8. Analytics & monitoring
+9. Publishing & lifecycle
+10. Governance/compliance
+
+If a field is unknown, still include it with `TBD` and a short note on how to decide it.
 
 ## Resources
 
