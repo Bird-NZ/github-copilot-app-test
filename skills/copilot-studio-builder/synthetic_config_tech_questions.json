@@ -1,0 +1,10 @@
+{
+  "agent_name": "Tech_Questions",
+  "domain": "Microsoft enterprise technology advisory",
+  "categories": {
+    "happy": 10,
+    "ambiguous": 4,
+    "edge": 4,
+    "adversarial": 2
+  }
+}
