@@ -40,6 +40,10 @@
     "gifgrep": {
       "version": "1.0.1",
       "installedAt": 1770951712716
+    },
+    "summarize": {
+      "version": "1.0.0",
+      "installedAt": 1773624269388
     }
   }
 }
