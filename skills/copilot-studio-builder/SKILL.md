@@ -10,6 +10,15 @@ Use this skill to turn a rough agent idea into a tested Copilot Studio prompt pa
 
 ## Workflow
 
+### 0) Preflight from official docs
+Before generating recommendations, quickly validate current Copilot Studio behavior from official Microsoft Learn pages (hub + relevant feature pages). Prioritize:
+- docs hub
+- knowledge sources
+- security/governance
+- what's new / release notes
+
+If recent feature changes affect setup guidance, adapt outputs accordingly.
+
 ### 1) Run discovery questions first
 Ask concise questions before writing prompts:
 - Agent goal: what business outcome should this agent produce?
@@ -31,6 +40,14 @@ Write four blocks:
 4. **Output format** - explicit response structure
 
 Keep instructions concrete and testable.
+
+### 2.5) Orchestration-mode check
+Explicitly state where behavior should live:
+- Agent-level instructions (global behavior)
+- Topic-level logic (intent-specific branches)
+- Knowledge level (agent knowledge vs topic generative answers node)
+
+Do not mix these blindly; call out placement decisions in the deliverable.
 
 ### 3) Create synthetic evaluation data
 Generate synthetic test scenarios covering:
@@ -63,6 +80,12 @@ Stop when scores stabilize and failure rates are acceptable.
 ## Deliverable format
 When completing a build task, output:
 - Copilot Studio field checklist (all fields to fill, grouped by section)
+- Topic creation field pack for "Add from description with Copilot":
+  - Name your topic
+  - Create a topic to...
+- Suggested prompts field pack:
+  - Title
+  - Prompt
 - Discovery summary
 - Prompt v1 (Role/Objectives/Rules/Output)
 - Test dataset summary (#cases by category)
@@ -84,6 +107,12 @@ Always include a structured build sheet Mat can directly complete. Use this sect
 10. Governance/compliance
 
 If a field is unknown, still include it with `TBD` and a short note on how to decide it.
+
+## Output quality rules from prior runs
+- Prefer copy/paste-ready text blocks over abstract guidance.
+- When asked for prompts, provide exact field-level entries (not generic templates).
+- Keep platform wording aligned with the visible UI labels.
+- If scoring is synthetic, say so explicitly and recommend a real-user validation pass.
 
 ## Resources
 

@@ -88,6 +88,37 @@ Use this as the standard build sheet.
 - Human oversight checkpoints
 - Audit evidence to store
 
+## UI field pack: Topic creation (Add from description with Copilot)
+For each topic, always provide both fields exactly:
+- Name your topic
+- Create a topic to...
+
+Recommended pattern for "Create a topic to...":
+- Purpose sentence
+- Clarification behavior (ask one focused question if ambiguous)
+- Output requirements (sections + bullets + references)
+- Variation requirement (2 message variations + 1 speech alternative per key ask)
+
+## UI field pack: Suggested prompts
+For each suggested prompt, provide both fields exactly:
+- Title
+- Prompt
+
+Prompt writing standard:
+- Include domain context
+- Include output constraints
+- Include decision/trade-off request when relevant
+- Include safety constraint for risky asks
+
+## Release-awareness check
+Before finalizing setup guidance, check:
+- Official docs hub
+- What's new
+- Knowledge sources page
+- Security and governance page
+
+If changes are recent, add a note: "verify current UI labels in tenant".
+
 ## Default question set
 1. What job should the agent complete end-to-end?
 2. What tools/knowledge can it access?
