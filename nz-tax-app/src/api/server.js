@@ -1,6 +1,7 @@
 import express from 'express';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
 import { createWorkspace, getWorkspace, listWorkspaces } from './modules/workspaceStore.js';
+import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
 
 const app = express();
 app.use(express.json());
@@ -76,6 +77,19 @@ app.get('/workspaces/:id', requireSession, (req, res) => {
   const item = getWorkspace(req.params.id, req.session.userId);
   if (!item) return res.status(404).json({ error: 'NOT_FOUND' });
   res.json({ workspace: item });
+});
+
+
+
+app.get('/questionnaire/schema', requireSession, (_req, res) => {
+  res.json({ questions: getQuestionSet() });
+});
+
+app.post('/questionnaire/evaluate', requireSession, (req, res) => {
+  const answers = req.body?.answers || {};
+  const visible = visibleQuestions(answers);
+  const status = completionStatus(answers);
+  res.json({ visible, status });
 });
 
 const port = process.env.PORT || 8787;
