@@ -4,6 +4,7 @@ import { getSession, signin, signout, signup } from './modules/authStore.js';
 import { createWorkspace, getWorkspace, listWorkspaces } from './modules/workspaceStore.js';
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
 import { addDocument, checklist, documents } from './modules/documentStore.js';
+import { addIncome, listIncome } from './modules/incomeStore.js';
 
 const app = express();
 app.use(express.json());
@@ -122,6 +123,37 @@ app.get('/workspaces/:id/checklist', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   return res.json({ checklist: checklist(workspace.id) });
+});
+
+
+
+app.post('/workspaces/:id/income/:type', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  try {
+    const item = addIncome(workspace.id, req.params.type, req.body || {});
+    return res.status(201).json({ item });
+  } catch (err) {
+    if (err.message === 'INVALID_TYPE') return res.status(400).json({ error: 'INVALID_TYPE' });
+    return res.status(500).json({ error: 'INCOME_CREATE_FAILED' });
+  }
+});
+
+app.get('/workspaces/:id/income', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  return res.json({ income: listIncome(workspace.id) });
+});
+
+app.get('/workspaces/:id/income/:type', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  try {
+    return res.json({ items: listIncome(workspace.id, req.params.type) });
+  } catch (err) {
+    if (err.message === 'INVALID_TYPE') return res.status(400).json({ error: 'INVALID_TYPE' });
+    return res.status(500).json({ error: 'INCOME_LIST_FAILED' });
+  }
 });
 
 const port = process.env.PORT || 8787;
