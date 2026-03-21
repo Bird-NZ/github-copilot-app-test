@@ -6,6 +6,9 @@ import { completionStatus, getQuestionSet, visibleQuestions } from './modules/qu
 import { addDocument, checklist, documents } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
 import { importTransactions, listTransactions, parseCsv } from './modules/cryptoStore.js';
+import { getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
+import { mapToIr3 } from './modules/mappingEngine.js';
+import { calculateDraft } from './modules/calcEngine.js';
 
 const app = express();
 app.use(express.json());
@@ -173,6 +176,37 @@ app.get('/workspaces/:id/crypto/transactions', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   return res.json({ items: listTransactions(workspace.id) });
+});
+
+
+
+app.get('/ir3/fields', requireSession, (_req, res) => {
+  return res.json(getIr3Dictionary());
+});
+
+app.get('/ir3/fields/:ref', requireSession, (req, res) => {
+  const f = getIr3Field(req.params.ref);
+  if (!f) return res.status(404).json({ error: 'NOT_FOUND' });
+  return res.json({ field: f });
+});
+
+app.get('/workspaces/:id/ir3/map', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const map = mapToIr3({ income, cryptoTx });
+  return res.json({ map });
+});
+
+app.get('/workspaces/:id/ir3/calc', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const map = mapToIr3({ income, cryptoTx });
+  const calc = calculateDraft(map);
+  return res.json({ map, calc });
 });
 
 const port = process.env.PORT || 8787;
