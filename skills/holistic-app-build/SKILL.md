@@ -111,6 +111,15 @@ Do not stay silent during tooling work.
 - `github` / `gh-issues` -> issue/PR/CI/review workflow
 - `az-prototype` -> Azure-specific design/build/deploy/cost analysis
 
+## Stage Completion Alerts (direct chats)
+Whenever any stage (1-10) transitions to complete:
+- Send an immediate "Stage Complete" update without waiting to be asked.
+- Include:
+  - Stage number + name
+  - Evidence of completion (artifacts/tests/deploy checks)
+  - New current stage
+  - Next concrete action
+
 ## Status Reporting Format
 When asked "where are we up to", report against this exact stage list and include:
 - Current stage number + name
