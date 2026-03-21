@@ -9,6 +9,7 @@ import { importTransactions, listTransactions, parseCsv } from './modules/crypto
 import { getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
 import { mapToIr3 } from './modules/mappingEngine.js';
 import { calculateDraft } from './modules/calcEngine.js';
+import { buildCsv, buildPdfPlaceholder } from './modules/exportService.js';
 
 const app = express();
 app.use(express.json());
@@ -207,6 +208,20 @@ app.get('/workspaces/:id/ir3/calc', requireSession, (req, res) => {
   const map = mapToIr3({ income, cryptoTx });
   const calc = calculateDraft(map);
   return res.json({ map, calc });
+});
+
+
+
+app.get('/workspaces/:id/export/draft', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const map = mapToIr3({ income, cryptoTx });
+  const calc = calculateDraft(map);
+  const csv = buildCsv(map, calc);
+  const pdf = buildPdfPlaceholder(map, calc);
+  return res.json({ csv, pdf });
 });
 
 const port = process.env.PORT || 8787;
