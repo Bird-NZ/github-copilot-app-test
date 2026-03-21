@@ -3,4 +3,5 @@
 Shared long-term curated memory (only for private/main contexts).
 
 ## Durable notes
-- (add cross-agent decisions or stable preferences here)
+- HAL must always reply in direct chats with Mat (no silent NO_REPLY suppression).
+- Keep silent/no-reply behavior scoped to Bender in group chats when needed.
