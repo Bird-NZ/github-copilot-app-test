@@ -73,8 +73,67 @@ When asked "where are we up to", report against this exact stage list and includ
 - Next concrete command/action
 - Blockers (if any)
 
+## Stage Exit Criteria
+
+- Stage 1 complete when goal, user, destination, and definition of done are explicit.
+- Stage 2 complete when scope boundaries and success criteria are agreed.
+- Stage 3 complete when blocking unknowns are resolved or written as assumptions.
+- Stage 4 complete when architecture, data model, and key tradeoffs are documented.
+- Stage 5 complete when prioritized tasks with acceptance criteria exist.
+- Stage 6 complete when planned scope is implemented.
+- Stage 7 complete when required test suite and critical user flows pass.
+- Stage 8 complete when output is reviewed against spec and tasks.
+- Stage 9 complete when deployment is verified in target environment.
+- Stage 10 complete when handoff summary and next actions are delivered.
+
+## Required Artifacts
+
+- Spec document
+- Architecture/plan document
+- Prioritized task board (Must/Should/Could)
+- Test plan + results
+- Deployment checklist/runbook
+- Handoff summary
+
+## Risk Checklist (minimum)
+
+- Auth and access control
+- Data privacy and retention
+- Compliance/legal disclaimers
+- Cost and scaling risks
+- External dependency reliability
+
+## Assumptions + Decision Log
+
+- Keep an explicit assumptions list with owner and validation point.
+- Keep a lightweight ADR/decision log for major choices and tradeoffs.
+
+## Quality Thresholds
+
+- Lint/type checks pass (where applicable)
+- Core tests pass
+- No known critical security issues
+- Key user flow performance is acceptable for the current release goal
+
+## Specialist Trigger Matrix
+
+- `spec-kit` -> specification/clarification/planning/tasks stages
+- `coding-agent` -> implementation acceleration in build stage
+- `github` / `gh-issues` -> issue/PR/CI/review workflow
+- `az-prototype` -> Azure-specific design/build/deploy/cost analysis
+
+## Status Reporting Format
+
+When asked "where are we up to", report against this exact stage list and include:
+
+- Current stage number + name
+- Completed stages
+- Next concrete command/action
+- Blockers (if any)
+
 ## Guardrails
 
 - Never skip from intake/spec straight to deploy tooling.
 - Ask before destructive resets or deletions.
 - If user says they want more specification discussion, return to stages 2-5.
+- Do not mark work complete unless stage exit criteria are met.
