@@ -5,6 +5,7 @@ import { createWorkspace, getWorkspace, listWorkspaces } from './modules/workspa
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
 import { addDocument, checklist, documents } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
+import { importTransactions, listTransactions, parseCsv } from './modules/cryptoStore.js';
 
 const app = express();
 app.use(express.json());
@@ -154,6 +155,24 @@ app.get('/workspaces/:id/income/:type', requireSession, (req, res) => {
     if (err.message === 'INVALID_TYPE') return res.status(400).json({ error: 'INVALID_TYPE' });
     return res.status(500).json({ error: 'INCOME_LIST_FAILED' });
   }
+});
+
+
+
+app.post('/workspaces/:id/crypto/import-csv', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const csv = req.body?.csv;
+  if (!csv || typeof csv !== 'string') return res.status(400).json({ error: 'CSV_REQUIRED' });
+  const rows = parseCsv(csv);
+  const result = importTransactions(workspace.id, rows);
+  return res.status(201).json({ ...result });
+});
+
+app.get('/workspaces/:id/crypto/transactions', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  return res.json({ items: listTransactions(workspace.id) });
 });
 
 const port = process.env.PORT || 8787;
