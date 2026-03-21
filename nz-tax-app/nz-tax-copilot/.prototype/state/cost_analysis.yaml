@@ -1,0 +1,116 @@
+content: "# NZ Tax Copilot - Azure Cost Estimation\n\n## Cost Summary\n\n| Service\
+  \ | Small ($/mo) | Medium ($/mo) | Large ($/mo) |\n|---------|--------------|---------------|--------------|\n\
+  | **Compute** |\n| Container Apps Environment | $0 | $0 | $0 |\n| Container Apps\
+  \ (API) | $30 | $100 | $300 |\n| Container Registry | $5 | $20 | $100 |\n| **Data\
+  \ Services** |\n| Azure SQL Database | $15 | $200 | $1,200 |\n| Cosmos DB | $25\
+  \ | $100 | $400 |\n| Blob Storage | $10 | $30 | $100 |\n| **AI Services** |\n| Azure\
+  \ OpenAI | $30 | $150 | $500 |\n| AI Search | $75 | $250 | $1,000 |\n| **Networking**\
+  \ |\n| Virtual Network | $0 | $0 | $0 |\n| Private Endpoints (6) | $10 | $10 | $10\
+  \ |\n| NSG Flow Logs | $5 | $10 | $20 |\n| **Security & Monitoring** |\n| Key Vault\
+  \ | $5 | $5 | $5 |\n| Log Analytics | $75 | $200 | $500 |\n| Application Insights\
+  \ | Included in Log Analytics | Included | Included |\n| **TOTAL** | **$285** |\
+  \ **$1,075** | **$4,135** |\n\n---\n\n## T-Shirt Size Definitions\n\n### Compute\
+  \ Services\n\n#### Container Apps Environment\n- **Small**: Consumption plan, 1-3\
+  \ replicas, external ingress only\n- **Medium**: Consumption plan, 5-10 replicas,\
+  \ basic health probes\n- **Large**: Dedicated (Workload Profiles) plan, 10-20 replicas,\
+  \ zone redundancy\n\n#### Container Apps (Backend API)\n- **Small**: 0.5 vCPU, 1\
+  \ GB RAM, 1 replica always-on (~730 hours/month)\n- **Medium**: 1 vCPU, 2 GB RAM,\
+  \ 5 replicas average (~3,650 vCPU-hours/month)\n- **Large**: 2 vCPU, 4 GB RAM, 15\
+  \ replicas average (~21,900 vCPU-hours/month)\n\n**Pricing**: $0.000012/vCPU-second\
+  \ + $0.000003/GB-second\n\n#### Container Registry\n- **Small**: Basic SKU (10 GB\
+  \ storage, 100 GB bandwidth)\n- **Medium**: Standard SKU (100 GB storage, 500 GB\
+  \ bandwidth)\n- **Large**: Premium SKU (500 GB storage, geo-replication)\n\n---\n\
+  \n### Data Services\n\n#### Azure SQL Database\n- **Small**: Serverless, 0.5-2 vCores,\
+  \ 32 GB storage, auto-pause enabled\n- **Medium**: Business Critical, 2 vCores,\
+  \ 128 GB storage, zone-redundant\n- **Large**: Business Critical, 8 vCores, 512\
+  \ GB storage, geo-replicated\n\n**Pricing Notes**: \n- Small assumes 50% idle time\
+  \ (auto-pause)\n- Medium/Large are provisioned compute (24/7 availability)\n\n####\
+  \ Cosmos DB\n- **Small**: Serverless, session consistency, 150K RU/month consumption\n\
+  - **Medium**: Provisioned 400 RU/s autoscale, session consistency\n- **Large**:\
+  \ Provisioned 2,000 RU/s autoscale, strong consistency, multi-region\n\n**Pricing**:\
+  \ \n- Serverless: $0.28 per million RU\n- Provisioned: ~$0.07/hour per 100 RU/s\n\
+  \n#### Blob Storage\n- **Small**: LRS Hot tier, 50 GB storage, 100 GB egress\n-\
+  \ **Medium**: ZRS Hot tier, 200 GB storage, 500 GB egress\n- **Large**: GZRS Hot\
+  \ tier, 1 TB storage, 2 TB egress\n\n**Pricing**: Storage ($0.0184/GB-month) + egress\
+  \ ($0.087/GB after first 100 GB free)\n\n---\n\n### AI Services\n\n#### Azure OpenAI\n\
+  - **Small**: 10K TPM quota, 100K tokens/day usage (~3M tokens/month)\n  - GPT-4o:\
+  \ $0.005/1K input, $0.015/1K output\n  - Embeddings: $0.0001/1K tokens\n- **Medium**:\
+  \ 60K TPM quota, 500K tokens/day usage (~15M tokens/month)\n- **Large**: 240K TPM\
+  \ quota (Provisioned Throughput Units), 2M tokens/day usage (~60M tokens/month)\n\
+  \n**Usage Assumptions**:\n- Small: 50 guidance queries/day \xD7 2K tokens/query\n\
+  - Medium: 250 queries/day \xD7 2K tokens/query\n- Large: 1,000 queries/day \xD7\
+  \ 2K tokens/query\n\n#### AI Search\n- **Small**: Basic SKU, 1 replica, 1 partition,\
+  \ 2 GB index size\n- **Medium**: Standard S1, 2 replicas, 2 partitions, 25 GB per\
+  \ partition\n- **Large**: Standard S2, 3 replicas, 4 partitions, 100 GB per partition,\
+  \ semantic ranking enabled\n\n**Pricing**: \n- Basic: $75/month fixed\n- Standard\
+  \ S1: $250/month + semantic ranking queries ($2/1000 queries)\n- Standard S2: $1,000/month\
+  \ + semantic ranking queries\n\n---\n\n### Networking\n\n#### Virtual Network\n\
+  - **All Sizes**: Free (no charge for VNET itself)\n- **NSGs**: Free\n- **Private\
+  \ Endpoints**: $0.01/hour per endpoint \xD7 6 endpoints \xD7 730 hours = ~$44/month\n\
+  \n**Note**: Private endpoint pricing simplified to $10/month for estimates (actual:\
+  \ ~$7.30/endpoint/month)\n\n#### NSG Flow Logs\n- **Small**: 30-day retention, 10\
+  \ GB/month ingestion\n- **Medium**: 30-day retention, 30 GB/month ingestion\n- **Large**:\
+  \ 90-day retention, 100 GB/month ingestion\n\n**Pricing**: Storage ($0.02/GB-month)\
+  \ + Traffic Analytics processing ($0.10/GB)\n\n---\n\n### Security & Monitoring\n\
+  \n#### Key Vault\n- **All Sizes**: Standard SKU ($0.03 per 10K operations)\n- Small/Medium/Large\
+  \ same cost (operation count negligible for prototype)\n\n#### Log Analytics\n-\
+  \ **Small**: 30-day retention, 30 GB/month ingestion (~1 GB/day)\n- **Medium**:\
+  \ 90-day retention, 200 GB/month ingestion (~6.5 GB/day)\n- **Large**: 90-day retention,\
+  \ 500 GB/month ingestion (~16 GB/day)\n\n**Pricing**: $2.30/GB ingestion + $0.10/GB-month\
+  \ retention (first 31 days free)\n\n#### Application Insights\n- **Workspace-based\
+  \ model**: Included in Log Analytics ingestion costs\n- No additional charge (telemetry\
+  \ counted toward Log Analytics GB/month)\n\n---\n\n## Assumptions and Notes\n\n\
+  ### Consumption-Based Services\n\n**Azure OpenAI**:\n- Actual cost depends on query\
+  \ volume and token usage\n- Small estimate: 50 queries/day \xD7 30 days \xD7 2K\
+  \ tokens/query \xD7 $0.005 (input) + $0.015 (output) = ~$30/month\n- Large workloads\
+  \ may benefit from Provisioned Throughput Units (PTU) for predictable costs\n\n\
+  **Container Apps**:\n- Consumption plan charges per vCPU-second and GB-second consumed\n\
+  - Small estimate assumes 1 replica always-on (730 hours/month) \xD7 0.5 vCPU \xD7\
+  \ 1 GB\n- Actual costs scale linearly with replica count and resource allocation\n\
+  \n**Cosmos DB Serverless**:\n- Charged per Request Unit (RU) consumed\n- Small estimate:\
+  \ 150K RU/month \xD7 $0.28 per million RU = ~$42/month\n- Actual cost depends on\
+  \ query complexity and frequency\n\n**Blob Storage**:\n- Charges for storage (GB-month)\
+  \ + transactions (per 10K operations) + egress (GB transferred out)\n- Small estimate:\
+  \ 50 GB storage + 100 GB egress\n- Large file uploads or frequent downloads increase\
+  \ costs\n\n**AI Search**:\n- Basic/Standard tiers are fixed monthly costs\n- Semantic\
+  \ ranking queries add $2 per 1,000 queries (only for Standard SKU)\n- Large deployments\
+  \ may need multiple search units (replicas \xD7 partitions)\n\n---\n\n## Cost Optimization\
+  \ Tips\n\n### Reserved Instances & Savings Plans\n- **SQL Database**: 1-year reserved\
+  \ instance saves ~40% (Business Critical tier)\n- **Cosmos DB**: 1-year reserved\
+  \ capacity saves ~30% (provisioned throughput only)\n- **Container Apps**: Workload\
+  \ Profiles plan supports reserved capacity (Large only)\n\n### Scaling Adjustments\n\
+  - **SQL Database**: Use serverless tier for dev/test (auto-pause reduces idle costs)\n\
+  - **Cosmos DB**: Start with serverless, migrate to provisioned when consistent load\
+  \ exceeds break-even (~400 RU/s sustained)\n- **Container Apps**: Consumption plan\
+  \ scales to zero when idle (Small/Medium recommended for variable workloads)\n\n\
+  ### Storage Optimization\n- **Blob Storage**: Implement lifecycle management (move\
+  \ to Cool tier after 90 days, Archive after 1 year)\n- **Log Analytics**: Set daily\
+  \ cap (5 GB/day for Small, 50 GB/day for Medium) to prevent runaway ingestion costs\n\
+  - **NSG Flow Logs**: Use Traffic Analytics sampling (10% sample rate reduces processing\
+  \ costs)\n\n### AI Services\n- **Azure OpenAI**: Implement query result caching\
+  \ to avoid duplicate API calls (save ~30% on repeated questions)\n- **AI Search**:\
+  \ Use Basic tier for prototype, upgrade to Standard only when semantic ranking or\
+  \ high availability required\n\n---\n\n## Regional Pricing Notes\nAll estimates\
+  \ based on **Australia East** region pricing (February 2024). Costs may vary by\
+  \ region:\n- Australia regions: ~10-15% higher than US East\n- New Zealand: No Azure\
+  \ regions; closest = Australia East/Southeast\n\n---\n\n## Disclaimer\nThese are\
+  \ **estimates based on Azure Retail Prices API data** (where available) and published\
+  \ Azure pricing pages. Actual costs will vary based on:\n- Usage patterns (API call\
+  \ volume, data storage growth, query frequency)\n- Committed use discounts (reserved\
+  \ instances, savings plans)\n- Enterprise Agreement pricing (negotiated discounts)\n\
+  - Regional pricing differences\n- Currency exchange rates (estimates in USD)\n\n\
+  For production deployments, use the **Azure Pricing Calculator** (https://azure.microsoft.com/pricing/calculator/)\
+  \ to model specific usage patterns and receive detailed cost breakdowns.\n\n**Prototype\
+  \ Recommendation**: Start with **Small** configuration ($285/month) to validate\
+  \ architecture and user experience. Scale to Medium/Large based on actual usage\
+  \ metrics after 1-2 months of operation."
+context_hash: d319136cbfe7542c
+result:
+  agent: cost-analyst
+  format: !!python/object/new:knack.validators.DefaultStr
+    args:
+    - markdown
+    state:
+      is_default: true
+  status: analyzed
+timestamp: '2026-03-21T10:02:49.477260+00:00'

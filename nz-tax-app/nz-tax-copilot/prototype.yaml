@@ -1,0 +1,51 @@
+project:
+  id: f1a49f45-b822-4321-a24b-f389b836674e
+  name: nz-tax-copilot
+  location: australiaeast
+  environment: dev
+  created: '2026-03-21T07:54:54.920566+00:00'
+  iac_tool: terraform
+naming:
+  strategy: microsoft-alz
+  org: ''
+  env: dev
+  zone_id: zd
+ai:
+  provider: copilot
+  model: claude-sonnet-4.5
+  azure_openai:
+    endpoint: ''
+    deployment: gpt-4o
+agents:
+  custom_dir: .prototype/agents/
+  custom: {}
+  overrides: {}
+deploy:
+  track_changes: true
+  subscription: ''
+  resource_group: ''
+  tenant: ''
+  service_principal: ''
+  generated_secrets: ''
+backlog:
+  provider: github
+  org: ''
+  project: ''
+  token: ''
+mcp:
+  servers: ''
+  custom_dir: .prototype/mcp/
+stages:
+  init:
+    completed: true
+    timestamp: '2026-03-21T07:54:54.927937+00:00'
+  design:
+    completed: true
+    timestamp: '2026-03-21T09:47:15.279125+00:00'
+    iterations: 1
+  build:
+    completed: false
+    timestamp: null
+  deploy:
+    completed: false
+    timestamp: null

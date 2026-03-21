@@ -1,0 +1,505 @@
+project:
+  summary: An Azure-hosted NZ individual IR3 tax preparation application for public users that collects tax data and evidence,
+    handles crypto transactions, maps income to IR3 references, and produces draft filing outputs with auditability and IRD-grounded
+    assistance. The prototype validates the end-to-end architecture and delivery path for technical and stakeholder demonstrations.
+  goals:
+  - Demonstrate full end-to-end tax preparation workflow from signup to export
+  - Validate Azure architecture for public-facing tax application
+  - Prove crypto transaction processing and calculation capabilities
+  - Demonstrate IRD-grounded assistance for tax guidance
+  - Establish deployment and delivery pipeline for stakeholder demos
+requirements:
+  functional:
+  - User registration and authentication for public users
+  - Tax year workspace creation and management
+  - Conditional questionnaire system for tax data collection
+  - Document upload and storage for tax evidence
+  - Manual income data entry across multiple categories
+  - Crypto transaction entry and capital gains calculation
+  - IR3 box code mapping for all income types
+  - IRD guidance retrieval and assistance
+  - Draft tax return calculation and preview
+  - Export summary in appropriate format
+  - Full audit trail of user data changes and system calculations
+  non_functional:
+  - None
+constraints:
+- NZ-only deployment (single Azure region)
+- Public internet access required for end users
+- Prototype timeline for technical and stakeholder demo
+- Must demonstrate full architecture stack
+- 'Policy override: None - User chose to override'
+decisions:
+- None
+open_items:
+- Frontend technology stack (separate SPA vs monolithic web app vs static site)
+- Backend API framework and language choice
+- Data model design (relational vs document store for tax data)
+- Document processing requirements (storage-only vs OCR/extraction)
+- IRD guidance implementation (RAG with vector DB vs simpler lookup)
+- Crypto calculation complexity (real-time vs batch processing)
+- Authentication method (custom email/password, social providers, or Azure B2C)
+- Export format requirements (PDF, CSV, myIR integration, digital signatures)
+- Expected user scale and concurrency for demo
+- External integration needs (exchange APIs, bank feeds)
+- Multi-factor authentication requirements
+- Backup and data retention policies
+- Query patterns and reporting needs
+- File type support and upload size limits
+- Session management and timeout policies
+- Error handling and user notification strategy
+confirmed_items: []
+risks:
+- Scope uncertainty may impact architecture decisions (full-stack unknowns)
+- Crypto calculation complexity could require specialized services or libraries
+- IRD guidance integration approach undefined (impacts AI service choices)
+- Document processing requirements unclear (may need additional services)
+- Authentication strategy not determined (impacts identity service selection)
+- Data model ambiguity may lead to suboptimal database choice
+- External integration needs unknown (may require API Management or additional security)
+scope:
+  in_scope:
+  - User registration and authentication system
+  - Tax year workspace creation
+  - Questionnaire data collection flow
+  - Document upload capability
+  - Income and crypto transaction entry
+  - Draft calculation engine with IR3 mapping
+  - IRD guidance assistance feature
+  - Export functionality
+  - Audit logging of user actions and calculations
+  - End-to-end deployment to Azure
+  - Technical and stakeholder demo capability
+  out_of_scope:
+  - Integration with IRD myIR system
+  - Production-grade security hardening beyond Azure baseline
+  - Multi-region deployment and disaster recovery
+  - Automated CI/CD pipeline (manual deployment acceptable for prototype)
+  - Comprehensive load testing and performance optimization
+  - Advanced analytics and reporting dashboards
+  - Automated document OCR and data extraction (unless required)
+  deferred:
+  - Exchange API integrations for automated crypto import
+  - Bank feed integrations for automated income import
+  - Advanced fraud detection and validation rules
+  - Multi-factor authentication
+  - Digital signature support for exports
+  - Automated backup and point-in-time recovery
+  - Production monitoring and alerting rules
+  - Compliance certification (SOC2, ISO27001, etc.)
+  - Multi-tenant architecture for tax professional use cases
+  - Mobile application development
+  - Internationalization beyond NZ
+architecture:
+  services:
+  - Azure Container Apps or App Service (compute hosting for frontend/backend - awaiting technology stack decision)
+  - Azure SQL Database or Cosmos DB (data storage - pending data model and query pattern clarity)
+  - Azure Blob Storage (document/evidence storage)
+  - Azure Key Vault (secrets management and certificate storage)
+  - Azure OpenAI or AI Search (IRD guidance assistance - pending RAG vs lookup decision)
+  - Azure Monitor and Application Insights (observability and audit logging)
+  - Azure Active Directory B2C or App Service Authentication (user authentication - pending auth strategy)
+  - Azure API Management (optional - if external integrations or rate limiting required)
+  - Azure Virtual Network (network isolation for services)
+  - Azure Log Analytics (centralized logging for audit trail)
+  integrations: []
+  data_flow: ''
+conversation_history:
+- exchange: 1
+  timestamp: '2026-03-21T08:10:53.929432+00:00'
+  user: I'd like to design a new Azure prototype.
+  assistant: 'Great! I''d love to help you design an Azure prototype. Let''s start with the fundamentals.
+
+
+    **Tell me about what you''re building.** What''s the core problem you''re trying to solve, and who are you solving it
+    for? Walk me through the main workflow — what does a user do, and what happens behind the scenes?
+
+
+    Also, **what''s driving this prototype?** Is it to prove out a technical approach, demonstrate value to stakeholders,
+    validate a business idea, or something else? Understanding the "why" helps us figure out what the prototype absolutely
+    needs to show versus what can wait.'
+- exchange: 1
+  timestamp: '2026-03-21T08:13:29.879914+00:00'
+  user: I'd like to design a new Azure prototype.
+  assistant: 'Great! I''d be happy to help you design an Azure prototype. Let''s start with the big picture and work our way
+    into the details.
+
+
+    **Tell me about what you''re building.** What''s the core problem you''re trying to solve, and who will be using this
+    system? Walk me through what a typical user would do with it.
+
+
+    Also helpful to know: **What''s driving this prototype?** Is it to prove out a technical approach, demo a concept to stakeholders,
+    validate a business hypothesis, or something else?'
+- exchange: 2
+  timestamp: '2026-03-21T08:14:03.688432+00:00'
+  user: 'Building an NZ individual tax return app (IR3-focused) for public users. Core problem: collect and structure all
+    required tax data and documents, guide users through NZ-specific tax questions, handle crypto transactions, and generate
+    accountant-ready IR3-style outputs with references. Typical user flow: sign up, create tax year workspace, complete conditional
+    questionnaire, upload evidence docs, import crypto CSV + enter income, review AI-assisted categorizations with citations
+    from IRD docs, see draft tax calculations, export draft summary and filing pack.'
+  assistant: 'Thanks for the detail — that''s a clear picture. Let me make sure I understand the NZ tax context and then dig
+    into the technical requirements.
+
+
+    **A few quick clarifications on the functional side:**
+
+
+    1. **User base and scale** — Who''s your target audience? Are we talking individual taxpayers doing their own returns,
+    or is this a tool for tax agents/accountants preparing IR3s on behalf of clients? And roughly how many users are you expecting
+    for the prototype demo vs. eventual production?
+
+
+    2. **Tax year workspace** — When you say "tax year workspace," I''m picturing each user can have multiple tax years open
+    (e.g., preparing 2024 and amending 2023). Is that right, or is it one active return per user?
+
+
+    3. **Conditional questionnaire** — Tell me more about the logic here. How complex does the branching get? Are we talking
+    simple "if rental income > 0, ask rental questions" or more intricate dependency chains? Does the questionnaire need to
+    reference previous answers or imported data?
+
+
+    4. **Crypto transactions** — Walk me through the crypto workflow. User uploads a CSV from an exchange — what happens next?
+    Does the AI categorize each transaction (disposal, trade, income event), or does the user confirm categories? How do you
+    handle cost basis tracking and FX conversions to NZD?
+
+
+    5. **AI-assisted categorizations with IRD citations** — This is interesting. Are you envisioning the AI reading IRD guidance
+    documents and citing specific sections when it suggests how to treat an income item or deduction? What''s the source material
+    — public IRD determinations, operational statements, the actual Income Tax Act?
+
+
+    6. **Accountant-ready outputs** — What does "accountant-ready" mean in practice? A pre-filled IR3 PDF, a structured JSON/CSV
+    export, or something else? Do accountants need to import this into specific software (Xero Practice Manager, CCH, MYOB)?
+
+
+    Now let''s talk about the **technical architecture**:
+
+
+    7. **Authentication** — How do users sign in? Are you building email/password registration from scratch, using social
+    logins (Google, Microsoft), or integrating with an existing identity provider? Any multi-tenancy concerns (e.g., tax agents
+    managing multiple client workspaces)?
+
+
+    8. **Data residency** — NZ tax data is sensitive. Do you have requirements around where the data physically lives? Azure
+    has an NZ region (Auckland) — is that where everything needs to be, or can some services be in Australia Southeast?
+
+
+    9. **Document storage** — You mentioned uploading evidence docs (receipts, statements, etc.). What formats and sizes are
+    typical? Are these just stored as-is, or does the system need to OCR them or extract metadata?
+
+
+    10. **AI model selection** — For the categorization and IRD citation features, what AI capabilities are you thinking?
+    Sounds like you need document retrieval (RAG pattern over IRD guidance) plus reasoning about tax treatment. Are you planning
+    to use Azure OpenAI (GPT-4), or have you considered alternatives?
+
+
+    11. **Integration touchpoints** — Does this system need to talk to any external APIs? For example, exchange rate feeds
+    for FX conversion, IRD''s online services for validation, crypto exchange APIs, or accounting software for export?
+
+
+    12. **Security and compliance** — Tax data is obviously sensitive. Any specific compliance requirements (NZ Privacy Act,
+    ISO 27001, etc.)? Do you need audit logging of who accessed or changed what?
+
+
+    Let me pause there and get your thoughts on these areas before we go further.'
+- exchange: 3
+  timestamp: '2026-03-21T08:14:35.008753+00:00'
+  user: 'Prototype goal: validate technical architecture and end-to-end flow on Azure for a stakeholder demo and technical
+    feasibility. Must include secure auth, document storage, knowledge-grounded Q&A, mapping to IR3 fields, and auditable
+    change history.'
+  assistant: 'Perfect — that gives me a clear scope for what the prototype needs to prove. Let me build on that and clarify
+    a few technical boundaries:
+
+
+    **Prototype scope refinement:**
+
+
+    1. **Stakeholder demo audience** — Who''s watching this demo? Technical leadership, potential investors, tax domain experts,
+    or a mix? That helps me understand whether the demo needs polished UI or if API-level demonstrations are sufficient.
+
+
+    2. **Real vs. mocked data** — For the prototype, should we use real IRD guidance documents and actual IR3 field mappings,
+    or can we work with a representative subset? Similarly, can crypto transactions be synthetic test data, or do you need
+    to handle real exchange CSV formats?
+
+
+    3. **User count for demo** — Are we talking a handful of test accounts for the demo, or do you need to show it can handle
+    concurrent users? This affects compute SKU choices.
+
+
+    Now, back to those technical questions I asked earlier. Let me be more specific about what the architect will need:
+
+
+    **Authentication & user model:**
+
+
+    4. **Sign-up flow** — You mentioned "sign up" — should I assume you''re building email/password registration from scratch,
+    or would you prefer social login (Google/Microsoft) to simplify the prototype? And is this single-user-per-account, or
+    do you need the concept of a tax agent managing multiple client workspaces?
+
+
+    5. **Access control** — Within a tax year workspace, is it just the owner who can edit, or do you envision sharing with
+    an accountant for review? If shared access is in scope for the prototype, how should permissions work?
+
+
+    **Data architecture:**
+
+
+    6. **Data model** — Let me understand the core entities. I''m picturing: User → TaxYear → Workspace → (Questionnaire Answers,
+    Documents, Transactions, Calculations). Is that the right hierarchy? And when you say "auditable change history," do you
+    need full event sourcing (every change recorded with timestamp and user), or is simpler audit logging sufficient?
+
+
+    7. **Questionnaire structure** — Tell me about the conditional branching complexity. If the logic is "if rental income
+    exists, show rental section," that''s straightforward. But if it''s "question 47 options depend on answers to 12, 15,
+    and 33," that might need a rules engine. How deep does the branching go?
+
+
+    8. **Document types and volumes** — When users upload evidence docs, what are we talking about? PDFs of bank statements,
+    phone photos of receipts, CSV files from exchanges? And typical sizes — are we talking a few MB per document, or larger?
+    This affects storage and retrieval strategy.
+
+
+    **AI capabilities:**
+
+
+    9. **Knowledge base for IRD guidance** — You mentioned AI citing IRD docs. What''s the source corpus? Are we indexing
+    public IRD fact sheets and determinations, or do you have proprietary tax content? And how large is this corpus — dozens
+    of documents or thousands of pages?
+
+
+    10. **AI workflow** — Walk me through what happens when the AI categorizes a crypto transaction. Does it look at the transaction
+    type in the CSV, cross-reference IRD guidance on crypto taxation, and suggest a category with a citation? And does the
+    user just approve/reject, or can they override with their own reasoning?
+
+
+    11. **IR3 field mapping** — When you say "generate accountant-ready IR3-style outputs," I assume that means mapping collected
+    data to specific IR3 form fields. Is this mapping rule-based (deterministic logic), AI-assisted, or a hybrid? And is the
+    output a pre-filled PDF, a structured data file, or both?
+
+
+    **Integration & external dependencies:**
+
+
+    12. **FX rates for crypto** — You mentioned FX conversions to NZD. Does the system need to fetch live exchange rates from
+    an API, or can we use a static table of historical rates for the prototype?
+
+
+    13. **Crypto exchange formats** — Do you have sample CSV formats from the exchanges you need to support? Each exchange
+    formats their transaction history differently — knowing which ones to prioritize helps scope the import logic.
+
+
+    14. **Accountant software integration** — Is exporting to a specific accounting package in scope for the prototype, or
+    is a generic JSON/CSV export sufficient to demonstrate the concept?
+
+
+    **Infrastructure & environments:**
+
+
+    15. **Data residency** — Does NZ tax data legally need to stay in the Auckland region, or is Australia Southeast acceptable
+    for the prototype? This affects which Azure services we can use and their availability.
+
+
+    16. **Deployment timeline** — What''s the timeline for this prototype demo? That affects whether we optimize for speed
+    (simpler architecture, fewer services) or completeness (closer to production-ready).
+
+
+    17. **Budget constraints** — Any cost guardrails I should keep in mind? Azure AI services and vector search can add up
+    quickly if we''re not careful about SKU selection.
+
+
+    I know that''s a lot of questions, but the answers will let me design an architecture that actually fits your needs rather
+    than guessing. Which areas should we tackle first?'
+- exchange: 1
+  timestamp: '2026-03-21T08:31:22.727423+00:00'
+  user: Build NZ individual IR3 tax app with auth, questionnaire, document upload, crypto CSV parsing, IR3 mapping/calculation
+    skeleton, export, and audit trail. Azure-hosted prototype.
+  assistant: 'I''d be happy to help you design an Azure prototype for your NZ IR3 tax application. Let me understand what
+    you''re building here.
+
+
+    So this is a tax return application for New Zealand individual taxpayers filing IR3 forms. You''ve mentioned several capabilities
+    — authentication, a questionnaire flow, document uploads, cryptocurrency CSV parsing, IR3 calculation logic, export functionality,
+    and an audit trail.
+
+
+    Let me start by understanding the core user journey and what this prototype needs to prove:
+
+
+    **User workflow and audience:**
+
+    - Walk me through the typical user journey from start to finish. Someone arrives at your app — what''s the first thing
+    they do, and what are the key steps until they have a completed IR3 form?
+
+    - Who is the primary user? Individual taxpayers filing their own returns, or tax agents/accountants handling multiple
+    clients?
+
+    - For the prototype demo, who''s your audience — potential investors, IRD stakeholders, or internal product validation?
+
+
+    **Authentication approach:**
+
+    - How do you expect users to sign in? Are you thinking email/password registration, social login (Google/Microsoft), or
+    integration with an existing identity provider?
+
+    - Do you need role separation (e.g., taxpayer vs. tax agent), or is everyone accessing the same feature set for the prototype?
+
+
+    **Questionnaire functionality:**
+
+    - Tell me about the questionnaire. What kind of information are you collecting from users before they start entering tax
+    data?
+
+    - Is this a static list of questions, or does it branch based on user answers (e.g., "Do you have investment income?"
+    → show crypto questions)?
+
+    - Does the questionnaire state need to be saved and resumed later?
+
+
+    **Data scope and volume:**
+
+    - What types of documents will users upload? Pay slips, bank statements, crypto exchange reports, donation receipts?
+
+    - For cryptocurrency CSV parsing — what exchanges are you targeting, and roughly how many transactions per user are we
+    talking about? Tens, hundreds, thousands?
+
+    - Tell me about the data entities in the system. Beyond users and tax returns, what else needs to be tracked (questionnaire
+    responses, uploaded files, parsed crypto transactions, audit events)?
+
+
+    **IR3 mapping and calculation:**
+
+    - You mentioned IR3 mapping and a "calculation skeleton" — what''s in scope for the prototype here? Are you aiming to
+    calculate a subset of IR3 fields (like salary + crypto income), or just demonstrate the data flow without full tax logic?
+
+    - Will the prototype validate calculations against IRD rules, or is this more about proving the workflow and data structure?
+
+
+    **Export and audit trail:**
+
+    - What format does the IR3 export need to be in? PDF for user review, or a structured format for IRD submission (like
+    myIR Gateway)?
+
+    - For the audit trail — what events need to be captured? User logins, data changes, document uploads, calculation runs?
+    Who consumes the audit trail (system admins, compliance team)?
+
+
+    **Prototype scope boundary:**
+
+    - This sounds like it could grow quite large. For the prototype demo, what''s the one workflow you absolutely must show
+    working end-to-end?
+
+    - Are there features in your list that are important long-term but could be mocked or simplified for the initial demo
+    (e.g., full crypto tax calculations vs. just parsing and displaying the data)?
+
+
+    **Scale and timeline:**
+
+    - Roughly how many users do you expect during the prototype phase — a handful of testers, or opening it up to a broader
+    group?
+
+    - What''s your timeline for the prototype? Are we talking weeks or months?
+
+
+    Let me pause there and hear your thoughts on these areas before diving into technical integration and security requirements.'
+- exchange: 1
+  timestamp: '2026-03-21T08:32:01.246681+00:00'
+  user: I'd like to design a new Azure prototype.
+  assistant: 'Great! Let''s walk through what you''re looking to build.
+
+
+    To start us off — what are you building, and what problem is it solving?  Tell me a bit about the core idea and who the
+    users are.'
+- exchange: 2
+  timestamp: '2026-03-21T09:04:09.738347+00:00'
+  user: 'Building an NZ-only individual IR3 tax app for public users. Problem: collect all required tax data and evidence,
+    handle crypto transactions, map to IR3 references, and produce draft filing outputs with auditability and IRD-grounded
+    assistance. Typical flow: sign up, create tax year workspace, complete conditional questionnaire, upload docs, enter/import
+    income+crypto, review calculated draft, export summary.'
+  assistant: 'That''s a solid picture of the workflow — thanks.  A few things I want to dig into to understand the scope better:
+
+
+    **Data collection and validation** — Walk me through the data you''re capturing.  What are the main categories of income
+    beyond crypto (salary, rental, investment)?  When you say "map to IR3 references," do you mean the app automatically assigns
+    income to the right IR3 box codes, or does the user need to confirm mappings?  And what does "IRD-grounded assistance"
+    look like in practice — is that retrieval-augmented generation over IRD guidance documents, or something else?
+
+
+    **Crypto transaction handling** — Tell me about the crypto piece.  Are users manually entering transactions, or do you
+    need to support imports from exchanges/wallets?  What calculations are you doing — capital gains, cost basis tracking,
+    something more complex?  How much transaction volume are we talking about per user?
+
+
+    **Document uploads and evidence** — What kind of documents are users uploading, and what happens to them?  Are you extracting
+    data from scanned receipts or payslips, or is it more about storing evidence for audit purposes?  What file types and
+    sizes are you expecting?
+
+
+    **User identity** — How do you expect users to sign in?  Are you building account registration from scratch, or integrating
+    with an existing identity provider?  Any requirements around account linking to IRD systems, or is this fully standalone?
+
+
+    **Draft output and export** — When you say "export summary," what format does that take — PDF, CSV, something that feeds
+    into IRD''s myIR system?  Does the export need to be digitally signed or have any compliance features?
+
+
+    **Auditability** — Tell me what auditability means in this context.  Are you tracking every change a user makes to their
+    data, or is it more about logging calculations and decisions the system made?  Who''s the audit audience — the user themselves,
+    or IRD if there''s an inquiry?
+
+
+    **Prototype scope** — What does the prototype need to prove?  Is it the full end-to-end flow from signup to export, or
+    are you focusing on a particular slice (like the crypto calculation engine or the questionnaire logic)?'
+- exchange: 3
+  timestamp: '2026-03-21T09:04:24.071484+00:00'
+  user: 'Goal of this prototype: Azure-hosted technical and stakeholder demo validating end-to-end architecture and delivery
+    path.'
+  assistant: 'Perfect — so we''re proving out the full stack and deployment story, not just a feature slice.  That helps set
+    the scope.
+
+
+    Let me dig into some technical details so I can understand what needs to be deployed:
+
+
+    **Frontend and backend architecture** — How do you picture the application running?  Walk me through a typical request
+    from the user''s browser to the backend — is there a separate frontend talking to a REST API, or is it a monolithic web
+    app?  What does the deployment artifact look like — container images, code packages, static sites?
+
+
+    **Data storage** — Tell me about the data model.  You''ve got user accounts, tax year workspaces, questionnaire responses,
+    uploaded documents, income/crypto transactions, and calculated drafts.  What are the relationships between these entities?  How
+    will the data be queried — mostly lookups by user ID, or do you need complex aggregations for reporting?  Roughly how
+    much data per user are we talking about?
+
+
+    **IRD guidance integration** — For the "IRD-grounded assistance," what''s the technical implementation?  Are you pulling
+    IRD documentation into a vector database for RAG, or is it a simpler lookup system?  Does this need to be updated regularly,
+    or is it a one-time load of reference material?
+
+
+    **Crypto calculation engine** — Walk me through the crypto transaction processing.  Are the calculations happening in
+    real-time as users enter data, or is there a batch job that runs periodically?  What kind of processing power do you need
+    — simple arithmetic or complex cost basis algorithms across thousands of transactions?
+
+
+    **Document processing** — For the uploaded documents, do they just get stored as-is, or do you need any processing (OCR,
+    metadata extraction, virus scanning)?  What storage volumes are you expecting — are we talking dozens of files per user
+    or hundreds?
+
+
+    **Authentication flow** — Since this is for public users, how are you handling signup and login?  Are you building custom
+    registration with email/password, or using social providers, or something else?  Any multi-factor auth requirements?
+
+
+    **Integration points** — Besides the IRD documentation, are there any external systems this needs to talk to?  Exchange
+    APIs for crypto import, bank feeds, anything like that?  Or is it all manual user entry for the prototype?
+
+
+    **Scale expectations** — For the demo, how many concurrent users do you need to support?  Is this a handful of stakeholders
+    clicking through, or do you need it to handle realistic load?'
+_metadata:
+  created: '2026-03-21T08:10:53.929603+00:00'
+  last_updated: '2026-03-21T09:47:15.229513+00:00'
+  exchange_count: 3
+  iteration: 1
