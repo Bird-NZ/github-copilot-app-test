@@ -68,6 +68,10 @@ Each update must include:
 
 Do not stay silent during tooling work.
 
+## Command Gate (hard rule)
+Before starting any new command batch after a milestone/ticket transition, send the user a progress update first.
+If this gate is not satisfied, pause and send the missing update before continuing.
+
 ## Stage Exit Criteria
 - Stage 1 complete when goal, user, destination, and definition of done are explicit.
 - Stage 2 complete when scope boundaries and success criteria are agreed.

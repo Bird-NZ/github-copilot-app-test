@@ -15,6 +15,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Messaging reliability preference:** In direct chat, always acknowledge quickly and never go silent during tool work; provide clear progress and a final explicit reply.
 - **Build-progress expectation:** During active implementation, provide milestone-by-milestone progress updates (what changed, what is next, and status Done/In Progress/Blocked) rather than long silent tool runs.
 - **Stage-completion expectation:** Whenever a stage in the holistic build process is completed, send an immediate explicit stage-complete alert (with evidence and next stage), without waiting for Mat to ask.
+- **Hard update gate:** Never run a new command batch after a milestone transition until Mat has received the update message for that transition.
 - **Voice-note interaction preference:** Do not send “transcribing now” status messages; assume voice notes are being transcribed automatically and respond with the useful result/questions directly.
 
 ## Context
