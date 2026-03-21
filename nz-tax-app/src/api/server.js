@@ -1,10 +1,13 @@
 import express from 'express';
+import multer from 'multer';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
 import { createWorkspace, getWorkspace, listWorkspaces } from './modules/workspaceStore.js';
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
+import { addDocument, checklist, documents } from './modules/documentStore.js';
 
 const app = express();
 app.use(express.json());
+const upload = multer({ dest: 'uploads/' });
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
@@ -90,6 +93,35 @@ app.post('/questionnaire/evaluate', requireSession, (req, res) => {
   const visible = visibleQuestions(answers);
   const status = completionStatus(answers);
   res.json({ visible, status });
+});
+
+
+
+app.post('/workspaces/:id/documents', requireSession, upload.single('file'), (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  if (!req.file) return res.status(400).json({ error: 'FILE_REQUIRED' });
+  const doc = addDocument({
+    workspaceId: workspace.id,
+    filename: req.file.filename,
+    originalName: req.file.originalname,
+    mimeType: req.file.mimetype,
+    size: req.file.size,
+    docType: req.body?.docType || 'other'
+  });
+  return res.status(201).json({ document: doc });
+});
+
+app.get('/workspaces/:id/documents', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  return res.json({ items: documents(workspace.id) });
+});
+
+app.get('/workspaces/:id/checklist', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  return res.json({ checklist: checklist(workspace.id) });
 });
 
 const port = process.env.PORT || 8787;
