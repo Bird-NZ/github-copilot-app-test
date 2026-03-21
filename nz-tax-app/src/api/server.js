@@ -10,6 +10,7 @@ import { getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
 import { mapToIr3 } from './modules/mappingEngine.js';
 import { calculateDraft } from './modules/calcEngine.js';
 import { buildCsv, buildPdfPlaceholder } from './modules/exportService.js';
+import { listEvents, logEvent } from './modules/auditStore.js';
 
 const app = express();
 app.use(express.json());
@@ -74,6 +75,7 @@ app.post('/workspaces', requireSession, (req, res) => {
   const { taxYearStart, taxYearEnd } = req.body || {};
   if (!taxYearStart || !taxYearEnd) return res.status(400).json({ error: 'MISSING_FIELDS' });
   const workspace = createWorkspace({ userId: req.session.userId, taxYearStart, taxYearEnd });
+  logEvent(workspace.id, { action: 'workspace.create', actor: req.session.userId });
   res.status(201).json({ workspace });
 });
 
@@ -115,6 +117,7 @@ app.post('/workspaces/:id/documents', requireSession, upload.single('file'), (re
     size: req.file.size,
     docType: req.body?.docType || 'other'
   });
+  logEvent(workspace.id, { action: 'document.upload', actor: req.session.userId, meta: { docType: doc.docType } });
   return res.status(201).json({ document: doc });
 });
 
@@ -137,6 +140,7 @@ app.post('/workspaces/:id/income/:type', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   try {
     const item = addIncome(workspace.id, req.params.type, req.body || {});
+    logEvent(workspace.id, { action: `income.add.${req.params.type}`, actor: req.session.userId });
     return res.status(201).json({ item });
   } catch (err) {
     if (err.message === 'INVALID_TYPE') return res.status(400).json({ error: 'INVALID_TYPE' });
@@ -170,6 +174,7 @@ app.post('/workspaces/:id/crypto/import-csv', requireSession, (req, res) => {
   if (!csv || typeof csv !== 'string') return res.status(400).json({ error: 'CSV_REQUIRED' });
   const rows = parseCsv(csv);
   const result = importTransactions(workspace.id, rows);
+  logEvent(workspace.id, { action: 'crypto.import_csv', actor: req.session.userId, meta: { imported: result.imported } });
   return res.status(201).json({ ...result });
 });
 
@@ -222,6 +227,12 @@ app.get('/workspaces/:id/export/draft', requireSession, (req, res) => {
   const csv = buildCsv(map, calc);
   const pdf = buildPdfPlaceholder(map, calc);
   return res.json({ csv, pdf });
+});
+
+app.get('/workspaces/:id/audit', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  return res.json({ events: listEvents(workspace.id) });
 });
 
 const port = process.env.PORT || 8787;
