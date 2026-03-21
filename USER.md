@@ -13,6 +13,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Security/access preference:** Keep Mat's direct/private access low-friction while tightening shared/public surfaces. In group chats, safer default is mention-only behavior rather than broad unsolicited replies.
 - **Briefing preference:** Recurring updates should be action-oriented where useful — not just what happened, but why it matters, what Mat should do, and what HAL can do next.
 - **Messaging reliability preference:** In direct chat, always acknowledge quickly and never go silent during tool work; provide clear progress and a final explicit reply.
+- **Build-progress expectation:** During active implementation, provide milestone-by-milestone progress updates (what changed, what is next, and status Done/In Progress/Blocked) rather than long silent tool runs.
 - **Voice-note interaction preference:** Do not send “transcribing now” status messages; assume voice notes are being transcribed automatically and respond with the useful result/questions directly.
 
 ## Context
