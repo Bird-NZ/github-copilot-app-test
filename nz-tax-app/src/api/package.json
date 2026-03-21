@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "test:smoke": "bash tests/smoke.sh"
+    "test:smoke": "bash tests/smoke.sh",
+    "test:failure": "bash tests/failure.sh",
+    "test": "npm run test:smoke && npm run test:failure"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
