@@ -1,5 +1,6 @@
 import express from 'express';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
+import { createWorkspace, getWorkspace, listWorkspaces } from './modules/workspaceStore.js';
 
 const app = express();
 app.use(express.json());
@@ -45,6 +46,36 @@ app.get('/auth/session', (req, res) => {
   const session = getSession(token);
   if (!session) return res.status(401).json({ error: 'INVALID_SESSION' });
   return res.json({ session });
+});
+
+
+
+function requireSession(req, res, next) {
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+  if (!token) return res.status(401).json({ error: 'MISSING_TOKEN' });
+  const session = getSession(token);
+  if (!session) return res.status(401).json({ error: 'INVALID_SESSION' });
+  req.session = session;
+  next();
+}
+
+app.post('/workspaces', requireSession, (req, res) => {
+  const { taxYearStart, taxYearEnd } = req.body || {};
+  if (!taxYearStart || !taxYearEnd) return res.status(400).json({ error: 'MISSING_FIELDS' });
+  const workspace = createWorkspace({ userId: req.session.userId, taxYearStart, taxYearEnd });
+  res.status(201).json({ workspace });
+});
+
+app.get('/workspaces', requireSession, (req, res) => {
+  const items = listWorkspaces(req.session.userId);
+  res.json({ items });
+});
+
+app.get('/workspaces/:id', requireSession, (req, res) => {
+  const item = getWorkspace(req.params.id, req.session.userId);
+  if (!item) return res.status(404).json({ error: 'NOT_FOUND' });
+  res.json({ workspace: item });
 });
 
 const port = process.env.PORT || 8787;
