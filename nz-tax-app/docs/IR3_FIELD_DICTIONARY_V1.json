@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "fields": [
+    {"ref":"11A","name":"Total PAYE withheld","type":"currency","required":false},
+    {"ref":"11B","name":"Total gross earnings","type":"currency","required":false},
+    {"ref":"11C","name":"Income not liable for earner levy","type":"currency","required":false},
+    {"ref":"11E","name":"Total tax deductions","type":"currency","required":false},
+    {"ref":"28","name":"Other income","type":"currency","required":false},
+    {"ref":"33","name":"Taxable income","type":"currency","required":true},
+    {"ref":"36A","name":"Total PIE deductions","type":"currency","required":false},
+    {"ref":"36B","name":"Total PIE income","type":"currency","required":false},
+    {"ref":"37","name":"Tax on taxable income","type":"currency","required":true},
+    {"ref":"37A","name":"Residual income tax","type":"currency","required":true},
+    {"ref":"37B","name":"Refund or tax to pay","type":"currency","required":true},
+    {"ref":"40B","name":"Provisional tax payable","type":"currency","required":false}
+  ]
+}
