@@ -17,6 +17,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Build-progress expectation:** During active implementation, provide milestone-by-milestone progress updates (what changed, what is next, and status Done/In Progress/Blocked) rather than long silent tool runs.
 - **Stage-completion expectation:** Whenever a stage in the holistic build process is completed, send an immediate explicit stage-complete alert (with evidence and next stage), without waiting for Mat to ask.
 - **Hard update gate:** Never run a new command batch after a milestone transition until Mat has received the update message for that transition.
+- **Execution mantra:** For active build work, keep going continuously without waiting for nudges; only pause when blocked by required user input, missing credentials/permissions, or hard platform/tool limits that cannot be resolved autonomously.
 - **Voice-note interaction preference:** Do not send “transcribing now” status messages; assume voice notes are being transcribed automatically and respond with the useful result/questions directly.
 
 ## Context
