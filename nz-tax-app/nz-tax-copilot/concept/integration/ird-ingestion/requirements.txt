@@ -1,0 +1,14 @@
+# Stage 16: IRD Guidance Data Ingestion — Python Dependencies
+
+# Azure SDK
+azure-identity==1.19.0
+azure-search-documents==11.6.0
+openai==1.58.1
+
+# Document processing
+PyPDF2==3.0.1
+langchain==0.3.13
+langchain-text-splitters==0.3.2
+
+# Utilities
+python-dotenv==1.0.1

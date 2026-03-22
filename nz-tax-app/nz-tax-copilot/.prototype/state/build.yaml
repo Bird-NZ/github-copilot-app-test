@@ -1,0 +1,952 @@
+templates_used:
+- ai-app
+- serverless-api
+- web-app
+- microservices
+- data-pipeline
+iac_tool: terraform
+services_detected: []
+deployment_stages:
+- stage: 1
+  name: Foundation
+  category: infra
+  dir: concept/infra/terraform/stage-1-foundation
+  services:
+  - name: resource-group
+    computed_name: zd-rg-tax-dev-aue
+    resource_type: Microsoft.Resources/resourceGroups
+    sku: ''
+  - name: user-assigned-identity
+    computed_name: zd-id-tax-dev-aue
+    resource_type: Microsoft.ManagedIdentity/userAssignedIdentities
+    sku: ''
+  - name: log-analytics
+    computed_name: pm-log-tax-dev-aue
+    resource_type: Microsoft.OperationalInsights/workspaces
+    sku: PerGB2018
+  - name: application-insights
+    computed_name: pm-appi-tax-dev-aue
+    resource_type: Microsoft.Insights/components
+    sku: ''
+  status: generated
+  files: &id001
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+  - concept/infra/terraform/stage-1-foundation/README.md
+- stage: 2
+  name: Networking
+  category: infra
+  dir: concept/infra/terraform/stage-2-networking
+  services:
+  - name: virtual-network
+    computed_name: zd-vnet-tax-dev-aue
+    resource_type: Microsoft.Network/virtualNetworks
+    sku: ''
+  - name: subnet-apps
+    computed_name: snet-apps
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: subnet-data
+    computed_name: snet-data
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: subnet-ai
+    computed_name: snet-ai
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: subnet-mgmt
+    computed_name: snet-mgmt
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: nsg-apps
+    computed_name: nsg-apps
+    resource_type: Microsoft.Network/networkSecurityGroups
+    sku: ''
+  - name: nsg-data
+    computed_name: nsg-data
+    resource_type: Microsoft.Network/networkSecurityGroups
+    sku: ''
+  - name: nsg-ai
+    computed_name: nsg-ai
+    resource_type: Microsoft.Network/networkSecurityGroups
+    sku: ''
+  - name: private-dns-zone-blob
+    computed_name: privatelink.blob.core.windows.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-keyvault
+    computed_name: privatelink.vaultcore.azure.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-sql
+    computed_name: privatelink.database.windows.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-cosmos
+    computed_name: privatelink.documents.azure.com
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-openai
+    computed_name: privatelink.openai.azure.com
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-search
+    computed_name: privatelink.search.windows.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  status: generated
+  files: &id002
+  - concept/infra/terraform/stage-2-networking/providers.tf
+  - concept/infra/terraform/stage-2-networking/variables.tf
+  - concept/infra/terraform/stage-2-networking/locals.tf
+  - concept/infra/terraform/stage-2-networking/main.tf
+  - concept/infra/terraform/stage-2-networking/nsg.tf
+  - concept/infra/terraform/stage-2-networking/private-dns.tf
+  - concept/infra/terraform/stage-2-networking/outputs.tf
+  - concept/infra/terraform/stage-2-networking/deploy.sh
+- stage: 3
+  name: Key Vault
+  category: infra
+  dir: concept/infra/terraform/stage-3-keyvault
+  services:
+  - name: key-vault
+    computed_name: zd-kv-tax-dev-aue
+    resource_type: Microsoft.KeyVault/vaults
+    sku: standard
+  - name: key-vault-private-endpoint
+    computed_name: pe-kv-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files: &id003
+  - concept/infra/terraform/stage-3-keyvault/providers.tf
+  - concept/infra/terraform/stage-3-keyvault/variables.tf
+  - concept/infra/terraform/stage-3-keyvault/locals.tf
+  - concept/infra/terraform/stage-3-keyvault/main.tf
+  - concept/infra/terraform/stage-3-keyvault/outputs.tf
+  - concept/infra/terraform/stage-3-keyvault/deploy.sh
+- stage: 4
+  name: Azure AD B2C
+  category: external
+  dir: concept/external/b2c
+  services:
+  - name: b2c-tenant
+    computed_name: nztaxcopilot.onmicrosoft.com
+    resource_type: Microsoft.AzureActiveDirectory/b2cDirectories
+    sku: Free
+  status: generated
+  files: &id004
+  - concept/external/b2c/README.md
+  - concept/external/b2c/setup-b2c.sh
+  - concept/external/b2c/verify-b2c.sh
+  - concept/external/b2c/deploy.sh
+- stage: 5
+  name: SQL Database
+  category: data
+  dir: concept/infra/terraform/stage-5-sql
+  services:
+  - name: sql-server
+    computed_name: zd-sql-tax-dev-aue
+    resource_type: Microsoft.Sql/servers
+    sku: ''
+  - name: sql-database
+    computed_name: TaxCopilotDB
+    resource_type: Microsoft.Sql/servers/databases
+    sku: GP_S_Gen5_2
+  - name: sql-private-endpoint
+    computed_name: pe-sql-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files: &id005
+  - concept/infra/terraform/stage-5-sql/providers.tf
+  - concept/infra/terraform/stage-5-sql/variables.tf
+  - concept/infra/terraform/stage-5-sql/locals.tf
+  - concept/infra/terraform/stage-5-sql/data.tf
+  - concept/infra/terraform/stage-5-sql/main.tf
+  - concept/infra/terraform/stage-5-sql/outputs.tf
+  - concept/infra/terraform/stage-5-sql/deploy.sh
+  - concept/infra/terraform/stage-5-sql/README.md
+- stage: 6
+  name: Cosmos DB
+  category: data
+  dir: concept/infra/terraform/stage-6-cosmos
+  services:
+  - name: cosmos-account
+    computed_name: zd-cosmos-tax-dev-aue
+    resource_type: Microsoft.DocumentDB/databaseAccounts
+    sku: Serverless
+  - name: cosmos-database
+    computed_name: TaxCopilotDB
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+    sku: ''
+  - name: cosmos-container-workspaces
+    computed_name: workspaces
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+    sku: ''
+  - name: cosmos-container-questionnaires
+    computed_name: questionnaireResponses
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+    sku: ''
+  - name: cosmos-container-guidance
+    computed_name: guidanceHistory
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+    sku: ''
+  - name: cosmos-private-endpoint
+    computed_name: pe-cosmos-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files: &id006
+  - concept/infra/terraform/stage-6-cosmos/providers.tf
+  - concept/infra/terraform/stage-6-cosmos/variables.tf
+  - concept/infra/terraform/stage-6-cosmos/locals.tf
+  - concept/infra/terraform/stage-6-cosmos/data.tf
+  - concept/infra/terraform/stage-6-cosmos/main.tf
+  - concept/infra/terraform/stage-6-cosmos/identity.tf
+  - concept/infra/terraform/stage-6-cosmos/keyvault.tf
+  - concept/infra/terraform/stage-6-cosmos/outputs.tf
+  - concept/infra/terraform/stage-6-cosmos/deploy.sh
+- stage: 7
+  name: Blob Storage
+  category: data
+  dir: concept/infra/terraform/stage-7-storage
+  services:
+  - name: storage-account
+    computed_name: zdsttaxdevaue
+    resource_type: Microsoft.Storage/storageAccounts
+    sku: Standard_LRS
+  - name: blob-container-documents
+    computed_name: tax-documents
+    resource_type: Microsoft.Storage/storageAccounts/blobServices/containers
+    sku: ''
+  - name: blob-container-exports
+    computed_name: export-output
+    resource_type: Microsoft.Storage/storageAccounts/blobServices/containers
+    sku: ''
+  - name: storage-private-endpoint
+    computed_name: pe-st-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files: &id007
+  - concept/infra/terraform/stage-7-storage/providers.tf
+  - concept/infra/terraform/stage-7-storage/variables.tf
+  - concept/infra/terraform/stage-7-storage/locals.tf
+  - concept/infra/terraform/stage-7-storage/main.tf
+  - concept/infra/terraform/stage-7-storage/identity.tf
+  - concept/infra/terraform/stage-7-storage/private-endpoint.tf
+  - concept/infra/terraform/stage-7-storage/diagnostics.tf
+  - concept/infra/terraform/stage-7-storage/data.tf
+  - concept/infra/terraform/stage-7-storage/outputs.tf
+  - concept/infra/terraform/stage-7-storage/deploy.sh
+- stage: 8
+  name: Azure OpenAI
+  category: infra
+  dir: concept/infra/terraform/stage-8-openai
+  services:
+  - name: openai-account
+    computed_name: zd-openai-tax-dev-aue
+    resource_type: Microsoft.CognitiveServices/accounts
+    sku: S0
+  - name: openai-deployment-gpt4o
+    computed_name: gpt-4o
+    resource_type: Microsoft.CognitiveServices/accounts/deployments
+    sku: Standard
+  - name: openai-deployment-embeddings
+    computed_name: text-embedding-ada-002
+    resource_type: Microsoft.CognitiveServices/accounts/deployments
+    sku: Standard
+  - name: openai-private-endpoint
+    computed_name: pe-openai-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files: &id008
+  - concept/infra/terraform/stage-8-openai/providers.tf
+  - concept/infra/terraform/stage-8-openai/variables.tf
+  - concept/infra/terraform/stage-8-openai/locals.tf
+  - concept/infra/terraform/stage-8-openai/main.tf
+  - concept/infra/terraform/stage-8-openai/outputs.tf
+  - concept/infra/terraform/stage-8-openai/deploy.sh
+  - concept/infra/terraform/stage-8-openai/README.md
+  - concept/infra/terraform/stage-8-openai/terraform.tfvars.example
+- stage: 9
+  name: AI Search
+  category: infra
+  dir: concept/infra/terraform/stage-9-search
+  services:
+  - name: search-service
+    computed_name: zd-search-tax-dev-aue
+    resource_type: Microsoft.Search/searchServices
+    sku: basic
+  - name: search-private-endpoint
+    computed_name: pe-search-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files: &id009
+  - concept/infra/terraform/stage-9-search/providers.tf
+  - concept/infra/terraform/stage-9-search/main.tf
+  - concept/infra/terraform/stage-9-search/identity.tf
+  - concept/infra/terraform/stage-9-search/variables.tf
+  - concept/infra/terraform/stage-9-search/locals.tf
+  - concept/infra/terraform/stage-9-search/outputs.tf
+  - concept/infra/terraform/stage-9-search/deploy.sh
+  - concept/infra/terraform/stage-9-search/README.md
+- stage: 10
+  name: Container Registry
+  category: infra
+  dir: concept/infra/terraform/stage-10-acr
+  services:
+  - name: container-registry
+    computed_name: zdacrtaxdevaue
+    resource_type: Microsoft.ContainerRegistry/registries
+    sku: Basic
+  status: generated
+  files: &id010
+  - concept/infra/terraform/stage-10-acr/providers.tf
+  - concept/infra/terraform/stage-10-acr/main.tf
+  - concept/infra/terraform/stage-10-acr/variables.tf
+  - concept/infra/terraform/stage-10-acr/locals.tf
+  - concept/infra/terraform/stage-10-acr/outputs.tf
+  - concept/infra/terraform/stage-10-acr/deploy.sh
+  - concept/infra/terraform/stage-10-acr/README.md
+- stage: 11
+  name: Container Apps Environment
+  category: infra
+  dir: concept/infra/terraform/stage-11-container-env
+  services:
+  - name: container-apps-environment
+    computed_name: zd-cae-tax-dev-aue
+    resource_type: Microsoft.App/managedEnvironments
+    sku: Consumption
+  status: generated
+  files: &id011
+  - concept/infra/terraform/stage-11-container-env/providers.tf
+  - concept/infra/terraform/stage-11-container-env/variables.tf
+  - concept/infra/terraform/stage-11-container-env/locals.tf
+  - concept/infra/terraform/stage-11-container-env/data.tf
+  - concept/infra/terraform/stage-11-container-env/main.tf
+  - concept/infra/terraform/stage-11-container-env/outputs.tf
+  - concept/infra/terraform/stage-11-container-env/deploy.sh
+  - concept/infra/terraform/stage-11-container-env/README.md
+- stage: 12
+  name: SQL Schema
+  category: schema
+  dir: concept/db/sql
+  services:
+  - name: sql-schema
+    computed_name: TaxCopilotDB-schema
+    resource_type: ''
+    sku: ''
+  status: generated
+  files: &id012
+  - concept/db/sql/001_create_schema.sql
+  - concept/db/sql/alembic.ini
+  - concept/db/sql/migrations/env.py
+  - concept/db/sql/deploy.sh
+  - concept/db/sql/README.md
+- stage: 13
+  name: AI Search Index
+  category: schema
+  dir: concept/db/ai-search
+  services:
+  - name: search-index
+    computed_name: ird-guidance
+    resource_type: ''
+    sku: ''
+  status: generated
+  files: &id013
+  - concept/db/ai-search/index-schema.json
+  - concept/db/ai-search/README.md
+  - concept/db/ai-search/deploy.sh
+  - concept/db/ai-search/query_test.py
+  - concept/db/ai-search/outputs.json
+- stage: 14
+  name: Backend API
+  category: app
+  dir: concept/apps/stage-14-backend-api
+  services:
+  - name: backend-api
+    computed_name: zd-ca-api-dev-aue
+    resource_type: Microsoft.App/containerApps
+    sku: Consumption
+  status: generated
+  files: &id014
+  - concept/apps/stage-14-backend-api/backend/requirements.txt
+  - concept/apps/stage-14-backend-api/backend/app/core/config.py
+  - concept/apps/stage-14-backend-api/backend/app/core/security.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/credential_provider.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/cosmos_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/sql_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/openai_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/storage_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/search_client.py
+  - concept/apps/stage-14-backend-api/backend/app/services/workspace_service.py
+  - concept/apps/stage-14-backend-api/backend/app/services/audit_service.py
+- stage: 15
+  name: Frontend SPA
+  category: app
+  dir: concept/apps/stage-15-frontend-spa
+  services:
+  - name: frontend-spa
+    computed_name: zd-ca-web-dev-aue
+    resource_type: Microsoft.App/containerApps
+    sku: Consumption
+  status: generated
+  files: &id015
+  - concept/apps/stage-15-frontend-spa/package.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.node.json
+  - concept/apps/stage-15-frontend-spa/vite.config.ts
+  - concept/apps/stage-15-frontend-spa/.env.example
+  - concept/apps/stage-15-frontend-spa/index.html
+  - concept/apps/stage-15-frontend-spa/src/main.tsx
+  - concept/apps/stage-15-frontend-spa/src/index.css
+  - concept/apps/stage-15-frontend-spa/src/App.tsx
+  - concept/apps/stage-15-frontend-spa/src/components/Layout.tsx
+  - concept/apps/stage-15-frontend-spa/src/components/ErrorBoundary.tsx
+  - concept/apps/stage-15-frontend-spa/src/api/apiClient.ts
+  - concept/apps/stage-15-frontend-spa/src/api/workspaces.ts
+  - concept/apps/stage-15-frontend-spa/src/pages/Home.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Workspaces.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/WorkspaceDetail.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Questionnaire.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Calculation.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Export.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Guidance.tsx
+  - concept/apps/stage-15-frontend-spa/src/types/api.ts
+- stage: 16
+  name: IRD Guidance Data Ingestion
+  category: integration
+  dir: concept/integration/ird-ingestion
+  services:
+  - name: ingestion-script
+    computed_name: ingest_ird_guidance.py
+    resource_type: ''
+    sku: ''
+  status: generated
+  files: &id016
+  - concept/integration/ird-ingestion/providers.tf
+  - concept/integration/ird-ingestion/variables.tf
+  - concept/integration/ird-ingestion/locals.tf
+  - concept/integration/ird-ingestion/main.tf
+  - concept/integration/ird-ingestion/ingestion_script.tf
+  - concept/integration/ird-ingestion/outputs.tf
+  - concept/integration/ird-ingestion/deploy.sh
+- stage: 17
+  name: Documentation
+  category: docs
+  dir: concept/docs
+  services:
+  - name: architecture-docs
+    computed_name: ARCHITECTURE.md
+    resource_type: ''
+    sku: ''
+  - name: deployment-guide
+    computed_name: DEPLOYMENT.md
+    resource_type: ''
+    sku: ''
+  - name: api-documentation
+    computed_name: API.md
+    resource_type: ''
+    sku: ''
+  - name: runbook
+    computed_name: RUNBOOK.md
+    resource_type: ''
+    sku: ''
+  status: generated
+  files: &id017
+  - concept/docs/ARCHITECTURE.md
+generation_log:
+- stage: 1
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+  timestamp: '2026-03-21T10:56:49.544184+00:00'
+- stage: 1
+  agent: terraform-agent
+  files: *id001
+  timestamp: '2026-03-21T10:58:34.885523+00:00'
+- stage: 2
+  agent: terraform-agent
+  files: *id002
+  timestamp: '2026-03-21T20:47:24.098611+00:00'
+- stage: 3
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-3-keyvault/providers.tf
+  - concept/infra/terraform/stage-3-keyvault/main.tf
+  - concept/infra/terraform/stage-3-keyvault/variables.tf
+  - concept/infra/terraform/stage-3-keyvault/locals.tf
+  - concept/infra/terraform/stage-3-keyvault/outputs.tf
+  - concept/infra/terraform/stage-3-keyvault/deploy.sh
+  timestamp: '2026-03-21T22:19:03.103688+00:00'
+- stage: 3
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-3-keyvault/providers.tf
+  - concept/infra/terraform/stage-3-keyvault/main.tf
+  - concept/infra/terraform/stage-3-keyvault/variables.tf
+  - concept/infra/terraform/stage-3-keyvault/locals.tf
+  - concept/infra/terraform/stage-3-keyvault/outputs.tf
+  - concept/infra/terraform/stage-3-keyvault/deploy.sh
+  - concept/infra/terraform/stage-3-keyvault/README.md
+  timestamp: '2026-03-21T22:22:02.968244+00:00'
+- stage: 3
+  agent: terraform-agent
+  files: *id003
+  timestamp: '2026-03-21T22:24:14.434247+00:00'
+- stage: 4
+  agent: app-developer
+  files: *id004
+  timestamp: '2026-03-21T22:26:35.341827+00:00'
+- stage: 5
+  agent: terraform-agent
+  files: *id005
+  timestamp: '2026-03-21T22:28:48.205772+00:00'
+- stage: 6
+  agent: terraform-agent
+  files: *id006
+  timestamp: '2026-03-21T22:44:52.950468+00:00'
+- stage: 7
+  agent: terraform-agent
+  files: *id007
+  timestamp: '2026-03-21T23:32:28.225185+00:00'
+- stage: 8
+  agent: terraform-agent
+  files: *id008
+  timestamp: '2026-03-21T23:48:00.680444+00:00'
+- stage: 9
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-9-search/providers.tf
+  - concept/infra/terraform/stage-9-search/variables.tf
+  - concept/infra/terraform/stage-9-search/locals.tf
+  - concept/infra/terraform/stage-9-search/main.tf
+  - concept/infra/terraform/stage-9-search/identity.tf
+  - concept/infra/terraform/stage-9-search/outputs.tf
+  - concept/infra/terraform/stage-9-search/deploy.sh
+  - concept/infra/terraform/stage-9-search/README.md
+  timestamp: '2026-03-22T00:00:22.336412+00:00'
+- stage: 9
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-9-search/providers.tf
+  - concept/infra/terraform/stage-9-search/variables.tf
+  - concept/infra/terraform/stage-9-search/locals.tf
+  - concept/infra/terraform/stage-9-search/main.tf
+  - concept/infra/terraform/stage-9-search/private-endpoint.tf
+  - concept/infra/terraform/stage-9-search/identity.tf
+  - concept/infra/terraform/stage-9-search/diagnostic-settings.tf
+  - concept/infra/terraform/stage-9-search/outputs.tf
+  - concept/infra/terraform/stage-9-search/deploy.sh
+  - concept/infra/terraform/stage-9-search/README.md
+  timestamp: '2026-03-22T00:04:03.049170+00:00'
+- stage: 9
+  agent: terraform-agent
+  files: *id009
+  timestamp: '2026-03-22T00:06:39.746976+00:00'
+- stage: 10
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-10-acr/providers.tf
+  - concept/infra/terraform/stage-10-acr/variables.tf
+  - concept/infra/terraform/stage-10-acr/locals.tf
+  - concept/infra/terraform/stage-10-acr/main.tf
+  - concept/infra/terraform/stage-10-acr/outputs.tf
+  - concept/infra/terraform/stage-10-acr/deploy.sh
+  - concept/infra/terraform/stage-10-acr/README.md
+  timestamp: '2026-03-22T00:08:46.903451+00:00'
+- stage: 10
+  agent: terraform-agent
+  files:
+  - concept/infra/terraform/stage-10-acr/providers.tf
+  - concept/infra/terraform/stage-10-acr/variables.tf
+  - concept/infra/terraform/stage-10-acr/locals.tf
+  - concept/infra/terraform/stage-10-acr/main.tf
+  - concept/infra/terraform/stage-10-acr/outputs.tf
+  - concept/infra/terraform/stage-10-acr/deploy.sh
+  - concept/infra/terraform/stage-10-acr/README.md
+  timestamp: '2026-03-22T00:11:43.300266+00:00'
+- stage: 10
+  agent: terraform-agent
+  files: *id010
+  timestamp: '2026-03-22T00:13:35.870246+00:00'
+- stage: 11
+  agent: terraform-agent
+  files: *id011
+  timestamp: '2026-03-22T00:15:53.448923+00:00'
+- stage: 12
+  agent: app-developer
+  files: *id012
+  timestamp: '2026-03-22T00:22:39.983754+00:00'
+- stage: 13
+  agent: app-developer
+  files: *id013
+  timestamp: '2026-03-22T00:26:06.343987+00:00'
+- stage: 14
+  agent: app-developer
+  files:
+  - concept/apps/stage-14-backend-api/main.tf
+  - concept/apps/stage-14-backend-api/variables.tf
+  - concept/apps/stage-14-backend-api/outputs.tf
+  - concept/apps/stage-14-backend-api/deploy.sh
+  - concept/apps/stage-14-backend-api/README.md
+  timestamp: '2026-03-22T00:27:57.737806+00:00'
+- stage: 14
+  agent: app-developer
+  files:
+  - concept/apps/stage-14-backend-api/backend/pyproject.toml
+  - concept/apps/stage-14-backend-api/backend/requirements.txt
+  - concept/apps/stage-14-backend-api/backend/app/main.py
+  - concept/apps/stage-14-backend-api/backend/app/core/config.py
+  - concept/apps/stage-14-backend-api/backend/app/core/security.py
+  - concept/apps/stage-14-backend-api/backend/app/core/telemetry.py
+  - concept/apps/stage-14-backend-api/backend/app/api/dependencies.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/cosmos_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/sql_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/storage_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/openai_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/search_client.py
+  - concept/apps/stage-14-backend-api/backend/app/api/v1/health.py
+  - concept/apps/stage-14-backend-api/backend/app/schemas/workspace.py
+  - concept/apps/stage-14-backend-api/backend/app/schemas/income.py
+  - concept/apps/stage-14-backend-api/backend/app/services/workspace_service.py
+  timestamp: '2026-03-22T00:31:45.620101+00:00'
+- stage: 14
+  agent: app-developer
+  files: *id014
+  timestamp: '2026-03-22T00:34:23.932155+00:00'
+- stage: 15
+  agent: app-developer
+  files:
+  - concept/apps/stage-15-frontend-spa/main.tf
+  - concept/apps/stage-15-frontend-spa/variables.tf
+  - concept/apps/stage-15-frontend-spa/outputs.tf
+  - concept/apps/stage-15-frontend-spa/terraform.tfvars
+  - concept/apps/stage-15-frontend-spa/package.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.json
+  - concept/apps/stage-15-frontend-spa/public/index.html
+  - concept/apps/stage-15-frontend-spa/public/health.html
+  - concept/apps/stage-15-frontend-spa/src/index.tsx
+  - concept/apps/stage-15-frontend-spa/src/index.css
+  - concept/apps/stage-15-frontend-spa/src/App.tsx
+  - concept/apps/stage-15-frontend-spa/src/auth/msalConfig.ts
+  - concept/apps/stage-15-frontend-spa/src/contexts/AuthContext.tsx
+  - concept/apps/stage-15-frontend-spa/src/contexts/AppInsightsContext.tsx
+  - concept/apps/stage-15-frontend-spa/src/utils/appInsights.ts
+  - concept/apps/stage-15-frontend-spa/src/api/apiClient.ts
+  - concept/apps/stage-15-frontend-spa/src/components/layout/Layout.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Home.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Workspaces.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/WorkspaceDetail.tsx
+  - concept/apps/stage-15-frontend-spa/src/react-app-env.d.ts
+  - concept/apps/stage-15-frontend-spa/nginx.conf
+  timestamp: '2026-03-22T00:36:26.436071+00:00'
+- stage: 15
+  agent: app-developer
+  files:
+  - concept/apps/stage-15-frontend-spa/main.tf
+  - concept/apps/stage-15-frontend-spa/variables.tf
+  - concept/apps/stage-15-frontend-spa/outputs.tf
+  - concept/apps/stage-15-frontend-spa/package.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.node.json
+  - concept/apps/stage-15-frontend-spa/vite.config.ts
+  - concept/apps/stage-15-frontend-spa/.env.example
+  - concept/apps/stage-15-frontend-spa/nginx.conf
+  - concept/apps/stage-15-frontend-spa/.dockerignore
+  - concept/apps/stage-15-frontend-spa/src/index.tsx
+  - concept/apps/stage-15-frontend-spa/src/index.css
+  - concept/apps/stage-15-frontend-spa/src/App.tsx
+  - concept/apps/stage-15-frontend-spa/src/auth/msalConfig.ts
+  - concept/apps/stage-15-frontend-spa/src/auth/useAuth.ts
+  - concept/apps/stage-15-frontend-spa/src/api/apiClient.ts
+  - concept/apps/stage-15-frontend-spa/src/api/workspaces.ts
+  - concept/apps/stage-15-frontend-spa/src/components/ErrorBoundary.tsx
+  - concept/apps/stage-15-frontend-spa/src/components/Layout.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Home.tsx
+  timestamp: '2026-03-22T00:39:33.581014+00:00'
+- stage: 15
+  agent: app-developer
+  files: *id015
+  timestamp: '2026-03-22T00:41:52.052295+00:00'
+- stage: 16
+  agent: terraform-agent
+  files: *id016
+  timestamp: '2026-03-22T00:44:30.406208+00:00'
+- stage: 17
+  agent: doc-agent
+  files: *id017
+  timestamp: '2026-03-22T00:49:57.903802+00:00'
+policy_checks:
+- stage: 5
+  violations:
+  - Possible incomplete echo statement in deploy script — verify all strings are properly closed.
+  - Possible credential/secret in output — use managed identity instead of connection strings or keys.
+  overrides: []
+  timestamp: '2026-03-21T22:28:48.240164+00:00'
+- stage: 6
+  violations:
+  - Possible credential/secret in output — use managed identity instead of connection strings or keys.
+  overrides: []
+  timestamp: '2026-03-21T22:44:52.983666+00:00'
+- stage: 11
+  violations:
+  - Possible credential/secret in output — use managed identity instead of connection strings or keys.
+  overrides: []
+  timestamp: '2026-03-22T00:15:53.486268+00:00'
+- stage: 12
+  violations:
+  - Possible incomplete echo statement in deploy script — verify all strings are properly closed.
+  - Possible credential/secret in output — use managed identity instead of connection strings or keys.
+  overrides: []
+  timestamp: '2026-03-22T00:22:40.052890+00:00'
+- stage: 13
+  violations:
+  - Possible hard-coded value detected — externalize secrets to Key Vault or use managed identity.
+  overrides: []
+  timestamp: '2026-03-22T00:26:06.411412+00:00'
+- stage: 14
+  violations:
+  - Possible credential/secret in output — use managed identity instead of connection strings or keys.
+  overrides: []
+  timestamp: '2026-03-22T00:27:57.779486+00:00'
+- stage: 17
+  violations:
+  - Possible hard-coded value detected — externalize secrets to Key Vault or use managed identity.
+  overrides: []
+  timestamp: '2026-03-22T00:49:57.946653+00:00'
+policy_overrides: []
+files_generated:
+- concept/infra/terraform/stage-1-foundation/providers.tf
+- concept/infra/terraform/stage-1-foundation/variables.tf
+- concept/infra/terraform/stage-1-foundation/locals.tf
+- concept/infra/terraform/stage-1-foundation/main.tf
+- concept/infra/terraform/stage-1-foundation/outputs.tf
+- concept/infra/terraform/stage-1-foundation/deploy.sh
+- concept/infra/terraform/stage-1-foundation/README.md
+- concept/infra/terraform/stage-2-networking/providers.tf
+- concept/infra/terraform/stage-2-networking/variables.tf
+- concept/infra/terraform/stage-2-networking/locals.tf
+- concept/infra/terraform/stage-2-networking/main.tf
+- concept/infra/terraform/stage-2-networking/nsg.tf
+- concept/infra/terraform/stage-2-networking/private-dns.tf
+- concept/infra/terraform/stage-2-networking/outputs.tf
+- concept/infra/terraform/stage-2-networking/deploy.sh
+- concept/infra/terraform/stage-3-keyvault/providers.tf
+- concept/infra/terraform/stage-3-keyvault/main.tf
+- concept/infra/terraform/stage-3-keyvault/variables.tf
+- concept/infra/terraform/stage-3-keyvault/locals.tf
+- concept/infra/terraform/stage-3-keyvault/outputs.tf
+- concept/infra/terraform/stage-3-keyvault/deploy.sh
+- concept/infra/terraform/stage-3-keyvault/README.md
+- concept/external/b2c/README.md
+- concept/external/b2c/setup-b2c.sh
+- concept/external/b2c/verify-b2c.sh
+- concept/external/b2c/deploy.sh
+- concept/infra/terraform/stage-5-sql/providers.tf
+- concept/infra/terraform/stage-5-sql/variables.tf
+- concept/infra/terraform/stage-5-sql/locals.tf
+- concept/infra/terraform/stage-5-sql/data.tf
+- concept/infra/terraform/stage-5-sql/main.tf
+- concept/infra/terraform/stage-5-sql/outputs.tf
+- concept/infra/terraform/stage-5-sql/deploy.sh
+- concept/infra/terraform/stage-5-sql/README.md
+- concept/infra/terraform/stage-6-cosmos/providers.tf
+- concept/infra/terraform/stage-6-cosmos/variables.tf
+- concept/infra/terraform/stage-6-cosmos/locals.tf
+- concept/infra/terraform/stage-6-cosmos/data.tf
+- concept/infra/terraform/stage-6-cosmos/main.tf
+- concept/infra/terraform/stage-6-cosmos/identity.tf
+- concept/infra/terraform/stage-6-cosmos/keyvault.tf
+- concept/infra/terraform/stage-6-cosmos/outputs.tf
+- concept/infra/terraform/stage-6-cosmos/deploy.sh
+- concept/infra/terraform/stage-7-storage/providers.tf
+- concept/infra/terraform/stage-7-storage/variables.tf
+- concept/infra/terraform/stage-7-storage/locals.tf
+- concept/infra/terraform/stage-7-storage/main.tf
+- concept/infra/terraform/stage-7-storage/identity.tf
+- concept/infra/terraform/stage-7-storage/private-endpoint.tf
+- concept/infra/terraform/stage-7-storage/diagnostics.tf
+- concept/infra/terraform/stage-7-storage/data.tf
+- concept/infra/terraform/stage-7-storage/outputs.tf
+- concept/infra/terraform/stage-7-storage/deploy.sh
+- concept/infra/terraform/stage-8-openai/providers.tf
+- concept/infra/terraform/stage-8-openai/variables.tf
+- concept/infra/terraform/stage-8-openai/locals.tf
+- concept/infra/terraform/stage-8-openai/main.tf
+- concept/infra/terraform/stage-8-openai/outputs.tf
+- concept/infra/terraform/stage-8-openai/deploy.sh
+- concept/infra/terraform/stage-8-openai/README.md
+- concept/infra/terraform/stage-8-openai/terraform.tfvars.example
+- concept/infra/terraform/stage-9-search/providers.tf
+- concept/infra/terraform/stage-9-search/variables.tf
+- concept/infra/terraform/stage-9-search/locals.tf
+- concept/infra/terraform/stage-9-search/main.tf
+- concept/infra/terraform/stage-9-search/identity.tf
+- concept/infra/terraform/stage-9-search/outputs.tf
+- concept/infra/terraform/stage-9-search/deploy.sh
+- concept/infra/terraform/stage-9-search/README.md
+- concept/infra/terraform/stage-9-search/private-endpoint.tf
+- concept/infra/terraform/stage-9-search/diagnostic-settings.tf
+- concept/infra/terraform/stage-10-acr/providers.tf
+- concept/infra/terraform/stage-10-acr/variables.tf
+- concept/infra/terraform/stage-10-acr/locals.tf
+- concept/infra/terraform/stage-10-acr/main.tf
+- concept/infra/terraform/stage-10-acr/outputs.tf
+- concept/infra/terraform/stage-10-acr/deploy.sh
+- concept/infra/terraform/stage-10-acr/README.md
+- concept/infra/terraform/stage-11-container-env/providers.tf
+- concept/infra/terraform/stage-11-container-env/variables.tf
+- concept/infra/terraform/stage-11-container-env/locals.tf
+- concept/infra/terraform/stage-11-container-env/data.tf
+- concept/infra/terraform/stage-11-container-env/main.tf
+- concept/infra/terraform/stage-11-container-env/outputs.tf
+- concept/infra/terraform/stage-11-container-env/deploy.sh
+- concept/infra/terraform/stage-11-container-env/README.md
+- concept/db/sql/001_create_schema.sql
+- concept/db/sql/alembic.ini
+- concept/db/sql/migrations/env.py
+- concept/db/sql/deploy.sh
+- concept/db/sql/README.md
+- concept/db/ai-search/index-schema.json
+- concept/db/ai-search/README.md
+- concept/db/ai-search/deploy.sh
+- concept/db/ai-search/query_test.py
+- concept/db/ai-search/outputs.json
+- concept/apps/stage-14-backend-api/main.tf
+- concept/apps/stage-14-backend-api/variables.tf
+- concept/apps/stage-14-backend-api/outputs.tf
+- concept/apps/stage-14-backend-api/deploy.sh
+- concept/apps/stage-14-backend-api/README.md
+- concept/apps/stage-14-backend-api/backend/pyproject.toml
+- concept/apps/stage-14-backend-api/backend/requirements.txt
+- concept/apps/stage-14-backend-api/backend/app/main.py
+- concept/apps/stage-14-backend-api/backend/app/core/config.py
+- concept/apps/stage-14-backend-api/backend/app/core/security.py
+- concept/apps/stage-14-backend-api/backend/app/core/telemetry.py
+- concept/apps/stage-14-backend-api/backend/app/api/dependencies.py
+- concept/apps/stage-14-backend-api/backend/app/clients/cosmos_client.py
+- concept/apps/stage-14-backend-api/backend/app/clients/sql_client.py
+- concept/apps/stage-14-backend-api/backend/app/clients/storage_client.py
+- concept/apps/stage-14-backend-api/backend/app/clients/openai_client.py
+- concept/apps/stage-14-backend-api/backend/app/clients/search_client.py
+- concept/apps/stage-14-backend-api/backend/app/api/v1/health.py
+- concept/apps/stage-14-backend-api/backend/app/schemas/workspace.py
+- concept/apps/stage-14-backend-api/backend/app/schemas/income.py
+- concept/apps/stage-14-backend-api/backend/app/services/workspace_service.py
+- concept/apps/stage-14-backend-api/backend/app/clients/credential_provider.py
+- concept/apps/stage-14-backend-api/backend/app/services/audit_service.py
+- concept/apps/stage-15-frontend-spa/main.tf
+- concept/apps/stage-15-frontend-spa/variables.tf
+- concept/apps/stage-15-frontend-spa/outputs.tf
+- concept/apps/stage-15-frontend-spa/terraform.tfvars
+- concept/apps/stage-15-frontend-spa/package.json
+- concept/apps/stage-15-frontend-spa/tsconfig.json
+- concept/apps/stage-15-frontend-spa/public/index.html
+- concept/apps/stage-15-frontend-spa/public/health.html
+- concept/apps/stage-15-frontend-spa/src/index.tsx
+- concept/apps/stage-15-frontend-spa/src/index.css
+- concept/apps/stage-15-frontend-spa/src/App.tsx
+- concept/apps/stage-15-frontend-spa/src/auth/msalConfig.ts
+- concept/apps/stage-15-frontend-spa/src/contexts/AuthContext.tsx
+- concept/apps/stage-15-frontend-spa/src/contexts/AppInsightsContext.tsx
+- concept/apps/stage-15-frontend-spa/src/utils/appInsights.ts
+- concept/apps/stage-15-frontend-spa/src/api/apiClient.ts
+- concept/apps/stage-15-frontend-spa/src/components/layout/Layout.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/Home.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/Workspaces.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/WorkspaceDetail.tsx
+- concept/apps/stage-15-frontend-spa/src/react-app-env.d.ts
+- concept/apps/stage-15-frontend-spa/nginx.conf
+- concept/apps/stage-15-frontend-spa/tsconfig.node.json
+- concept/apps/stage-15-frontend-spa/vite.config.ts
+- concept/apps/stage-15-frontend-spa/.env.example
+- concept/apps/stage-15-frontend-spa/.dockerignore
+- concept/apps/stage-15-frontend-spa/src/auth/useAuth.ts
+- concept/apps/stage-15-frontend-spa/src/api/workspaces.ts
+- concept/apps/stage-15-frontend-spa/src/components/ErrorBoundary.tsx
+- concept/apps/stage-15-frontend-spa/src/components/Layout.tsx
+- concept/apps/stage-15-frontend-spa/index.html
+- concept/apps/stage-15-frontend-spa/src/main.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/Questionnaire.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/Calculation.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/Export.tsx
+- concept/apps/stage-15-frontend-spa/src/pages/Guidance.tsx
+- concept/apps/stage-15-frontend-spa/src/types/api.ts
+- concept/integration/ird-ingestion/providers.tf
+- concept/integration/ird-ingestion/variables.tf
+- concept/integration/ird-ingestion/locals.tf
+- concept/integration/ird-ingestion/main.tf
+- concept/integration/ird-ingestion/ingestion_script.tf
+- concept/integration/ird-ingestion/outputs.tf
+- concept/integration/ird-ingestion/deploy.sh
+- concept/docs/ARCHITECTURE.md
+review_decisions: []
+conversation_history: []
+resources:
+- resourceType: Microsoft.Resources/resourceGroups
+  sku: ''
+- resourceType: Microsoft.ManagedIdentity/userAssignedIdentities
+  sku: ''
+- resourceType: Microsoft.OperationalInsights/workspaces
+  sku: PerGB2018
+- resourceType: Microsoft.Insights/components
+  sku: ''
+- resourceType: Microsoft.Network/virtualNetworks
+  sku: ''
+- resourceType: Microsoft.Network/virtualNetworks/subnets
+  sku: ''
+- resourceType: Microsoft.Network/networkSecurityGroups
+  sku: ''
+- resourceType: Microsoft.Network/privateDnsZones
+  sku: ''
+- resourceType: Microsoft.KeyVault/vaults
+  sku: standard
+- resourceType: Microsoft.Network/privateEndpoints
+  sku: ''
+- resourceType: Microsoft.AzureActiveDirectory/b2cDirectories
+  sku: Free
+- resourceType: Microsoft.Sql/servers
+  sku: ''
+- resourceType: Microsoft.Sql/servers/databases
+  sku: GP_S_Gen5_2
+- resourceType: Microsoft.DocumentDB/databaseAccounts
+  sku: Serverless
+- resourceType: Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+  sku: ''
+- resourceType: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+  sku: ''
+- resourceType: Microsoft.Storage/storageAccounts
+  sku: Standard_LRS
+- resourceType: Microsoft.Storage/storageAccounts/blobServices/containers
+  sku: ''
+- resourceType: Microsoft.CognitiveServices/accounts
+  sku: S0
+- resourceType: Microsoft.CognitiveServices/accounts/deployments
+  sku: Standard
+- resourceType: Microsoft.Search/searchServices
+  sku: basic
+- resourceType: Microsoft.ContainerRegistry/registries
+  sku: Basic
+- resourceType: Microsoft.App/managedEnvironments
+  sku: Consumption
+- resourceType: Microsoft.App/containerApps
+  sku: Consumption
+_metadata:
+  created: '2026-03-21T10:55:57.567586+00:00'
+  last_updated: '2026-03-22T00:49:57.946722+00:00'
+  iteration: 0
+  scope: all

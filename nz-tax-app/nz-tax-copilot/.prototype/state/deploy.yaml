@@ -1,0 +1,623 @@
+iac_tool: terraform
+subscription: ''
+resource_group: ''
+tenant: ''
+deployment_stages:
+- stage: 1
+  name: Foundation
+  category: infra
+  dir: concept/infra/terraform/stage-1-foundation
+  services:
+  - name: resource-group
+    computed_name: zd-rg-tax-dev-aue
+    resource_type: Microsoft.Resources/resourceGroups
+    sku: ''
+  - name: user-assigned-identity
+    computed_name: zd-id-tax-dev-aue
+    resource_type: Microsoft.ManagedIdentity/userAssignedIdentities
+    sku: ''
+  - name: log-analytics
+    computed_name: pm-log-tax-dev-aue
+    resource_type: Microsoft.OperationalInsights/workspaces
+    sku: PerGB2018
+  - name: application-insights
+    computed_name: pm-appi-tax-dev-aue
+    resource_type: Microsoft.Insights/components
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-1-foundation/providers.tf
+  - concept/infra/terraform/stage-1-foundation/variables.tf
+  - concept/infra/terraform/stage-1-foundation/locals.tf
+  - concept/infra/terraform/stage-1-foundation/main.tf
+  - concept/infra/terraform/stage-1-foundation/outputs.tf
+  - concept/infra/terraform/stage-1-foundation/deploy.sh
+  - concept/infra/terraform/stage-1-foundation/README.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 2
+  name: Networking
+  category: infra
+  dir: concept/infra/terraform/stage-2-networking
+  services:
+  - name: virtual-network
+    computed_name: zd-vnet-tax-dev-aue
+    resource_type: Microsoft.Network/virtualNetworks
+    sku: ''
+  - name: subnet-apps
+    computed_name: snet-apps
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: subnet-data
+    computed_name: snet-data
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: subnet-ai
+    computed_name: snet-ai
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: subnet-mgmt
+    computed_name: snet-mgmt
+    resource_type: Microsoft.Network/virtualNetworks/subnets
+    sku: ''
+  - name: nsg-apps
+    computed_name: nsg-apps
+    resource_type: Microsoft.Network/networkSecurityGroups
+    sku: ''
+  - name: nsg-data
+    computed_name: nsg-data
+    resource_type: Microsoft.Network/networkSecurityGroups
+    sku: ''
+  - name: nsg-ai
+    computed_name: nsg-ai
+    resource_type: Microsoft.Network/networkSecurityGroups
+    sku: ''
+  - name: private-dns-zone-blob
+    computed_name: privatelink.blob.core.windows.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-keyvault
+    computed_name: privatelink.vaultcore.azure.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-sql
+    computed_name: privatelink.database.windows.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-cosmos
+    computed_name: privatelink.documents.azure.com
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-openai
+    computed_name: privatelink.openai.azure.com
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  - name: private-dns-zone-search
+    computed_name: privatelink.search.windows.net
+    resource_type: Microsoft.Network/privateDnsZones
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-2-networking/providers.tf
+  - concept/infra/terraform/stage-2-networking/variables.tf
+  - concept/infra/terraform/stage-2-networking/locals.tf
+  - concept/infra/terraform/stage-2-networking/main.tf
+  - concept/infra/terraform/stage-2-networking/nsg.tf
+  - concept/infra/terraform/stage-2-networking/private-dns.tf
+  - concept/infra/terraform/stage-2-networking/outputs.tf
+  - concept/infra/terraform/stage-2-networking/deploy.sh
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 3
+  name: Key Vault
+  category: infra
+  dir: concept/infra/terraform/stage-3-keyvault
+  services:
+  - name: key-vault
+    computed_name: zd-kv-tax-dev-aue
+    resource_type: Microsoft.KeyVault/vaults
+    sku: standard
+  - name: key-vault-private-endpoint
+    computed_name: pe-kv-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-3-keyvault/providers.tf
+  - concept/infra/terraform/stage-3-keyvault/variables.tf
+  - concept/infra/terraform/stage-3-keyvault/locals.tf
+  - concept/infra/terraform/stage-3-keyvault/main.tf
+  - concept/infra/terraform/stage-3-keyvault/outputs.tf
+  - concept/infra/terraform/stage-3-keyvault/deploy.sh
+  deploy_status: failed
+  deploy_timestamp: '2026-03-22T10:13:39.537849+00:00'
+  deploy_output: ''
+  deploy_error: "Error: Failed to retrieve resource\n\n  with azapi_resource.kv_secrets_user_role,\n  on main.tf line 118,\
+    \ in resource \"azapi_resource\" \"kv_secrets_user_role\":\n 118: resource \"azapi_resource\" \"kv_secrets_user_role\"\
+    \ {\n\nchecking for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\"\
+    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\n\
+    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
+    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
+    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
+    \ for location 'australiaeast' and API version '2025-05-01' for type 'roleAssignments'. The supported api-versions are\
+    \ '2014-04-01-preview, 2014-07-01-preview, 2014-10-01-preview, 2015-05-01-preview, 2015-06-01, 2015-07-01, 2016-07-01,\
+    \ 2017-05-01, 2017-09-01, 2017-10-01-preview, 2018-01-01-preview, 2018-07-01, 2018-09-01-preview, 2018-12-01-preview,\
+    \ 2019-04-01-preview, 2020-03-01-preview, 2020-04-01-preview, 2020-08-01-preview, 2020-10-01-preview, 2021-04-01-preview,\
+    \ 2022-01-01-preview, 2022-04-01, 2025-10-01-preview'. The supported locations are ''.\"\n  }\n}\n--------------------------------------------------------------------------------\n\
+    \n\nError: Failed to retrieve resource\n\n  with azapi_resource.kv_diagnostic_settings,\n  on main.tf line 145, in resource\
+    \ \"azapi_resource\" \"kv_diagnostic_settings\":\n 145: resource \"azapi_resource\" \"kv_diagnostic_settings\" {\n\nchecking\
+    \ for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\"\
+    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\n\
+    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
+    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
+    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
+    \ for location 'australiaeast' and API version '2025-05-01' for type 'diagnosticSettings'. The supported api-versions\
+    \ are '2015-07-01, 2016-09-01, 2017-05-01-preview, 2021-05-01-preview, 2020-01-01-preview'. The supported locations are\
+    \ 'westus, eastus, northeurope, westeurope, eastasia, southeastasia, japaneast, japanwest, northcentralus, southcentralus,\
+    \ eastus2, centralus, australiaeast, australiasoutheast, brazilsouth, uksouth, ukwest, southindia, centralindia, westindia,\
+    \ canadaeast, canadacentral, westcentralus, westus2, koreasouth, koreacentral, australiacentral, australiacentral2, francecentral,\
+    \ francesouth, , southafricanorth, uaecentral, uaenorth, switzerlandnorth, switzerlandwest, germanynorth, germanywestcentral,\
+    \ norwayeast, norwaywest, westus3, jioindiawest, swedencentral, qatarcentral, polandcentral, newzealandnorth, malaysiawest,\
+    \ chilecentral, indonesiacentral, israelcentral, italynorth, spaincentral, mexicocentral, austriaeast, belgiumcentral,\
+    \ denmarkeast'.\"\n  }\n}\n--------------------------------------------------------------------------------\n\n\nError:\
+    \ Unsupported attribute\n\n  on outputs.tf line 14, in output \"key_vault_uri\":\n  14:   value       = azapi_resource.key_vault.output.properties.vaultUri\n\
+    \    ├────────────────\n    │ azapi_resource.key_vault.output is object with 3 attributes\n\nThis object does not have\
+    \ an attribute named \"properties\"."
+  rollback_timestamp: null
+- stage: 4
+  name: Azure AD B2C
+  category: external
+  dir: concept/external/b2c
+  services:
+  - name: b2c-tenant
+    computed_name: nztaxcopilot.onmicrosoft.com
+    resource_type: Microsoft.AzureActiveDirectory/b2cDirectories
+    sku: Free
+  status: generated
+  files:
+  - concept/external/b2c/README.md
+  - concept/external/b2c/setup-b2c.sh
+  - concept/external/b2c/verify-b2c.sh
+  - concept/external/b2c/deploy.sh
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 5
+  name: SQL Database
+  category: data
+  dir: concept/infra/terraform/stage-5-sql
+  services:
+  - name: sql-server
+    computed_name: zd-sql-tax-dev-aue
+    resource_type: Microsoft.Sql/servers
+    sku: ''
+  - name: sql-database
+    computed_name: TaxCopilotDB
+    resource_type: Microsoft.Sql/servers/databases
+    sku: GP_S_Gen5_2
+  - name: sql-private-endpoint
+    computed_name: pe-sql-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-5-sql/providers.tf
+  - concept/infra/terraform/stage-5-sql/variables.tf
+  - concept/infra/terraform/stage-5-sql/locals.tf
+  - concept/infra/terraform/stage-5-sql/data.tf
+  - concept/infra/terraform/stage-5-sql/main.tf
+  - concept/infra/terraform/stage-5-sql/outputs.tf
+  - concept/infra/terraform/stage-5-sql/deploy.sh
+  - concept/infra/terraform/stage-5-sql/README.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 6
+  name: Cosmos DB
+  category: data
+  dir: concept/infra/terraform/stage-6-cosmos
+  services:
+  - name: cosmos-account
+    computed_name: zd-cosmos-tax-dev-aue
+    resource_type: Microsoft.DocumentDB/databaseAccounts
+    sku: Serverless
+  - name: cosmos-database
+    computed_name: TaxCopilotDB
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+    sku: ''
+  - name: cosmos-container-workspaces
+    computed_name: workspaces
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+    sku: ''
+  - name: cosmos-container-questionnaires
+    computed_name: questionnaireResponses
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+    sku: ''
+  - name: cosmos-container-guidance
+    computed_name: guidanceHistory
+    resource_type: Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+    sku: ''
+  - name: cosmos-private-endpoint
+    computed_name: pe-cosmos-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-6-cosmos/providers.tf
+  - concept/infra/terraform/stage-6-cosmos/variables.tf
+  - concept/infra/terraform/stage-6-cosmos/locals.tf
+  - concept/infra/terraform/stage-6-cosmos/data.tf
+  - concept/infra/terraform/stage-6-cosmos/main.tf
+  - concept/infra/terraform/stage-6-cosmos/identity.tf
+  - concept/infra/terraform/stage-6-cosmos/keyvault.tf
+  - concept/infra/terraform/stage-6-cosmos/outputs.tf
+  - concept/infra/terraform/stage-6-cosmos/deploy.sh
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 7
+  name: Blob Storage
+  category: data
+  dir: concept/infra/terraform/stage-7-storage
+  services:
+  - name: storage-account
+    computed_name: zdsttaxdevaue
+    resource_type: Microsoft.Storage/storageAccounts
+    sku: Standard_LRS
+  - name: blob-container-documents
+    computed_name: tax-documents
+    resource_type: Microsoft.Storage/storageAccounts/blobServices/containers
+    sku: ''
+  - name: blob-container-exports
+    computed_name: export-output
+    resource_type: Microsoft.Storage/storageAccounts/blobServices/containers
+    sku: ''
+  - name: storage-private-endpoint
+    computed_name: pe-st-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-7-storage/providers.tf
+  - concept/infra/terraform/stage-7-storage/variables.tf
+  - concept/infra/terraform/stage-7-storage/locals.tf
+  - concept/infra/terraform/stage-7-storage/main.tf
+  - concept/infra/terraform/stage-7-storage/identity.tf
+  - concept/infra/terraform/stage-7-storage/private-endpoint.tf
+  - concept/infra/terraform/stage-7-storage/diagnostics.tf
+  - concept/infra/terraform/stage-7-storage/data.tf
+  - concept/infra/terraform/stage-7-storage/outputs.tf
+  - concept/infra/terraform/stage-7-storage/deploy.sh
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 8
+  name: Azure OpenAI
+  category: infra
+  dir: concept/infra/terraform/stage-8-openai
+  services:
+  - name: openai-account
+    computed_name: zd-openai-tax-dev-aue
+    resource_type: Microsoft.CognitiveServices/accounts
+    sku: S0
+  - name: openai-deployment-gpt4o
+    computed_name: gpt-4o
+    resource_type: Microsoft.CognitiveServices/accounts/deployments
+    sku: Standard
+  - name: openai-deployment-embeddings
+    computed_name: text-embedding-ada-002
+    resource_type: Microsoft.CognitiveServices/accounts/deployments
+    sku: Standard
+  - name: openai-private-endpoint
+    computed_name: pe-openai-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-8-openai/providers.tf
+  - concept/infra/terraform/stage-8-openai/variables.tf
+  - concept/infra/terraform/stage-8-openai/locals.tf
+  - concept/infra/terraform/stage-8-openai/main.tf
+  - concept/infra/terraform/stage-8-openai/outputs.tf
+  - concept/infra/terraform/stage-8-openai/deploy.sh
+  - concept/infra/terraform/stage-8-openai/README.md
+  - concept/infra/terraform/stage-8-openai/terraform.tfvars.example
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 9
+  name: AI Search
+  category: infra
+  dir: concept/infra/terraform/stage-9-search
+  services:
+  - name: search-service
+    computed_name: zd-search-tax-dev-aue
+    resource_type: Microsoft.Search/searchServices
+    sku: basic
+  - name: search-private-endpoint
+    computed_name: pe-search-tax-dev-aue
+    resource_type: Microsoft.Network/privateEndpoints
+    sku: ''
+  status: generated
+  files:
+  - concept/infra/terraform/stage-9-search/providers.tf
+  - concept/infra/terraform/stage-9-search/main.tf
+  - concept/infra/terraform/stage-9-search/identity.tf
+  - concept/infra/terraform/stage-9-search/variables.tf
+  - concept/infra/terraform/stage-9-search/locals.tf
+  - concept/infra/terraform/stage-9-search/outputs.tf
+  - concept/infra/terraform/stage-9-search/deploy.sh
+  - concept/infra/terraform/stage-9-search/README.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 10
+  name: Container Registry
+  category: infra
+  dir: concept/infra/terraform/stage-10-acr
+  services:
+  - name: container-registry
+    computed_name: zdacrtaxdevaue
+    resource_type: Microsoft.ContainerRegistry/registries
+    sku: Basic
+  status: generated
+  files:
+  - concept/infra/terraform/stage-10-acr/providers.tf
+  - concept/infra/terraform/stage-10-acr/main.tf
+  - concept/infra/terraform/stage-10-acr/variables.tf
+  - concept/infra/terraform/stage-10-acr/locals.tf
+  - concept/infra/terraform/stage-10-acr/outputs.tf
+  - concept/infra/terraform/stage-10-acr/deploy.sh
+  - concept/infra/terraform/stage-10-acr/README.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 11
+  name: Container Apps Environment
+  category: infra
+  dir: concept/infra/terraform/stage-11-container-env
+  services:
+  - name: container-apps-environment
+    computed_name: zd-cae-tax-dev-aue
+    resource_type: Microsoft.App/managedEnvironments
+    sku: Consumption
+  status: generated
+  files:
+  - concept/infra/terraform/stage-11-container-env/providers.tf
+  - concept/infra/terraform/stage-11-container-env/variables.tf
+  - concept/infra/terraform/stage-11-container-env/locals.tf
+  - concept/infra/terraform/stage-11-container-env/data.tf
+  - concept/infra/terraform/stage-11-container-env/main.tf
+  - concept/infra/terraform/stage-11-container-env/outputs.tf
+  - concept/infra/terraform/stage-11-container-env/deploy.sh
+  - concept/infra/terraform/stage-11-container-env/README.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 12
+  name: SQL Schema
+  category: schema
+  dir: concept/db/sql
+  services:
+  - name: sql-schema
+    computed_name: TaxCopilotDB-schema
+    resource_type: ''
+    sku: ''
+  status: generated
+  files:
+  - concept/db/sql/001_create_schema.sql
+  - concept/db/sql/alembic.ini
+  - concept/db/sql/migrations/env.py
+  - concept/db/sql/deploy.sh
+  - concept/db/sql/README.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 13
+  name: AI Search Index
+  category: schema
+  dir: concept/db/ai-search
+  services:
+  - name: search-index
+    computed_name: ird-guidance
+    resource_type: ''
+    sku: ''
+  status: generated
+  files:
+  - concept/db/ai-search/index-schema.json
+  - concept/db/ai-search/README.md
+  - concept/db/ai-search/deploy.sh
+  - concept/db/ai-search/query_test.py
+  - concept/db/ai-search/outputs.json
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 14
+  name: Backend API
+  category: app
+  dir: concept/apps/stage-14-backend-api
+  services:
+  - name: backend-api
+    computed_name: zd-ca-api-dev-aue
+    resource_type: Microsoft.App/containerApps
+    sku: Consumption
+  status: generated
+  files:
+  - concept/apps/stage-14-backend-api/backend/requirements.txt
+  - concept/apps/stage-14-backend-api/backend/app/core/config.py
+  - concept/apps/stage-14-backend-api/backend/app/core/security.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/credential_provider.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/cosmos_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/sql_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/openai_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/storage_client.py
+  - concept/apps/stage-14-backend-api/backend/app/clients/search_client.py
+  - concept/apps/stage-14-backend-api/backend/app/services/workspace_service.py
+  - concept/apps/stage-14-backend-api/backend/app/services/audit_service.py
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 15
+  name: Frontend SPA
+  category: app
+  dir: concept/apps/stage-15-frontend-spa
+  services:
+  - name: frontend-spa
+    computed_name: zd-ca-web-dev-aue
+    resource_type: Microsoft.App/containerApps
+    sku: Consumption
+  status: generated
+  files:
+  - concept/apps/stage-15-frontend-spa/package.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.json
+  - concept/apps/stage-15-frontend-spa/tsconfig.node.json
+  - concept/apps/stage-15-frontend-spa/vite.config.ts
+  - concept/apps/stage-15-frontend-spa/.env.example
+  - concept/apps/stage-15-frontend-spa/index.html
+  - concept/apps/stage-15-frontend-spa/src/main.tsx
+  - concept/apps/stage-15-frontend-spa/src/index.css
+  - concept/apps/stage-15-frontend-spa/src/App.tsx
+  - concept/apps/stage-15-frontend-spa/src/components/Layout.tsx
+  - concept/apps/stage-15-frontend-spa/src/components/ErrorBoundary.tsx
+  - concept/apps/stage-15-frontend-spa/src/api/apiClient.ts
+  - concept/apps/stage-15-frontend-spa/src/api/workspaces.ts
+  - concept/apps/stage-15-frontend-spa/src/pages/Home.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Workspaces.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/WorkspaceDetail.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Questionnaire.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Calculation.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Export.tsx
+  - concept/apps/stage-15-frontend-spa/src/pages/Guidance.tsx
+  - concept/apps/stage-15-frontend-spa/src/types/api.ts
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 16
+  name: IRD Guidance Data Ingestion
+  category: integration
+  dir: concept/integration/ird-ingestion
+  services:
+  - name: ingestion-script
+    computed_name: ingest_ird_guidance.py
+    resource_type: ''
+    sku: ''
+  status: generated
+  files:
+  - concept/integration/ird-ingestion/providers.tf
+  - concept/integration/ird-ingestion/variables.tf
+  - concept/integration/ird-ingestion/locals.tf
+  - concept/integration/ird-ingestion/main.tf
+  - concept/integration/ird-ingestion/ingestion_script.tf
+  - concept/integration/ird-ingestion/outputs.tf
+  - concept/integration/ird-ingestion/deploy.sh
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+- stage: 17
+  name: Documentation
+  category: docs
+  dir: concept/docs
+  services:
+  - name: architecture-docs
+    computed_name: ARCHITECTURE.md
+    resource_type: ''
+    sku: ''
+  - name: deployment-guide
+    computed_name: DEPLOYMENT.md
+    resource_type: ''
+    sku: ''
+  - name: api-documentation
+    computed_name: API.md
+    resource_type: ''
+    sku: ''
+  - name: runbook
+    computed_name: RUNBOOK.md
+    resource_type: ''
+    sku: ''
+  status: generated
+  files:
+  - concept/docs/ARCHITECTURE.md
+  deploy_status: pending
+  deploy_timestamp: null
+  deploy_output: ''
+  deploy_error: ''
+  rollback_timestamp: null
+preflight_results: []
+deploy_log:
+- stage: 3
+  action: deploying
+  detail: ''
+  timestamp: '2026-03-22T10:11:39.951732+00:00'
+- stage: 3
+  action: failed
+  detail: "Error: Failed to retrieve resource\n\n  with azapi_resource.kv_secrets_user_role,\n  on main.tf line 118, in resource\
+    \ \"azapi_resource\" \"kv_secrets_user_role\":\n 118: resource \"azapi_resource\" \"kv_secrets_user_role\" {\n\nchecking\
+    \ for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\"\
+    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\n\
+    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
+    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
+    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
+    \ for location 'australiaeast' and API version '2025-05-01' for type 'roleAssignments'. The supported api-versions are\
+    \ '2014-04-01-preview, 2014-07-01-preview, 2014-10-01-preview, 2015-05-01-preview, 2015-06-01, 2015-07-01, 2016-07-01,\
+    \ 2017-05-01, 2017-09-01, 2017-10-01-preview, 2018-01-01-preview, 2018-07-01, 2018-09-01-preview, 2018-12-01-preview,\
+    \ 2019-04-01-preview, 2020-03-01-preview, 2020-04-01-preview, 2020-08-01-preview, 2020-10-01-preview, 2021-04-01-preview,\
+    \ 2022-01-01-preview, 2022-04-01, 2025-10-01-preview'. The supported locations are ''.\"\n  }\n}\n--------------------------------------------------------------------------------\n\
+    \n\nError: Failed to retrieve resource\n\n  with azapi_resource.kv_diagnostic_settings,\n  on main.tf line 145, in resource\
+    \ \"azapi_resource\" \"kv_diagnostic_settings\":\n 145: resource \"azapi_resource\" \"kv_diagnostic_settings\" {\n\nchecking\
+    \ for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\"\
+    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\n\
+    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
+    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
+    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
+    \ for location 'australiaeast' and API version '2025-05-01' for type 'diagnosticSettings'. The supported api-versions\
+    \ are '2015-07-01, 2016-09-01, 2017-05-01-preview, 2021-05-01-preview, 2020-01-01-preview'. The supported locations are\
+    \ 'westus, eastus, northeurope, westeurope, eastasia, southeastasia, japaneast, japanwest, northcentralus, southcentralus,\
+    \ eastus2, centralus, australiaeast, australiasoutheast, brazilsouth, uksouth, ukwest, southindia, centralindia, westindia,\
+    \ canadaeast, canadacentral, westcentralus, westus2, koreasouth, koreacentral, australiacentral, australiacentral2, francecentral,\
+    \ francesouth, , southafricanorth, uaecentral, uaenorth, switzerlandnorth, switzerlandwest, germanynorth, germanywestcentral,\
+    \ norwayeast, norwaywest, westus3, jioindiawest, swedencentral, qatarcentral, polandcentral, newzealandnorth, malaysiawest,\
+    \ chilecentral, indonesiacentral, israelcentral, italynorth, spaincentral, mexicocentral, austriaeast, belgiumcentral,\
+    \ denmarkeast'.\"\n  }\n}\n--------------------------------------------------------------------------------\n\n\nError:\
+    \ Unsupported attribute\n\n  on outputs.tf line 14, in output \"key_vault_uri\":\n  14:   value       = azapi_resource.key_vault.output.properties.vaultUri\n\
+    \    ├────────────────\n    │ azapi_resource.key_vault.output is object with 3 attributes\n\nThis object does not have\
+    \ an attribute named \"properties\"."
+  timestamp: '2026-03-22T10:13:39.537865+00:00'
+rollback_log: []
+captured_outputs: {}
+conversation_history: []
+_metadata:
+  created: '2026-03-22T10:11:38.284299+00:00'
+  last_updated: '2026-03-22T10:13:39.572203+00:00'
+  iteration: 0

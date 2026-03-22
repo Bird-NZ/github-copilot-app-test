@@ -1,0 +1,1 @@
+# No additional variables required - all inputs from remote state

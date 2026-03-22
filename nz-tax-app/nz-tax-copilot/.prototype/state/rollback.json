@@ -1,0 +1,82 @@
+{
+  "stage_snapshots": [
+    {
+      "stage": 1,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T01:25:13.117503+00:00"
+    },
+    {
+      "stage": 1,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:11:38.786566+00:00"
+    },
+    {
+      "stage": 1,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:18:27.450540+00:00"
+    },
+    {
+      "stage": 1,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:36:40.006630+00:00"
+    },
+    {
+      "stage": 2,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:37:23.926670+00:00"
+    },
+    {
+      "stage": 2,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:46:55.023577+00:00"
+    },
+    {
+      "stage": 2,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:47:35.343711+00:00"
+    },
+    {
+      "stage": 2,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T03:48:34.718175+00:00"
+    },
+    {
+      "stage": 3,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T04:51:43.137520+00:00"
+    },
+    {
+      "stage": 3,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T04:54:16.401892+00:00"
+    },
+    {
+      "stage": 3,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T09:45:16.769016+00:00"
+    },
+    {
+      "stage": 3,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T09:46:22.500354+00:00"
+    },
+    {
+      "stage": 3,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T10:11:39.951224+00:00"
+    }
+  ]
+}

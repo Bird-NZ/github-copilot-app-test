@@ -1,0 +1,17 @@
+# Copy this file to terraform.tfvars and fill in the values
+
+subscription_id = "your-subscription-id-here"
+
+project     = "nz-tax-copilot"
+environment = "dev"
+location    = "australiaeast"
+
+# Optional: Override default capacities
+# gpt4o_capacity     = 10   # 10K TPM
+# embeddings_capacity = 120  # 120K TPM
+
+# Optional: Additional tags
+# tags = {
+#   CostCenter = "Engineering"
+#   Owner      = "tax-team"
+# }

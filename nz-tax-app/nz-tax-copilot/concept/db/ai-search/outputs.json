@@ -1,0 +1,27 @@
+{
+  "search_service_name": {
+    "value": "",
+    "type": "string",
+    "description": "AI Search service name (populated after deployment)"
+  },
+  "search_index_name": {
+    "value": "ird-guidance",
+    "type": "string",
+    "description": "IRD guidance vector search index name"
+  },
+  "search_index_endpoint": {
+    "value": "",
+    "type": "string",
+    "description": "Full index endpoint URL (populated after deployment)"
+  },
+  "vector_dimensions": {
+    "value": 1536,
+    "type": "number",
+    "description": "Embedding dimensions (text-embedding-ada-002)"
+  },
+  "index_field_count": {
+    "value": 12,
+    "type": "number",
+    "description": "Total number of fields in index"
+  }
+}
