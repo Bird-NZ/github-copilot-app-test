@@ -26,6 +26,14 @@ You wake up fresh each session. These files are your continuity:
 
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
 
+### Memory Protocol
+
+- **Search before acting:** Before answering questions about prior work, decisions, preferences, dates, people, or todos, run memory search first.
+- **Files are memory:** If an instruction or decision matters after this session, write it to disk. Chat alone is not durable memory.
+- **Use the right layer:** Put durable rules/preferences/decisions in `MEMORY.md`; put active-task notes and day context in `memory/YYYY-MM-DD.md`.
+- **Promote, don't dump:** Keep `MEMORY.md` short and stable. Promote distilled truths from daily logs; don't turn it into a journal.
+- **When in doubt, write:** If Mat says “remember this,” update memory files instead of trusting conversation context to survive compaction.
+
 ### 🧠 MEMORY.md - Your Long-Term Memory
 
 - **ONLY load in main session** (direct chats with your human)
