@@ -1,0 +1,15 @@
+{
+  "note": "Allowlisted OpenClaw config snapshot for Git backup. Secrets are redacted.",
+  "files": [
+    {
+      "source": "/home/mat/.openclaw/openclaw.json",
+      "dest": "/home/mat/.openclaw/workspace/backups/openclaw-config/openclaw.json",
+      "status": "ok"
+    },
+    {
+      "source": "/home/mat/.openclaw/cron/jobs.json",
+      "dest": "/home/mat/.openclaw/workspace/backups/openclaw-config/cron-jobs.json",
+      "status": "ok"
+    }
+  ]
+}

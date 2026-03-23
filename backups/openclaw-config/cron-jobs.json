@@ -1,0 +1,913 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "ad2d327e-309a-4183-82cf-f6445012fa33",
+      "agentId": "main",
+      "name": "7am world news summary",
+      "enabled": false,
+      "deleteAfterRun": true,
+      "createdAtMs": 1770544658821,
+      "updatedAtMs": 1770701487304,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-02-08T18:00:00.000Z"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Reminder: At 7:00 AM local time, pull the latest top three world news stories with brief summaries and send them to Mat.",
+        "model": "default"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "lastRunAtMs": 1770701487289,
+        "lastStatus": "error",
+        "lastDurationMs": 15,
+        "lastError": "model not allowed: openai/default",
+        "consecutiveErrors": 1
+      }
+    },
+    {
+      "id": "1df39e49-50c4-4b3a-a596-a4705072052c",
+      "agentId": "main",
+      "name": "7am daily weather brief",
+      "enabled": true,
+      "createdAtMs": 1770582853515,
+      "updatedAtMs": 1774202412925,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 7 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "At 7:00 AM Pacific/Auckland each day, use the weather skill/tool (not web search) to get the latest weather for Whatawhata (Waikato, New Zealand) and send exactly one concise morning update for Mat in this chat. Keep it to 1-2 practical human sentences. Do not mention cron, jobs, or technical details.",
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774288800000,
+        "lastRunAtMs": 1774202401127,
+        "lastStatus": "ok",
+        "lastDurationMs": 11798,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "1971b76f-98d3-4d99-b0a1-7a257b22d2ba",
+      "agentId": "main",
+      "name": "daily github backup push",
+      "enabled": true,
+      "createdAtMs": 1770848698317,
+      "updatedAtMs": 1774175409211,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 23 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "message": "This is a scheduled backup task. In /home/mat/.openclaw/workspace, run: git add -A; if there are no staged changes, exit with a short note \"No changes to back up\". If there are changes, commit with message \"chore: daily backup $(date +%F)\" and push to origin master. If push fails, report the exact error briefly. Keep output concise."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774261800000,
+        "lastRunAtMs": 1774175400021,
+        "lastStatus": "ok",
+        "lastDurationMs": 9190,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "90fb8155-1d3c-4138-9eb7-de4b6877b710",
+      "agentId": "main",
+      "name": "Monitor @onchaindomainer (light every 3h)",
+      "enabled": true,
+      "createdAtMs": 1771033467347,
+      "updatedAtMs": 1774251353321,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 10800000,
+        "anchorMs": 1771033467347
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Monitor X/Twitter account @onchaindomainer for new posts. Workflow each run: 1) Read /home/mat/.openclaw/workspace/agents/hal/memory/onchaindomainer_monitor.json if it exists for last seen post id/time/url. 2) Fetch latest posts using available web tools (prefer official/public pages or reliable mirrors). 3) If no new post since last seen, output exactly: NO_REPLY. 4) If there are new posts, send a concise alert with newest first including for each post: NZ time, link, and a 1-2 sentence plain-English summary. 5) After alerting, update onchaindomainer_monitor.json with latest seen item. Keep output short and useful.",
+        "timeoutSeconds": 120,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774262135595,
+        "lastRunAtMs": 1774251335595,
+        "lastStatus": "ok",
+        "lastDurationMs": 17726,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "7c11ccd7-a288-4be9-971c-42c87d5c97ef",
+      "agentId": "main",
+      "name": "Refresh SPX baseline ranges weekly",
+      "enabled": true,
+      "createdAtMs": 1771040552589,
+      "updatedAtMs": 1774064578369,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 604800000,
+        "anchorMs": 1771040552589
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run this command in /home/mat/.openclaw/workspace/agents/hal/stock_analysis: source .venv/bin/activate && python refresh_spx_ranges.py . Then read /home/mat/.openclaw/workspace/agents/hal/stock_analysis/outputs/spx_ranges_cache.json and send a brief summary including refreshedAt and validUntil in NZ time. If command fails, report the error.",
+        "timeoutSeconds": 180,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774669356752,
+        "lastRunAtMs": 1774064556752,
+        "lastStatus": "ok",
+        "lastDurationMs": 21617,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDelivered": false,
+        "lastDeliveryStatus": "not-delivered"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "eb83b30b-e602-4a87-89e9-98d8c48ef03f",
+      "agentId": "main",
+      "name": "Refresh stock report market baselines (US/AU/NZ) weekly",
+      "enabled": true,
+      "createdAtMs": 1771107010752,
+      "updatedAtMs": 1774131072868,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 604800000,
+        "anchorMs": 1771107010752
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run: /home/mat/.openclaw/workspace/agents/hal/stock_analysis/.venv/bin/python /home/mat/.openclaw/workspace/stock_report_v1/refresh_baselines.py US AU NZ. Then summarize refreshedAt + validUntil from market_ranges_us.json, market_ranges_au.json, market_ranges_nz.json in NZ time.",
+        "timeoutSeconds": 240,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774735812313,
+        "lastRunAtMs": 1774131012313,
+        "lastStatus": "ok",
+        "lastDurationMs": 60555,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDelivered": false,
+        "lastDeliveryStatus": "not-delivered"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "4e807dad-97c4-4a9f-b540-131ad835591e",
+      "agentId": "main",
+      "name": "CCIS weekly learning report",
+      "enabled": true,
+      "createdAtMs": 1771129098975,
+      "updatedAtMs": 1774153110724,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 604800000,
+        "anchorMs": 1771129098975
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run a weekly CCIS review using /home/mat/.openclaw/workspace/agents/hal/WEEKLY_REVIEW.md and /home/mat/.openclaw/workspace/agents/hal/LEARNINGS_LOG.md. Summarize: what was learned, what adaptations were applied, expected impact, and any rollback decisions. Keep concise and practical.",
+        "timeoutSeconds": 180,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774757899112,
+        "lastRunAtMs": 1774153099112,
+        "lastStatus": "ok",
+        "lastDurationMs": 11612,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "c54bae17-5c0a-41ca-83b2-9ddf98d39b59",
+      "agentId": "reviewer",
+      "name": "Reviewer hybrid audit (6h light + trigger deep)",
+      "enabled": true,
+      "createdAtMs": 1771129529499,
+      "updatedAtMs": 1774251668695,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 21600000,
+        "anchorMs": 1771205400000
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Reminder: this is an improvement audit for agent quality. Run a HYBRID review policy.\n\nStep 1 (light pass, all sessions): use sessions_list to scan all active/recent sessions and inspect latest messages for each.\nStep 2 (trigger detection): flag sessions with repeated errors, repeated user corrections/rework, safety/preference misses, or unresolved tool/network blockers.\nStep 3 (deep pass): for each flagged session only, use sessions_history for deeper transcript review and identify root causes.\nStep 4 (output): send a concise report with:\n- 1-line health summary\n- Top 3 improvement opportunities max (issue -> fix -> expected impact)\n- Any immediate fixes to apply now\nIf nothing material, output exactly NO_REPLY.",
+        "timeoutSeconds": 240,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774273262311,
+        "lastRunAtMs": 1774251662311,
+        "lastStatus": "ok",
+        "lastDurationMs": 6384,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "1defae55-bf3a-4b7e-82ab-ada4d99e2f81",
+      "agentId": "main",
+      "name": "CCIS fast mode daily patch bundle",
+      "enabled": true,
+      "createdAtMs": 1771133307985,
+      "updatedAtMs": 1774243723210,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 86400000,
+        "anchorMs": 1771133307985
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run FAST_MODE daily patch cycle using /home/mat/.openclaw/workspace/agents/hal/FAST_MODE.md, IMPROVEMENT_QUEUE.md, LEARNINGS_LOG.md. Propose max 3 highest-impact changes with: issue, fix, expected impact, confidence, and evidence (synthetic + real). If no material updates, output NO_REPLY.",
+        "timeoutSeconds": 180,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774330111471,
+        "lastRunAtMs": 1774243711471,
+        "lastStatus": "ok",
+        "lastDurationMs": 11739,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "fec838a2-f7e6-4eef-9d64-764294bd15f6",
+      "agentId": "main",
+      "name": "CCIS fast mode micro-audit digest (6h)",
+      "enabled": false,
+      "createdAtMs": 1771133308038,
+      "updatedAtMs": 1771205121669,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 21600000,
+        "anchorMs": 1771133308038
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Create a concise micro-audit digest from recent interactions: top recurring error patterns, quick mitigation actions taken, and any P0/P1 flags. Keep to 5 bullet points max. If nothing notable, output NO_REPLY.",
+        "timeoutSeconds": 120
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "lastRunAtMs": 1771198110629,
+        "lastStatus": "ok",
+        "lastDurationMs": 22638,
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "d073b1d3-1bfc-4e6d-a23c-74f8d0fa28f9",
+      "agentId": "main",
+      "name": "Reviewer daily full audit digest + log writer",
+      "enabled": true,
+      "createdAtMs": 1771205129571,
+      "updatedAtMs": 1774242036628,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 18 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run a daily FULL audit for agent improvement. Scope: review all active/recent sessions from the last 24h using sessions_list + sessions_history as needed. Identify recurring failure modes, preference misses, tool bottlenecks, and opportunities to improve prompts, workflows, or guardrails.\n\nThen do TWO outputs:\n\nA) User digest (concise):\n1) Overall quality score (1-10) with one-line rationale\n2) Top 5 improvements max, each: issue -> proposed fix -> expected impact -> confidence\n3) One \"implement now\" recommendation\nIf no material findings, output exactly NO_REPLY.\n\nB) Always append one JSONL log entry to /home/mat/.openclaw/workspace/agents/hal/data/review_log.jsonl with this schema:\n{\n  \"task_id\": \"review-<YYYYMMDD-HHMMSS>\",\n  \"timestamp\": \"ISO-8601 Pacific/Auckland\",\n  \"scores\": {\n    \"correctness\": 1-5,\n    \"completeness\": 1-5,\n    \"safety\": 1-5,\n    \"clarity\": 1-5,\n    \"tool_efficiency\": 1-5\n  },\n  \"failure_tags\": [\"hallucination|missed_requirement|overconfidence|tool_overuse|weak_clarification|policy_risk\"],\n  \"fix_proposal\": \"single highest-impact fix\",\n  \"accepted\": true,\n  \"post_score\": <weighted score after proposed fix estimate, float>,\n  \"latency_ms\": <estimated avg latency ms, number>,\n  \"cost_usd\": <estimated avg cost usd, number>\n}\n\nIf file doesn't exist, create it. Append exactly one valid JSON object line per run. Do not overwrite existing logs.",
+        "timeoutSeconds": 420,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774328400000,
+        "lastRunAtMs": 1774242004312,
+        "lastStatus": "ok",
+        "lastDurationMs": 32316,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "unknown"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "f7b09b3b-f775-40ab-af61-8944bc3df327",
+      "agentId": "main",
+      "name": "OpenClaw update check + post-update validation (12h)",
+      "enabled": false,
+      "createdAtMs": 1771216116478,
+      "updatedAtMs": 1771385683243,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 0 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run periodic OpenClaw maintenance with this policy:\n\n1) Check update status first:\n   - Run: openclaw update status --json\n   - If no update is available, output exactly: NO_REPLY\n\n2) If update is available:\n   - Run update on stable channel:\n     openclaw update --channel stable --yes\n\n3) After update, run post-update validation matrix:\n   - openclaw status\n   - openclaw health\n   - openclaw cron list\n   - In /home/mat/.openclaw/workspace/web3_valuation_v1:\n     source .venv/bin/activate && python scripts/run_pipeline.py\n     source .venv/bin/activate && python scripts/verify_social_sales.py\n\n4) Report only actionable results:\n   - version before -> after\n   - pass/fail per check\n   - what was auto-fixed\n   - what still needs manual attention\n\nRules:\n- If any command fails, continue remaining checks and include the exact failing step.\n- Keep the report concise and operator-focused.\n- If update step reports no-op despite availability check, include that explicitly.",
+        "timeoutSeconds": 1200
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "lastRunAtMs": 1771326000023,
+        "lastStatus": "error",
+        "lastDurationMs": 237471,
+        "consecutiveErrors": 2,
+        "lastError": "cron announce delivery failed"
+      }
+    },
+    {
+      "id": "af103427-858a-4b08-ac66-dd9c25fbece9",
+      "agentId": "main",
+      "name": "Daily: World Mobile ecosystem news + progress update",
+      "enabled": true,
+      "createdAtMs": 1771571388520,
+      "updatedAtMs": 1774251104613,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 20 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Create and send today\u2019s World Mobile ecosystem news + progress update as a direct user-facing message (do not send a reminder). Use worldmobile-agent/sentiment/daily-rollup-template.md as internal guidance. Focus on: ecosystem developments, partnership/deployment progress, adoption signals, distribution momentum, and what changed since yesterday. Keep it concise, forward-looking, source-traceable, and natural in tone.",
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774337400000,
+        "lastRunAtMs": 1774251000141,
+        "lastStatus": "ok",
+        "lastDurationMs": 104472,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "unknown"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "4860f5ad-12d9-4966-93b3-8cf6a4061b90",
+      "agentId": "main",
+      "name": "Daily Reviewer RSI Cycle",
+      "enabled": true,
+      "createdAtMs": 1771640437799,
+      "updatedAtMs": 1774209616718,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run the daily reviewer RSI cycle in /home/mat/.openclaw/workspace/agents/hal. Steps: 1) Ensure output dir exists: reviewer_bot/out 2) If data/review_log.jsonl exists and is non-empty, run: python3 reviewer_bot/rsi_cycle.py --log data/review_log.jsonl --out reviewer_bot/out 3) Summarize key changes from reviewer_bot/out/weekly_report.md in 4-8 bullets. 4) If log missing/empty, report that clearly and suggest next step to start collecting logs. Keep it concise and actionable.",
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774296000000,
+        "lastRunAtMs": 1774209600074,
+        "lastStatus": "ok",
+        "lastDurationMs": 16644,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "unknown"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "30c95fb0-ab1f-48bb-8163-6f05524dca1e",
+      "agentId": "main",
+      "name": "Group unmentioned-reply RSI (HAL+Bender)",
+      "enabled": true,
+      "createdAtMs": 1771719448586,
+      "updatedAtMs": 1774214126213,
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 10 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run a daily group-chat coaching audit for HAL (main) and especially Bender over the last 24h, focused on making Bender feel more human in real group conversation. Read /home/mat/.openclaw/workspace-bender/GROUP_COACHING.md first and follow it.\n\nProcess:\n1) Use sessions_list to find recent group sessions for main and bender.\n2) Use sessions_history on relevant sessions to inspect assistant replies, including both mentioned and unmentioned interjections where detectable.\n3) Judge Bender specifically on: human-ness, timing, relevance, humour, brevity, and interruption-cost.\n4) Capture examples in three buckets: good, bad, missed. \"missed\" means a moment where Bender probably should have jumped in but stayed quiet.\n5) Produce up to 5 concrete coaching updates for Bender: wording habits to adopt/drop, when to interject, when to stay silent, and what kind of humour/helpfulness is working.\n6) Append one JSONL record to /home/mat/.openclaw/workspace-bender/data/group_coaching_reviews.jsonl (create dir/file if missing) with:\n{\n  \"task_id\":\"group-coaching-<YYYYMMDD-HHMMSS>\",\n  \"timestamp\":\"ISO-8601 Pacific/Auckland\",\n  \"window_hours\":24,\n  \"agent_scope\":[\"main\",\"bender\"],\n  \"scores\":{\"humanness\":1-10,\"timing\":1-10,\"relevance\":1-10,\"humour\":1-10,\"brevity\":1-10,\"interruption_cost\":1-10,\"overall\":1-10},\n  \"examples\":{\"good\":[],\"bad\":[],\"missed\":[]},\n  \"coaching_updates\":[\"...\"],\n  \"next_action\":\"single highest impact Bender adjustment\"\n}\n7) If the evidence clearly supports it, update /home/mat/.openclaw/workspace-bender/SOUL.md or /home/mat/.openclaw/workspace-bender/AGENTS.md with one small concrete improvement. Keep edits minimal and specific.\n\nOutput to user: max 5 bullets, concise, practical, Bender-focused. If no meaningful group activity, output exactly NO_REPLY but still append a JSONL record with empty examples and explain that evidence was limited inside the record itself.",
+        "timeoutSeconds": 240,
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "nextRunAtMs": 1774300500000,
+        "lastRunAtMs": 1774214101640,
+        "lastStatus": "ok",
+        "lastDurationMs": 24573,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "f39a61ab-f467-4ca1-8223-afa8fcd763ab",
+      "name": "World Mobile daily brief",
+      "enabled": false,
+      "createdAtMs": 1771749174839,
+      "updatedAtMs": 1773889733565,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 7 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Prepare a daily intelligence update on World Mobile (World Mobile Group / World Mobile Token where relevant). Prioritize official X/Twitter sources first: @WorldMobileTeam, @MickyWatkins, and @WorldMobileChain (if active), then corroborate via official World Mobile blog/press releases, exchange or market announcements, major partner announcements, and high-signal ecosystem/community updates. Use web_search and web_fetch for the last 24 hours, de-duplicate repeated stories, and prefer primary sources. Output in this exact structure: 1) Top 5 developments (most important first), each with: headline, why it matters (1 sentence), confidence (High/Med/Low), and source URL. 2) Risks/uncertainties (max 3 bullets). 3) If no material updates, explicitly say: No material change in the last 24 hours. Keep it concise and factual; no hype.",
+        "model": "openai/gpt-5.3-codex"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": false
+      },
+      "state": {
+        "lastRunAtMs": 1773858602504,
+        "lastStatus": "ok",
+        "lastDurationMs": 74707,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "29c51427-19b8-4325-b736-6e0f8aab2596",
+      "agentId": "clawresearch",
+      "name": "8am daily AI research brief",
+      "enabled": true,
+      "createdAtMs": 1773384015419,
+      "updatedAtMs": 1774206094718,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 8 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai-codex/gpt-5.4",
+        "timeoutSeconds": 180,
+        "message": "At 8:00 AM Pacific/Auckland every weekday, search the web for the most important current news and trends about AI and AI agents. Produce one concise morning brief for Mat focused on: (1) what changed, (2) why it matters, (3) recommended next action, and (4) what HAL can do next. Prefer high-signal developments over headline spam. Include links when useful."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "consecutiveErrors": 1,
+        "nextRunAtMs": 1774292400000,
+        "lastRunAtMs": 1774206001152,
+        "lastRunStatus": "error",
+        "lastStatus": "error",
+        "lastDurationMs": 93566,
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false,
+        "lastError": "Ollama API error 500: {\"error\":\"model requires more system memory (16.8 GiB) than is available (3.7 GiB)\"}",
+        "lastDeliveryError": "Ollama API error 500: {\"error\":\"model requires more system memory (16.8 GiB) than is available (3.7 GiB)\"}"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "ad5a9435-98c2-4689-ac89-32fc7c99fd2c",
+      "agentId": "main",
+      "name": "Sunday 7pm weekly AI deep dive",
+      "enabled": true,
+      "createdAtMs": 1773384015419,
+      "updatedAtMs": 1774159279341,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 19 * * 0",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "message": "At 7:00 PM Pacific/Auckland every Sunday, prepare Mat's weekly AI deep dive. Focus on the biggest AI + OpenClaw/agent workflow developments of the week. Do not just list headlines. Explain what happened, why it matters, what changed beneath the surface, and what Mat could practically do with it. Keep it concise but substantive and operator-focused."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "consecutiveErrors": 0,
+        "nextRunAtMs": 1774764000000,
+        "lastRunAtMs": 1774159202378,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 76963,
+        "lastDeliveryStatus": "not-delivered",
+        "lastDelivered": false
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "304361e2-2b29-4f2a-8702-edc1927b21eb",
+      "agentId": "main",
+      "name": "9pm daily backup health check",
+      "enabled": true,
+      "createdAtMs": 1773384015419,
+      "updatedAtMs": 1774252833101,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 21 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "message": "Run /home/mat/.openclaw/workspace/scripts/backup_health_check.sh and send Mat a concise operator summary only if attention is needed. If the result is healthy/clean, output exactly NO_REPLY. If attention is needed, say what is uncommitted or missing and the exact next corrective step."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "consecutiveErrors": 0,
+        "nextRunAtMs": 1774339200000,
+        "lastRunAtMs": 1774252800085,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 33016,
+        "lastDeliveryStatus": "unknown"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "3b6fbfcf-3571-4d6c-a0b3-a65d9d1c5310",
+      "agentId": "main",
+      "name": "6:55am WhatsApp preflight (self-heal)",
+      "enabled": false,
+      "createdAtMs": 1773962223884,
+      "updatedAtMs": 1774202121342,
+      "schedule": {
+        "kind": "cron",
+        "expr": "55 6 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "timeoutSeconds": 180,
+        "message": "Preflight check before morning reports. Run `openclaw channels status --probe --json` and inspect WhatsApp default account connected/running state. If connected=true, output exactly NO_REPLY. If disconnected, run `openclaw gateway restart`, wait 10 seconds, then run `openclaw channels status --probe --json` again. If recovered, send one short note: '\u2705 WhatsApp preflight recovered before morning reports.' If still disconnected, send one short urgent alert asking Mat to relink WhatsApp with `openclaw channels login --channel whatsapp --account default`. Keep it concise."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "consecutiveErrors": 0,
+        "lastRunAtMs": 1774202101059,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 20283,
+        "lastDelivered": false,
+        "lastDeliveryStatus": "not-delivered"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "b46832b0-ed15-4fcd-88c2-407fa3263d24",
+      "agentId": "main",
+      "name": "healthcheck:security-audit",
+      "enabled": true,
+      "createdAtMs": 1773991806959,
+      "updatedAtMs": 1774251192278,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 21600000,
+        "anchorMs": 1773991806959
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "timeoutSeconds": 420,
+        "message": "Scheduled 6-hour healthcheck with auto-fix-safe policy. Run these checks in order: 1) openclaw security audit --deep 2) openclaw security audit --fix 3) openclaw update status 4) openclaw status. Then summarize only actionable results: what was fixed, what still needs manual approval, and any failures. If everything is healthy after fixes, output exactly NO_REPLY. Do NOT change firewall/SSH/users/OS update policy automatically."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "state": {
+        "consecutiveErrors": 0,
+        "nextRunAtMs": 1774272723940,
+        "lastRunAtMs": 1774251123940,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 68338,
+        "lastDeliveryStatus": "unknown"
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      }
+    },
+    {
+      "id": "750db536-619b-47a5-be32-5ffe20a20ac8",
+      "agentId": "main",
+      "name": "Weekly memory maintenance",
+      "enabled": true,
+      "createdAtMs": 1774253919845,
+      "updatedAtMs": 1774253919845,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 18 * * 0",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "timeoutSeconds": 240,
+        "message": "Weekly memory maintenance run. Review /home/mat/.openclaw/workspace/MEMORY.md plus the last 7 days of /home/mat/.openclaw/workspace/memory/*.md. Promote only durable preferences, decisions, project-state facts, and recurring lessons into MEMORY.md. Remove stale or no-longer-useful entries from MEMORY.md. Keep MEMORY.md short and stable. Then send a concise summary only if you made material changes; otherwise output exactly NO_REPLY."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      },
+      "state": {
+        "nextRunAtMs": 1774762200000
+      }
+    },
+    {
+      "id": "3bea952e-9820-4ae6-a989-82702f04b887",
+      "agentId": "main",
+      "name": "Daily memory health check",
+      "enabled": true,
+      "createdAtMs": 1774253919845,
+      "updatedAtMs": 1774253919845,
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 21 * * *",
+        "tz": "Pacific/Auckland"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "openai/gpt-5.3-codex",
+        "timeoutSeconds": 180,
+        "message": "Run python3 /home/mat/.openclaw/workspace/scripts/memory_health_check.py. If the JSON report has no issues, output exactly NO_REPLY. If there are issues, send a concise operator alert naming the issue and the next corrective step."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat",
+        "bestEffort": true
+      },
+      "failureAlert": {
+        "after": 1,
+        "channel": "whatsapp",
+        "to": "+64274382968",
+        "cooldownMs": 1800000
+      },
+      "state": {
+        "nextRunAtMs": 1774340100000
+      }
+    }
+  ]
+}
