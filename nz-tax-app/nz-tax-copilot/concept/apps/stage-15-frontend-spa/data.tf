@@ -21,13 +21,6 @@ data "terraform_remote_state" "stage3_keyvault" {
   }
 }
 
-data "terraform_remote_state" "stage4_b2c" {
-  backend = "azurerm"
-  config = {
-    key = "stage4-b2c.tfstate"
-  }
-}
-
 data "terraform_remote_state" "stage10_acr" {
   backend = "azurerm"
   config = {
@@ -51,24 +44,20 @@ data "terraform_remote_state" "stage14_backend" {
 
 locals {
   # Stage 1: Foundation
-  resource_group_name        = data.terraform_remote_state.stage1_foundation.outputs.resource_group_name
-  location                   = data.terraform_remote_state.stage1_foundation.outputs.location
-  log_analytics_workspace_id = data.terraform_remote_state.stage1_foundation.outputs.log_analytics_workspace_id
-  
+  resource_group_name           = data.terraform_remote_state.stage1_foundation.outputs.resource_group_name
+  location                      = data.terraform_remote_state.stage1_foundation.outputs.location
+  log_analytics_workspace_id    = data.terraform_remote_state.stage1_foundation.outputs.log_analytics_workspace_id
+
   # Stage 3: Key Vault
-  key_vault_id               = data.terraform_remote_state.stage3_keyvault.outputs.key_vault_id
-  
-  # Stage 4: Azure AD B2C
-  b2c_tenant_name            = data.terraform_remote_state.stage4_b2c.outputs.b2c_tenant_name
-  b2c_client_id              = data.terraform_remote_state.stage4_b2c.outputs.frontend_client_id
-  
+  key_vault_id                  = data.terraform_remote_state.stage3_keyvault.outputs.key_vault_id
+
   # Stage 10: Container Registry
-  acr_id                     = data.terraform_remote_state.stage10_acr.outputs.acr_id
-  acr_login_server           = data.terraform_remote_state.stage10_acr.outputs.acr_login_server
-  
+  acr_id                        = data.terraform_remote_state.stage10_acr.outputs.acr_id
+  acr_login_server              = data.terraform_remote_state.stage10_acr.outputs.acr_login_server
+
   # Stage 11: Container Apps Environment
   container_apps_environment_id = data.terraform_remote_state.stage11_cae.outputs.container_apps_environment_id
-  
+
   # Stage 14: Backend API
-  backend_api_fqdn           = data.terraform_remote_state.stage14_backend.outputs.backend_api_fqdn
+  backend_api_fqdn              = data.terraform_remote_state.stage14_backend.outputs.backend_api_fqdn
 }

@@ -135,40 +135,10 @@ deployment_stages:
   - concept/infra/terraform/stage-3-keyvault/main.tf
   - concept/infra/terraform/stage-3-keyvault/outputs.tf
   - concept/infra/terraform/stage-3-keyvault/deploy.sh
-  deploy_status: failed
-  deploy_timestamp: '2026-03-22T10:13:39.537849+00:00'
+  deploy_status: pending
+  deploy_timestamp: null
   deploy_output: ''
-  deploy_error: "Error: Failed to retrieve resource\n\n  with azapi_resource.kv_secrets_user_role,\n  on main.tf line 118,\
-    \ in resource \"azapi_resource\" \"kv_secrets_user_role\":\n 118: resource \"azapi_resource\" \"kv_secrets_user_role\"\
-    \ {\n\nchecking for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\"\
-    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\n\
-    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
-    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
-    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
-    \ for location 'australiaeast' and API version '2025-05-01' for type 'roleAssignments'. The supported api-versions are\
-    \ '2014-04-01-preview, 2014-07-01-preview, 2014-10-01-preview, 2015-05-01-preview, 2015-06-01, 2015-07-01, 2016-07-01,\
-    \ 2017-05-01, 2017-09-01, 2017-10-01-preview, 2018-01-01-preview, 2018-07-01, 2018-09-01-preview, 2018-12-01-preview,\
-    \ 2019-04-01-preview, 2020-03-01-preview, 2020-04-01-preview, 2020-08-01-preview, 2020-10-01-preview, 2021-04-01-preview,\
-    \ 2022-01-01-preview, 2022-04-01, 2025-10-01-preview'. The supported locations are ''.\"\n  }\n}\n--------------------------------------------------------------------------------\n\
-    \n\nError: Failed to retrieve resource\n\n  with azapi_resource.kv_diagnostic_settings,\n  on main.tf line 145, in resource\
-    \ \"azapi_resource\" \"kv_diagnostic_settings\":\n 145: resource \"azapi_resource\" \"kv_diagnostic_settings\" {\n\nchecking\
-    \ for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\"\
-    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\n\
-    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
-    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
-    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
-    \ for location 'australiaeast' and API version '2025-05-01' for type 'diagnosticSettings'. The supported api-versions\
-    \ are '2015-07-01, 2016-09-01, 2017-05-01-preview, 2021-05-01-preview, 2020-01-01-preview'. The supported locations are\
-    \ 'westus, eastus, northeurope, westeurope, eastasia, southeastasia, japaneast, japanwest, northcentralus, southcentralus,\
-    \ eastus2, centralus, australiaeast, australiasoutheast, brazilsouth, uksouth, ukwest, southindia, centralindia, westindia,\
-    \ canadaeast, canadacentral, westcentralus, westus2, koreasouth, koreacentral, australiacentral, australiacentral2, francecentral,\
-    \ francesouth, , southafricanorth, uaecentral, uaenorth, switzerlandnorth, switzerlandwest, germanynorth, germanywestcentral,\
-    \ norwayeast, norwaywest, westus3, jioindiawest, swedencentral, qatarcentral, polandcentral, newzealandnorth, malaysiawest,\
-    \ chilecentral, indonesiacentral, israelcentral, italynorth, spaincentral, mexicocentral, austriaeast, belgiumcentral,\
-    \ denmarkeast'.\"\n  }\n}\n--------------------------------------------------------------------------------\n\n\nError:\
-    \ Unsupported attribute\n\n  on outputs.tf line 14, in output \"key_vault_uri\":\n  14:   value       = azapi_resource.key_vault.output.properties.vaultUri\n\
-    \    ├────────────────\n    │ azapi_resource.key_vault.output is object with 3 attributes\n\nThis object does not have\
-    \ an attribute named \"properties\"."
+  deploy_error: ''
   rollback_timestamp: null
 - stage: 4
   name: Azure AD B2C
@@ -185,8 +155,8 @@ deployment_stages:
   - concept/external/b2c/setup-b2c.sh
   - concept/external/b2c/verify-b2c.sh
   - concept/external/b2c/deploy.sh
-  deploy_status: pending
-  deploy_timestamp: null
+  deploy_status: failed
+  deploy_timestamp: '2026-03-22T10:40:01.540455+00:00'
   deploy_output: ''
   deploy_error: ''
   rollback_timestamp: null
@@ -576,48 +546,18 @@ deployment_stages:
   rollback_timestamp: null
 preflight_results: []
 deploy_log:
-- stage: 3
+- stage: 4
   action: deploying
   detail: ''
-  timestamp: '2026-03-22T10:11:39.951732+00:00'
-- stage: 3
+  timestamp: '2026-03-22T10:39:58.242639+00:00'
+- stage: 4
   action: failed
-  detail: "Error: Failed to retrieve resource\n\n  with azapi_resource.kv_secrets_user_role,\n  on main.tf line 118, in resource\
-    \ \"azapi_resource\" \"kv_secrets_user_role\":\n 118: resource \"azapi_resource\" \"kv_secrets_user_role\" {\n\nchecking\
-    \ for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\"\
-    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef\n\
-    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
-    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
-    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
-    \ for location 'australiaeast' and API version '2025-05-01' for type 'roleAssignments'. The supported api-versions are\
-    \ '2014-04-01-preview, 2014-07-01-preview, 2014-10-01-preview, 2015-05-01-preview, 2015-06-01, 2015-07-01, 2016-07-01,\
-    \ 2017-05-01, 2017-09-01, 2017-10-01-preview, 2018-01-01-preview, 2018-07-01, 2018-09-01-preview, 2018-12-01-preview,\
-    \ 2019-04-01-preview, 2020-03-01-preview, 2020-04-01-preview, 2020-08-01-preview, 2020-10-01-preview, 2021-04-01-preview,\
-    \ 2022-01-01-preview, 2022-04-01, 2025-10-01-preview'. The supported locations are ''.\"\n  }\n}\n--------------------------------------------------------------------------------\n\
-    \n\nError: Failed to retrieve resource\n\n  with azapi_resource.kv_diagnostic_settings,\n  on main.tf line 145, in resource\
-    \ \"azapi_resource\" \"kv_diagnostic_settings\":\n 145: resource \"azapi_resource\" \"kv_diagnostic_settings\" {\n\nchecking\
-    \ for presence of existing Resource: (ResourceId\n\"/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\"\
-    \n/ Api Version \"2025-05-01\"): GET\nhttps://management.azure.com/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv\n\
-    --------------------------------------------------------------------------------\nRESPONSE 400: 400 Bad Request\nERROR\
-    \ CODE: NoRegisteredProviderFound\n--------------------------------------------------------------------------------\n\
-    {\n  \"error\": {\n    \"code\": \"NoRegisteredProviderFound\",\n    \"message\": \"No registered resource provider found\
-    \ for location 'australiaeast' and API version '2025-05-01' for type 'diagnosticSettings'. The supported api-versions\
-    \ are '2015-07-01, 2016-09-01, 2017-05-01-preview, 2021-05-01-preview, 2020-01-01-preview'. The supported locations are\
-    \ 'westus, eastus, northeurope, westeurope, eastasia, southeastasia, japaneast, japanwest, northcentralus, southcentralus,\
-    \ eastus2, centralus, australiaeast, australiasoutheast, brazilsouth, uksouth, ukwest, southindia, centralindia, westindia,\
-    \ canadaeast, canadacentral, westcentralus, westus2, koreasouth, koreacentral, australiacentral, australiacentral2, francecentral,\
-    \ francesouth, , southafricanorth, uaecentral, uaenorth, switzerlandnorth, switzerlandwest, germanynorth, germanywestcentral,\
-    \ norwayeast, norwaywest, westus3, jioindiawest, swedencentral, qatarcentral, polandcentral, newzealandnorth, malaysiawest,\
-    \ chilecentral, indonesiacentral, israelcentral, italynorth, spaincentral, mexicocentral, austriaeast, belgiumcentral,\
-    \ denmarkeast'.\"\n  }\n}\n--------------------------------------------------------------------------------\n\n\nError:\
-    \ Unsupported attribute\n\n  on outputs.tf line 14, in output \"key_vault_uri\":\n  14:   value       = azapi_resource.key_vault.output.properties.vaultUri\n\
-    \    ├────────────────\n    │ azapi_resource.key_vault.output is object with 3 attributes\n\nThis object does not have\
-    \ an attribute named \"properties\"."
-  timestamp: '2026-03-22T10:13:39.537865+00:00'
+  detail: ''
+  timestamp: '2026-03-22T10:40:01.540475+00:00'
 rollback_log: []
 captured_outputs: {}
 conversation_history: []
 _metadata:
-  created: '2026-03-22T10:11:38.284299+00:00'
-  last_updated: '2026-03-22T10:13:39.572203+00:00'
+  created: '2026-03-22T10:39:56.653648+00:00'
+  last_updated: '2026-03-22T10:40:01.567172+00:00'
   iteration: 0

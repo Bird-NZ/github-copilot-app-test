@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#090b12"/>
+      <stop offset="65%" stop-color="#311010"/>
+      <stop offset="100%" stop-color="#0c0c0c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="30%" r="35%">
+      <stop offset="0%" stop-color="#ffe6a3" stop-opacity="0.95"/>
+      <stop offset="35%" stop-color="#ffcf70" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffcf70" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.9"/></filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <rect x="0" y="26" width="1080" height="170" fill="#8b0000" fill-opacity="0.9"/>
+  <circle cx="540" cy="330" r="290" fill="url(#glow)"/>
+
+  <!-- lightning -->
+  <polyline points="180,110 250,260 215,260 315,465" fill="none" stroke="#ffeeb0" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="880,130 800,300 845,300 760,500" fill="none" stroke="#ffeeb0" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- silhouette -->
+  <g fill="#060606">
+    <ellipse cx="540" cy="905" rx="360" ry="105"/>
+    <rect x="390" y="390" width="300" height="500" rx="60"/>
+    <polygon points="330,470 430,400 450,560 340,620"/>
+    <polygon points="750,470 650,400 630,560 740,620"/>
+    <ellipse cx="540" cy="330" rx="110" ry="110"/>
+    <polygon points="390,260 690,260 620,195 460,195"/>
+    <rect x="350" y="248" width="380" height="50" rx="18"/>
+    <polygon points="470,380 610,380 650,480 430,480"/>
+    <polygon points="350,610 540,540 600,590 430,700"/>
+    <polygon points="730,610 540,540 480,590 650,700"/>
+  </g>
+
+  <text x="540" y="95" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="74" fill="#fff" filter="url(#shadow)">BREAKING:</text>
+  <text x="540" y="170" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="74" fill="#fff" filter="url(#shadow)">CHUCK NORRIS DIED</text>
+
+  <text x="540" y="935" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="92" fill="#ffd77a" filter="url(#shadow)">DEATH RETIRED.</text>
+  <text x="540" y="1012" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#c7c7c7">verified legend energy only</text>
+</svg>

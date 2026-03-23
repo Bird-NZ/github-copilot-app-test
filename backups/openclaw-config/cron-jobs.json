@@ -80,7 +80,7 @@
       "name": "daily github backup push",
       "enabled": true,
       "createdAtMs": 1770848698317,
-      "updatedAtMs": 1774175409211,
+      "updatedAtMs": 1774256290310,
       "schedule": {
         "kind": "cron",
         "expr": "30 23 * * *",
@@ -91,7 +91,7 @@
       "payload": {
         "kind": "agentTurn",
         "model": "openai/gpt-5.3-codex",
-        "message": "This is a scheduled backup task. In /home/mat/.openclaw/workspace, run: git add -A; if there are no staged changes, exit with a short note \"No changes to back up\". If there are changes, commit with message \"chore: daily backup $(date +%F)\" and push to origin master. If push fails, report the exact error briefly. Keep output concise."
+        "message": "This is a scheduled backup task. First run: python3 /home/mat/.openclaw/workspace/scripts/snapshot_openclaw_config.py. Then in /home/mat/.openclaw/workspace run: git add -A; if there are no staged changes, exit with a short note \"No changes to back up\". If there are changes, commit with message \"chore: daily backup $(date +%F)\" and push to origin master. If push fails, report the exact error briefly. Keep output concise."
       },
       "delivery": {
         "mode": "announce",
@@ -106,7 +106,8 @@
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "not-delivered",
-        "lastDelivered": false
+        "lastDelivered": false,
+        "runningAtMs": 1774261800020
       },
       "failureAlert": {
         "after": 1,

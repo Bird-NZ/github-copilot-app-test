@@ -20,7 +20,7 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       await instance.logoutRedirect({
-        account: instance.getActiveAccount(),
+        account: instance.getActiveAccount() || undefined,
       })
     } catch (error) {
       console.error('Logout error:', error)
@@ -36,14 +36,14 @@ export const useAuth = () => {
     try {
       const response = await instance.acquireTokenSilent({
         scopes: [API_SCOPE],
-        account: account,
+        account,
       })
       return response.accessToken
     } catch (error) {
       if (error instanceof InteractionRequiredAuthError) {
         await instance.acquireTokenRedirect({
           scopes: [API_SCOPE],
-          account: account,
+          account,
         })
         throw new Error('User interaction required')
       }
@@ -53,20 +53,22 @@ export const useAuth = () => {
 
   const getUserId = (): string | null => {
     const account = instance.getActiveAccount()
-    return account?.idTokenClaims?.sub || null
+    const sub = account?.idTokenClaims?.sub
+    return typeof sub === 'string' ? sub : null
   }
 
   const getUserEmail = (): string | null => {
     const account = instance.getActiveAccount()
-    return account?.idTokenClaims?.email || null
+    const email = account?.idTokenClaims?.email
+    return typeof email === 'string' ? email : null
   }
 
-  return { 
-    isAuthenticated, 
-    login, 
-    logout, 
-    getAccessToken, 
+  return {
+    isAuthenticated,
+    login,
+    logout,
+    getAccessToken,
     getUserId,
-    getUserEmail 
+    getUserEmail,
   }
 }

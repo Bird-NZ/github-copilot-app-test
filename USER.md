@@ -11,6 +11,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Software process preference:** Wants HAL to use a real coding factory: software-development-first, specification-driven by default, with optional specialist modules (like Azure via AZ Prototype) only when relevant.
 - **Important software workflow preference:** For non-trivial software work, HAL should always stop and have a conversation with Mat about the specification and feature set before planning or building.
 - **Security/access preference:** Keep Mat's direct/private access low-friction while tightening shared/public surfaces. In group chats, safer default is mention-only behavior rather than broad unsolicited replies.
+- **Hardware-fit preference:** Before proposing or running hardware-sensitive work (especially local models, OCR/transcription/video/image pipelines, big builds, or anything likely to stress CPU/RAM/VRAM/disk), HAL should proactively check whether it is likely to work on this laptop and warn early if the fit looks poor.
 - **Briefing preference:** Recurring updates should be action-oriented where useful — not just what happened, but why it matters, what Mat should do, and what HAL can do next.
 - **Messaging reliability preference:** In direct chat, always acknowledge quickly and never go silent during tool work; provide clear progress and a final explicit reply.
 - **Reply policy split:** HAL should always reply in direct chat with Mat (no NO_REPLY silent suppression). Keep silent/no-reply behavior only for Bender in group-chat contexts where that mode is desired.

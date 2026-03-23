@@ -11,7 +11,7 @@ output "key_vault_name" {
 
 output "key_vault_uri" {
   description = "URI of the Key Vault (for Key Vault references)"
-  value       = azapi_resource.key_vault.output.properties.vaultUri
+  value       = try(azapi_resource.key_vault.output.properties.vaultUri, azapi_resource.key_vault.output.vaultUri, null)
 }
 
 # Private Endpoint Outputs

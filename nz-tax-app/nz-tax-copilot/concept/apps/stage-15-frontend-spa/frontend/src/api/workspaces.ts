@@ -3,29 +3,33 @@ import apiClient from './apiClient'
 export interface Workspace {
   id: string
   userId: string
-  taxYear: number
-  status: string
-  createdAt: string
-  updatedAt: string
-  metadata: {
-    completedQuestionnaire: boolean
-    hasIncomeEntries: boolean
-    hasCryptoTransactions: boolean
-    hasDocuments: boolean
+  taxYear?: number
+  taxYearStart?: string
+  taxYearEnd?: string
+  status?: string
+  createdAt?: string
+  updatedAt?: string
+  metadata?: {
+    completedQuestionnaire?: boolean
+    hasIncomeEntries?: boolean
+    hasCryptoTransactions?: boolean
+    hasDocuments?: boolean
   }
 }
 
 export const workspaceApi = {
-  async list(token: string): Promise<Workspace[]> {
-    const response = await apiClient.get('/api/v1/workspaces', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return response.data
+  async list(): Promise<Workspace[]> {
+    const response = await apiClient.get('/workspaces')
+    return response.data?.items || []
   },
 
-  async get(workspaceId: string, token: string): Promise<Workspace> {
-    const response = await apiClient.get(`/api/v1/workspaces/${workspaceId}`, {
+  async get(workspaceId: string): Promise<Workspace> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}`)
+    return response.data?.workspace
+  },
 
----
-**Governance warnings:**
-- Possible hard-coded value detected — externalize secrets to Key Vault or use managed identity.
+  async create(payload: { taxYearStart: string; taxYearEnd: string }): Promise<Workspace> {
+    const response = await apiClient.post('/workspaces', payload)
+    return response.data?.workspace
+  },
+}

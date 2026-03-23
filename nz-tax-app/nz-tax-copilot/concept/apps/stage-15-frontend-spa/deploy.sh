@@ -202,7 +202,7 @@ main() {
   echo ""
   echo "Next steps:"
   echo "1. Open ${frontend_url} in your browser"
-  echo "2. Sign up with Azure AD B2C"
+  echo "2. Open the first-release no-auth experience"
   echo "3. Create a tax year workspace"
   echo "4. Enter income and crypto transactions"
   echo "5. Query IRD guidance for tax questions"

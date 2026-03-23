@@ -1,33 +1,10 @@
 {
   "terraform": {
-    "dns_zone_blob_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
-    "dns_zone_blob_name": "privatelink.blob.core.windows.net",
-    "dns_zone_cosmos_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateDnsZones/privatelink.documents.azure.com",
-    "dns_zone_cosmos_name": "privatelink.documents.azure.com",
-    "dns_zone_keyvault_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateDnsZones/privatelink.vaultcore.azure.net",
-    "dns_zone_keyvault_name": "privatelink.vaultcore.azure.net",
-    "dns_zone_openai_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateDnsZones/privatelink.openai.azure.com",
-    "dns_zone_openai_name": "privatelink.openai.azure.com",
-    "dns_zone_search_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateDnsZones/privatelink.search.windows.net",
-    "dns_zone_search_name": "privatelink.search.windows.net",
-    "dns_zone_sql_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateDnsZones/privatelink.database.windows.net",
-    "dns_zone_sql_name": "privatelink.database.windows.net",
-    "nsg_ai_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/networkSecurityGroups/nsg-ai",
-    "nsg_apps_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/networkSecurityGroups/nsg-apps",
-    "nsg_data_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/networkSecurityGroups/nsg-data",
-    "subnet_ai_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/virtualNetworks/pc-vnet-tax-dev-aue/subnets/snet-ai",
-    "subnet_ai_name": "snet-ai",
-    "subnet_apps_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/virtualNetworks/pc-vnet-tax-dev-aue/subnets/snet-apps",
-    "subnet_apps_name": "snet-apps",
-    "subnet_data_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/virtualNetworks/pc-vnet-tax-dev-aue/subnets/snet-data",
-    "subnet_data_name": "snet-data",
-    "subnet_mgmt_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/virtualNetworks/pc-vnet-tax-dev-aue/subnets/snet-mgmt",
-    "subnet_mgmt_name": "snet-mgmt",
-    "vnet_address_space": [
-      "10.0.0.0/16"
-    ],
-    "vnet_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/virtualNetworks/pc-vnet-tax-dev-aue",
-    "vnet_name": "pc-vnet-tax-dev-aue"
+    "diagnostic_settings_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Insights/diagnosticSettings/diag-kv",
+    "key_vault_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue",
+    "key_vault_name": "zd-kv-tax-dev-aue",
+    "private_endpoint_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.Network/privateEndpoints/pe-kv-tax-dev-aue",
+    "rbac_role_assignment_id": "/subscriptions/f8ebbbc3-d969-4acf-8510-e39847770f03/resourceGroups/zd-rg-tax-dev-aue/providers/Microsoft.KeyVault/vaults/zd-kv-tax-dev-aue/providers/Microsoft.Authorization/roleAssignments/3ee5d6d3-1fec-5272-84ba-793b5fe598ef"
   },
-  "last_capture": "2026-03-22T03:59:10.813537+00:00"
+  "last_capture": "2026-03-22T10:39:47.820580+00:00"
 }

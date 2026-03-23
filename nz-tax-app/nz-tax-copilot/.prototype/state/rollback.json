@@ -77,6 +77,18 @@
       "scope": "infra",
       "iac_tool": "terraform",
       "timestamp": "2026-03-22T10:11:39.951224+00:00"
+    },
+    {
+      "stage": 3,
+      "scope": "infra",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T10:39:00.156496+00:00"
+    },
+    {
+      "stage": 4,
+      "scope": "external",
+      "iac_tool": "terraform",
+      "timestamp": "2026-03-22T10:39:58.242023+00:00"
     }
   ]
 }

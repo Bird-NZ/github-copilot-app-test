@@ -116,7 +116,7 @@ resource "azapi_resource" "kv_dns_zone_group" {
 # RBAC Role Assignment: Managed Identity -> Key Vault Secrets User
 # Role: Key Vault Secrets User (4633458b-17de-408a-b874-0445c86b69e6)
 resource "azapi_resource" "kv_secrets_user_role" {
-  type = "Microsoft.Authorization/roleAssignments@2025-05-01"
+  type = "Microsoft.Authorization/roleAssignments@2022-04-01"
   
   # Deterministic UUID based on: Key Vault ID + Principal ID + Role ID
   # This ensures the name is stable across deployments but unique per assignment
@@ -143,7 +143,7 @@ resource "azapi_resource" "kv_secrets_user_role" {
 
 # Diagnostic Settings: Send Key Vault logs to Log Analytics
 resource "azapi_resource" "kv_diagnostic_settings" {
-  type      = "Microsoft.Insights/diagnosticSettings@2025-05-01"
+  type      = "Microsoft.Insights/diagnosticSettings@2021-05-01-preview"
   name      = "diag-kv"
   parent_id = azapi_resource.key_vault.id
 
