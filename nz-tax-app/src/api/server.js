@@ -16,52 +16,72 @@ const app = express();
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
 
-app.get('/health', (_req, res) => res.json({ ok: true }));
+const AUTH_MODE = process.env.AUTH_MODE || process.env.VITE_AUTH_MODE || 'none';
+const NO_AUTH_MODE = AUTH_MODE === 'none';
+const DEMO_SESSION = {
+  userId: process.env.DEMO_USER_ID || 'demo-user',
+  email: process.env.DEMO_USER_EMAIL || 'demo@nztax.local',
+  createdAt: new Date().toISOString(),
+};
 
-app.post('/auth/signup', async (req, res) => {
-  try {
-    const { email, password } = req.body || {};
-    if (!email || !password) return res.status(400).json({ error: 'MISSING_FIELDS' });
-    const user = await signup(String(email).toLowerCase().trim(), String(password));
-    return res.status(201).json({ user });
-  } catch (err) {
-    if (err.message === 'EMAIL_EXISTS') return res.status(409).json({ error: 'EMAIL_EXISTS' });
-    return res.status(500).json({ error: 'SIGNUP_FAILED' });
-  }
-});
+app.get('/health', (_req, res) => res.json({ ok: true, authMode: AUTH_MODE }));
+app.get('/health/live', (_req, res) => res.json({ ok: true, authMode: AUTH_MODE }));
+app.get('/health/ready', (_req, res) => res.json({ ok: true, authMode: AUTH_MODE }));
+app.get('/config', (_req, res) => res.json({ authMode: AUTH_MODE, noAuthMode: NO_AUTH_MODE }));
 
-app.post('/auth/signin', async (req, res) => {
-  try {
-    const { email, password } = req.body || {};
-    if (!email || !password) return res.status(400).json({ error: 'MISSING_FIELDS' });
-    const result = await signin(String(email).toLowerCase().trim(), String(password));
-    return res.json(result);
-  } catch (err) {
-    if (err.message === 'INVALID_CREDENTIALS') return res.status(401).json({ error: 'INVALID_CREDENTIALS' });
-    return res.status(500).json({ error: 'SIGNIN_FAILED' });
-  }
-});
+if (!NO_AUTH_MODE) {
+  app.post('/auth/signup', async (req, res) => {
+    try {
+      const { email, password } = req.body || {};
+      if (!email || !password) return res.status(400).json({ error: 'MISSING_FIELDS' });
+      const user = await signup(String(email).toLowerCase().trim(), String(password));
+      return res.status(201).json({ user });
+    } catch (err) {
+      if (err.message === 'EMAIL_EXISTS') return res.status(409).json({ error: 'EMAIL_EXISTS' });
+      return res.status(500).json({ error: 'SIGNUP_FAILED' });
+    }
+  });
 
-app.post('/auth/signout', (req, res) => {
-  const auth = req.headers.authorization || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-  if (!token) return res.status(400).json({ error: 'MISSING_TOKEN' });
-  signout(token);
-  return res.json({ ok: true });
-});
+  app.post('/auth/signin', async (req, res) => {
+    try {
+      const { email, password } = req.body || {};
+      if (!email || !password) return res.status(400).json({ error: 'MISSING_FIELDS' });
+      const result = await signin(String(email).toLowerCase().trim(), String(password));
+      return res.json(result);
+    } catch (err) {
+      if (err.message === 'INVALID_CREDENTIALS') return res.status(401).json({ error: 'INVALID_CREDENTIALS' });
+      return res.status(500).json({ error: 'SIGNIN_FAILED' });
+    }
+  });
 
-app.get('/auth/session', (req, res) => {
-  const auth = req.headers.authorization || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-  if (!token) return res.status(400).json({ error: 'MISSING_TOKEN' });
-  const session = getSession(token);
-  if (!session) return res.status(401).json({ error: 'INVALID_SESSION' });
-  return res.json({ session });
-});
+  app.post('/auth/signout', (req, res) => {
+    const auth = req.headers.authorization || '';
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+    if (!token) return res.status(400).json({ error: 'MISSING_TOKEN' });
+    signout(token);
+    return res.json({ ok: true });
+  });
 
-
+  app.get('/auth/session', (req, res) => {
+    const auth = req.headers.authorization || '';
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+    if (!token) return res.status(400).json({ error: 'MISSING_TOKEN' });
+    const session = getSession(token);
+    if (!session) return res.status(401).json({ error: 'INVALID_SESSION' });
+    return res.json({ session });
+  });
+} else {
+  app.get('/auth/session', (_req, res) => {
+    return res.json({ session: DEMO_SESSION, authMode: AUTH_MODE });
+  });
+}
 
 function requireSession(req, res, next) {
+  if (NO_AUTH_MODE) {
+    req.session = DEMO_SESSION;
+    return next();
+  }
+
   const auth = req.headers.authorization || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
   if (!token) return res.status(401).json({ error: 'MISSING_TOKEN' });
@@ -90,8 +110,6 @@ app.get('/workspaces/:id', requireSession, (req, res) => {
   res.json({ workspace: item });
 });
 
-
-
 app.get('/questionnaire/schema', requireSession, (_req, res) => {
   res.json({ questions: getQuestionSet() });
 });
@@ -102,8 +120,6 @@ app.post('/questionnaire/evaluate', requireSession, (req, res) => {
   const status = completionStatus(answers);
   res.json({ visible, status });
 });
-
-
 
 app.post('/workspaces/:id/documents', requireSession, upload.single('file'), (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
@@ -132,8 +148,6 @@ app.get('/workspaces/:id/checklist', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   return res.json({ checklist: checklist(workspace.id) });
 });
-
-
 
 app.post('/workspaces/:id/income/:type', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
@@ -165,8 +179,6 @@ app.get('/workspaces/:id/income/:type', requireSession, (req, res) => {
   }
 });
 
-
-
 app.post('/workspaces/:id/crypto/import-csv', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
@@ -183,8 +195,6 @@ app.get('/workspaces/:id/crypto/transactions', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   return res.json({ items: listTransactions(workspace.id) });
 });
-
-
 
 app.get('/ir3/fields', requireSession, (_req, res) => {
   return res.json(getIr3Dictionary());
@@ -215,8 +225,6 @@ app.get('/workspaces/:id/ir3/calc', requireSession, (req, res) => {
   return res.json({ map, calc });
 });
 
-
-
 app.get('/workspaces/:id/export/draft', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
@@ -237,5 +245,5 @@ app.get('/workspaces/:id/audit', requireSession, (req, res) => {
 
 const port = process.env.PORT || 8787;
 app.listen(port, () => {
-  console.log(`nz-tax-app api listening on :${port}`);
+  console.log(`nz-tax-app api listening on :${port} (authMode=${AUTH_MODE})`);
 });
