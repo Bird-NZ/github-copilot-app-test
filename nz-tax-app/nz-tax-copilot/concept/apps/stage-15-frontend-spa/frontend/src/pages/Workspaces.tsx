@@ -4,24 +4,36 @@ import {
   Box,
   Button,
   Card,
+  CardActionArea,
   CardContent,
   Chip,
   CircularProgress,
   Container,
+  MenuItem,
   Stack,
   TextField,
   Typography,
 } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { workspaceApi, type Workspace } from '../api/workspaces'
 
-function getDefaultTaxYearRange() {
+type TaxYearOption = {
+  label: string
+  taxYearStart: string
+  taxYearEnd: string
+}
+
+function getNzTaxYearOptions(): TaxYearOption[] {
   const now = new Date()
-  const year = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1
-  return {
+  const currentStartYear = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1
+  const startYears = [currentStartYear - 1, currentStartYear, currentStartYear + 1]
+
+  return startYears.map((year) => ({
+    label: `${year}–${year + 1} NZ tax year`,
     taxYearStart: `${year}-04-01`,
     taxYearEnd: `${year + 1}-03-31`,
-  }
+  }))
 }
 
 function formatDate(value?: string) {
@@ -31,47 +43,54 @@ function formatDate(value?: string) {
   return date.toLocaleString()
 }
 
-function WorkspaceCard({ workspace }: { workspace: Workspace }) {
+function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: () => void }) {
   return (
     <Card variant="outlined">
-      <CardContent>
-        <Stack spacing={1.5}>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            justifyContent="space-between"
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            spacing={1}
-          >
-            <Box>
-              <Typography variant="h6">Workspace {workspace.id.slice(0, 8)}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Tax year: {workspace.taxYearStart} to {workspace.taxYearEnd}
-              </Typography>
-            </Box>
-            <Chip
-              label={workspace.status || 'unknown'}
-              color={workspace.status === 'in_progress' ? 'primary' : 'default'}
-              variant="outlined"
-            />
-          </Stack>
+      <CardActionArea onClick={onOpen}>
+        <CardContent>
+          <Stack spacing={1.5}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              justifyContent="space-between"
+              alignItems={{ xs: 'flex-start', sm: 'center' }}
+              spacing={1}
+            >
+              <Box>
+                <Typography variant="h6">Workspace {workspace.id.slice(0, 8)}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Tax year: {workspace.taxYearStart} to {workspace.taxYearEnd}
+                </Typography>
+              </Box>
+              <Chip
+                label={workspace.status || 'unknown'}
+                color={workspace.status === 'in_progress' ? 'primary' : 'default'}
+                variant="outlined"
+              />
+            </Stack>
 
-          <Typography variant="body2" color="text.secondary">
-            Created: {formatDate(workspace.createdAt)}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Updated: {formatDate(workspace.updatedAt)}
-          </Typography>
-        </Stack>
-      </CardContent>
+            <Typography variant="body2" color="text.secondary">
+              Created: {formatDate(workspace.createdAt)}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Updated: {formatDate(workspace.updatedAt)}
+            </Typography>
+            <Typography variant="body2" color="primary">
+              Tap to open workspace
+            </Typography>
+          </Stack>
+        </CardContent>
+      </CardActionArea>
     </Card>
   )
 }
 
 export default function Workspaces() {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const defaults = useMemo(() => getDefaultTaxYearRange(), [])
-  const [taxYearStart, setTaxYearStart] = useState(defaults.taxYearStart)
-  const [taxYearEnd, setTaxYearEnd] = useState(defaults.taxYearEnd)
+  const taxYearOptions = useMemo(() => getNzTaxYearOptions(), [])
+  const [selectedTaxYear, setSelectedTaxYear] = useState(taxYearOptions[1]?.taxYearStart || taxYearOptions[0].taxYearStart)
+
+  const selectedOption = taxYearOptions.find((option) => option.taxYearStart === selectedTaxYear) || taxYearOptions[0]
 
   const workspacesQuery = useQuery({
     queryKey: ['workspaces'],
@@ -80,13 +99,17 @@ export default function Workspaces() {
 
   const createWorkspace = useMutation({
     mutationFn: workspaceApi.create,
-    onSuccess: async () => {
+    onSuccess: async (workspace) => {
       await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      navigate(`/workspaces/${workspace.id}`)
     },
   })
 
   const handleCreate = async () => {
-    await createWorkspace.mutateAsync({ taxYearStart, taxYearEnd })
+    await createWorkspace.mutateAsync({
+      taxYearStart: selectedOption.taxYearStart,
+      taxYearEnd: selectedOption.taxYearEnd,
+    })
   }
 
   return (
@@ -102,37 +125,27 @@ export default function Workspaces() {
           <CardContent>
             <Stack spacing={2}>
               <Typography variant="h6">Create a workspace</Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField
-                  label="Tax year start"
-                  type="date"
-                  value={taxYearStart}
-                  onChange={(event) => setTaxYearStart(event.target.value)}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-                <TextField
-                  label="Tax year end"
-                  type="date"
-                  value={taxYearEnd}
-                  onChange={(event) => setTaxYearEnd(event.target.value)}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-              </Stack>
+              <TextField
+                select
+                label="Tax year"
+                value={selectedTaxYear}
+                onChange={(event) => setSelectedTaxYear(event.target.value)}
+                fullWidth
+              >
+                {taxYearOptions.map((option) => (
+                  <MenuItem key={option.taxYearStart} value={option.taxYearStart}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Typography variant="body2" color="text.secondary">
+                Selected range: {selectedOption.taxYearStart} to {selectedOption.taxYearEnd}
+              </Typography>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'stretch', sm: 'center' }}>
-                <Button
-                  variant="contained"
-                  onClick={handleCreate}
-                  disabled={!taxYearStart || !taxYearEnd || createWorkspace.isPending}
-                >
+                <Button variant="contained" onClick={handleCreate} disabled={createWorkspace.isPending}>
                   {createWorkspace.isPending ? 'Creating…' : 'Create workspace'}
                 </Button>
-                <Button
-                  variant="text"
-                  onClick={() => workspacesQuery.refetch()}
-                  disabled={workspacesQuery.isFetching}
-                >
+                <Button variant="text" onClick={() => workspacesQuery.refetch()} disabled={workspacesQuery.isFetching}>
                   Refresh list
                 </Button>
               </Stack>
@@ -164,7 +177,11 @@ export default function Workspaces() {
           ) : workspacesQuery.data && workspacesQuery.data.length > 0 ? (
             <Stack spacing={2}>
               {workspacesQuery.data.map((workspace) => (
-                <WorkspaceCard key={workspace.id} workspace={workspace} />
+                <WorkspaceCard
+                  key={workspace.id}
+                  workspace={workspace}
+                  onOpen={() => navigate(`/workspaces/${workspace.id}`)}
+                />
               ))}
             </Stack>
           ) : (
