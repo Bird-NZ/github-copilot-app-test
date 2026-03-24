@@ -1,31 +1,34 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Stage 6 / Build (current no-auth V1 completion pass)
-- Stage 7 / Test is complete for the updated backend no-auth scope
+- Stage 9 / Deploy for questionnaire persistence + progress dashboard slice
+- Stage 7 / Test is complete for this slice
 
 ## Current objective
-Finish the no-auth V1 path end-to-end so the app is browser-usable, locally validated, and ready for the next deploy push.
+Deploy and verify the persisted questionnaire flow plus cleaner workspace summary/progress dashboard, then continue directly into the next 5 highest-value features.
 
 ## Last completed milestone
-- Backend no-auth mode implemented and validated
-- Backend smoke/failure tests updated for no-auth and passing
-- Frontend home/workspaces flow updated for no-auth V1
-- Frontend build passing
-- Commits created:
-  - `cf042d8` — `feat: complete no-auth v1 tax app flow`
-  - `079f89b` — `feat: add no-auth backend mode for tax app`
+- Workspace creation/open flow deployed
+- NZ tax year presets deployed
+- Workspace hub deployed with Questionnaire / Income / Crypto / IR3 Summary
+- Questionnaire persistence implemented in backend/frontend code
+- Progress dashboard implemented in frontend code
+- Local validation passed for this slice:
+  - backend tests pass
+  - frontend build passes
+- Remote image builds status:
+  - backend image rebuilt and pushed
+  - frontend image rebuilt and pushed
 
 ## Next tasks
-1. Perform a real browser interaction test of the no-auth frontend against the live backend
-2. Close any UI/API integration gaps found during browser testing
-3. Re-run integrated validation after fixes
-4. Review against V1 definition of done
-5. Resume deploy path only after browser-usable local validation is complete
+1. Roll fresh Azure backend revision for persisted questionnaire slice
+2. Roll fresh Azure frontend revision for progress dashboard slice
+3. Verify live app shows persisted questionnaire + dashboard behavior
+4. Commit the slice if needed and update build state
+5. Continue immediately into the next 5 feature additions without stopping
 
 ## Known blockers
 - None currently
-- ACP/ClawDev runtime is unavailable in this environment, but that is not a blocker because local direct execution is available
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:
@@ -41,15 +44,30 @@ Only stop and wait for Mat if one of these is true:
 - ACP runtime unavailable
 - Need to switch tools or execution strategy
 - Need to continue locally instead of through ClawDev
+- Long-running remote builds, deploys, polls, or rollout waits
 
-## Definition of done
-The no-auth V1 pass is done only when all of the following are true:
-1. Frontend is browser-usable for the intended V1 flow
-2. Frontend successfully talks to the live no-auth backend
-3. Core local validation is passing
-4. Remaining gaps are explicitly documented
-5. The build is ready for the next deploy step without relying on obsolete auth assumptions
+## Progress update contract
+- Send a user-facing progress update at least every 5 minutes during active build/deploy/test work
+- Do not begin a new major command batch if an update is overdue
+- Every update must state:
+  - what changed
+  - what is next
+  - status: Done / In Progress / Blocked
+- Long-running remote builds, deploys, polls, and rollout waits require interim updates, not just terminal summaries
+- Track timing explicitly during active work:
+  - `last_user_update_at`: 2026-03-24 19:00 NZDT
+  - `next_update_due_at`: 2026-03-24 19:05 NZDT
+
+## Definition of done for current slice
+This slice is done only when all of the following are true:
+1. Questionnaire answers persist per workspace
+2. Workspace dashboard shows progress across questionnaire, income, crypto, and IR3 summary
+3. Live Azure deployment reflects this slice
+4. Live verification is completed
+5. Remaining gaps are explicitly documented before moving to the next 5 features
 
 ## Last validated commands
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/src/api && npm test`
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
+- `az acr build -r zdacrtaxdevaue -t api:latest /home/mat/.openclaw/workspace/nz-tax-app/src/api`
+- `az acr build -r zdacrtaxdevaue -t frontend:latest --build-arg VITE_API_URL=https://zd-ca-api-dev-aue.agreeablesky-1ad949ae.australiaeast.azurecontainerapps.io --build-arg VITE_AUTH_MODE=none /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend`

@@ -8,6 +8,7 @@ import {
   Chip,
   Container,
   Divider,
+  LinearProgress,
   MenuItem,
   Stack,
   Tab,
@@ -27,11 +28,15 @@ function formatDate(value?: string) {
   return date.toLocaleString()
 }
 
+function percent(done: number, total: number) {
+  if (!total) return 0
+  return Math.round((done / total) * 100)
+}
+
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
   const [tab, setTab] = useState(0)
-  const [answers, setAnswers] = useState<QuestionnaireAnswers>({})
   const [gross, setGross] = useState('')
   const [payeWithheld, setPayeWithheld] = useState('')
   const [csvText, setCsvText] = useState('date,asset,type,amount,price_nzd,fee_nzd,exchange\n2025-06-01,BTC,buy,0.01,100000,15,Binance')
@@ -43,8 +48,8 @@ export default function WorkspaceDetail() {
   })
 
   const questionnaireQuery = useQuery({
-    queryKey: ['workspace-questionnaire', workspaceId, answers],
-    queryFn: () => workspaceFlowsApi.evaluateQuestionnaire(answers),
+    queryKey: ['workspace-questionnaire', workspaceId],
+    queryFn: () => workspaceFlowsApi.getQuestionnaire(workspaceId || ''),
     enabled: Boolean(workspaceId),
   })
 
@@ -72,6 +77,14 @@ export default function WorkspaceDetail() {
     enabled: Boolean(workspaceId),
   })
 
+  const saveQuestionnaireMutation = useMutation({
+    mutationFn: (answers: QuestionnaireAnswers) => workspaceFlowsApi.saveQuestionnaire(workspaceId || '', answers),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-questionnaire', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const addPayeMutation = useMutation({
     mutationFn: (payload: { gross: number; payeWithheld: number }) =>
       workspaceFlowsApi.addPayeIncome(workspaceId || '', payload),
@@ -79,6 +92,7 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspace-income', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
       setGross('')
       setPayeWithheld('')
     },
@@ -90,9 +104,11 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspace-crypto', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
     },
   })
 
+  const answers = questionnaireQuery.data?.answers || {}
   const visibleQuestions = questionnaireQuery.data?.visible || []
   const status = questionnaireQuery.data?.status
   const payeRows = incomeQuery.data?.paye || []
@@ -103,6 +119,26 @@ export default function WorkspaceDetail() {
     const calc = calcQuery.data?.calc || {}
     return [...Object.entries(mapped), ...Object.entries(calc)]
   }, [calcQuery.data])
+
+  const dashboard = useMemo(() => {
+    const questionnaireDone = status?.answeredVisible || 0
+    const questionnaireTotal = status?.totalVisible || 0
+    const incomeDone = payeRows.length > 0 ? 1 : 0
+    const cryptoDone = cryptoRows.length > 0 ? 1 : 0
+    const calcDone = summaryItems.length > 0 ? 1 : 0
+    const sections = [
+      { label: 'Questionnaire', done: questionnaireDone, total: questionnaireTotal || 1, detail: questionnaireTotal ? `${questionnaireDone}/${questionnaireTotal} answered` : 'No visible questions yet' },
+      { label: 'Income', done: incomeDone, total: 1, detail: payeRows.length > 0 ? `${payeRows.length} PAYE entries added` : 'No PAYE entries yet' },
+      { label: 'Crypto', done: cryptoDone, total: 1, detail: cryptoRows.length > 0 ? `${cryptoRows.length} transactions imported` : 'No crypto data yet' },
+      { label: 'IR3 Summary', done: calcDone, total: 1, detail: summaryItems.length > 0 ? `${summaryItems.length} values generated` : 'No calculation output yet' },
+    ]
+    const doneUnits = sections.reduce((sum, section) => sum + Math.min(section.done, section.total), 0)
+    const totalUnits = sections.reduce((sum, section) => sum + section.total, 0)
+    return {
+      sections,
+      overallPercent: percent(doneUnits, totalUnits),
+    }
+  }, [status, payeRows.length, cryptoRows.length, summaryItems.length])
 
   return (
     <Container maxWidth="lg">
@@ -146,6 +182,42 @@ export default function WorkspaceDetail() {
 
         <Card>
           <CardContent>
+            <Stack spacing={2}>
+              <Typography variant="h6">Progress dashboard</Typography>
+              <Box>
+                <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Overall progress
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {dashboard.overallPercent}%
+                  </Typography>
+                </Stack>
+                <LinearProgress variant="determinate" value={dashboard.overallPercent} sx={{ height: 10, borderRadius: 5 }} />
+              </Box>
+              <Stack spacing={1.5}>
+                {dashboard.sections.map((section) => (
+                  <Card key={section.label} variant="outlined">
+                    <CardContent>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                        <Box>
+                          <Typography variant="subtitle1">{section.label}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {section.detail}
+                          </Typography>
+                        </Box>
+                        <Chip label={`${percent(section.done, section.total)}%`} color={section.done >= section.total ? 'success' : 'default'} />
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Stack>
+            </Stack>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
             <Tabs value={tab} onChange={(_e, value) => setTab(value)} variant="scrollable" scrollButtons="auto">
               <Tab label="Questionnaire" />
               <Tab label="Income" />
@@ -171,10 +243,11 @@ export default function WorkspaceDetail() {
                     value={answers[question.id] === undefined ? '' : String(answers[question.id])}
                     onChange={(event) => {
                       const value = event.target.value
-                      setAnswers((current) => ({
-                        ...current,
+                      const nextAnswers = {
+                        ...answers,
                         [question.id]: value === 'true',
-                      }))
+                      }
+                      saveQuestionnaireMutation.mutate(nextAnswers)
                     }}
                     fullWidth
                   >
@@ -190,30 +263,13 @@ export default function WorkspaceDetail() {
               <Stack spacing={2}>
                 <Typography variant="h6">PAYE income</Typography>
                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                  <TextField
-                    label="Gross income (NZD)"
-                    type="number"
-                    value={gross}
-                    onChange={(event) => setGross(event.target.value)}
-                    fullWidth
-                  />
-                  <TextField
-                    label="PAYE withheld (NZD)"
-                    type="number"
-                    value={payeWithheld}
-                    onChange={(event) => setPayeWithheld(event.target.value)}
-                    fullWidth
-                  />
+                  <TextField label="Gross income (NZD)" type="number" value={gross} onChange={(event) => setGross(event.target.value)} fullWidth />
+                  <TextField label="PAYE withheld (NZD)" type="number" value={payeWithheld} onChange={(event) => setPayeWithheld(event.target.value)} fullWidth />
                 </Stack>
                 <Button
                   variant="contained"
                   disabled={!gross || !payeWithheld || addPayeMutation.isPending}
-                  onClick={() =>
-                    addPayeMutation.mutate({
-                      gross: Number(gross),
-                      payeWithheld: Number(payeWithheld),
-                    })
-                  }
+                  onClick={() => addPayeMutation.mutate({ gross: Number(gross), payeWithheld: Number(payeWithheld) })}
                 >
                   {addPayeMutation.isPending ? 'Saving…' : 'Add PAYE income'}
                 </Button>
@@ -223,9 +279,7 @@ export default function WorkspaceDetail() {
                       <Card key={row.id} variant="outlined">
                         <CardContent>
                           <Typography variant="body1">Gross: ${row.gross}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            PAYE withheld: ${row.payeWithheld}
-                          </Typography>
+                          <Typography variant="body2" color="text.secondary">PAYE withheld: ${row.payeWithheld}</Typography>
                         </CardContent>
                       </Card>
                     ))}
@@ -239,19 +293,8 @@ export default function WorkspaceDetail() {
             {tab === 2 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">Crypto CSV import</Typography>
-                <TextField
-                  label="Paste CSV"
-                  value={csvText}
-                  onChange={(event) => setCsvText(event.target.value)}
-                  multiline
-                  minRows={6}
-                  fullWidth
-                />
-                <Button
-                  variant="contained"
-                  disabled={!csvText.trim() || importCryptoMutation.isPending}
-                  onClick={() => importCryptoMutation.mutate(csvText)}
-                >
+                <TextField label="Paste CSV" value={csvText} onChange={(event) => setCsvText(event.target.value)} multiline minRows={6} fullWidth />
+                <Button variant="contained" disabled={!csvText.trim() || importCryptoMutation.isPending} onClick={() => importCryptoMutation.mutate(csvText)}>
                   {importCryptoMutation.isPending ? 'Importing…' : 'Import crypto CSV'}
                 </Button>
                 {cryptoRows.length > 0 ? (
@@ -259,12 +302,8 @@ export default function WorkspaceDetail() {
                     {cryptoRows.map((row) => (
                       <Card key={row.id} variant="outlined">
                         <CardContent>
-                          <Typography variant="body1">
-                            {row.occurredAt} — {row.asset} {row.type} {row.amount}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            NZD price: ${row.priceNzd} · Fee: ${row.feeNzd} · Source: {row.source || '—'}
-                          </Typography>
+                          <Typography variant="body1">{row.occurredAt} — {row.asset} {row.type} {row.amount}</Typography>
+                          <Typography variant="body2" color="text.secondary">NZD price: ${row.priceNzd} · Fee: ${row.feeNzd} · Source: {row.source || '—'}</Typography>
                         </CardContent>
                       </Card>
                     ))}
@@ -284,9 +323,7 @@ export default function WorkspaceDetail() {
                       <Card key={ref} variant="outlined">
                         <CardContent>
                           <Typography variant="body1">{ref}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {value}
-                          </Typography>
+                          <Typography variant="body2" color="text.secondary">{value}</Typography>
                         </CardContent>
                       </Card>
                     ))}
@@ -298,9 +335,7 @@ export default function WorkspaceDetail() {
                 {exportQuery.data ? (
                   <Card variant="outlined">
                     <CardContent>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Draft export preview
-                      </Typography>
+                      <Typography variant="subtitle1" gutterBottom>Draft export preview</Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                         {exportQuery.data.pdf.title} · {formatDate(exportQuery.data.pdf.generatedAt)}
                       </Typography>

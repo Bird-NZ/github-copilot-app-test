@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
-import { createWorkspace, getWorkspace, listWorkspaces } from './modules/workspaceStore.js';
+import { createWorkspace, getWorkspace, listWorkspaces, setWorkspaceQuestionnaireAnswers, updateWorkspace } from './modules/workspaceStore.js';
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
 import { addDocument, checklist, documents } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
@@ -128,6 +128,26 @@ app.post('/questionnaire/evaluate', requireSession, (req, res) => {
   res.json({ visible, status });
 });
 
+app.get('/workspaces/:id/questionnaire', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const answers = workspace.questionnaireAnswers || {};
+  const visible = visibleQuestions(answers);
+  const status = completionStatus(answers);
+  return res.json({ answers, visible, status });
+});
+
+app.put('/workspaces/:id/questionnaire', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const answers = req.body?.answers || {};
+  const updated = setWorkspaceQuestionnaireAnswers(workspace.id, req.session.userId, answers);
+  const visible = visibleQuestions(updated.questionnaireAnswers || {});
+  const status = completionStatus(updated.questionnaireAnswers || {});
+  logEvent(workspace.id, { action: 'questionnaire.save', actor: req.session.userId, meta: { answeredVisible: status.answeredVisible, totalVisible: status.totalVisible } });
+  return res.json({ answers: updated.questionnaireAnswers, visible, status });
+});
+
 app.post('/workspaces/:id/documents', requireSession, upload.single('file'), (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
@@ -161,6 +181,7 @@ app.post('/workspaces/:id/income/:type', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   try {
     const item = addIncome(workspace.id, req.params.type, req.body || {});
+    updateWorkspace(workspace.id, req.session.userId, {});
     logEvent(workspace.id, { action: `income.add.${req.params.type}`, actor: req.session.userId });
     return res.status(201).json({ item });
   } catch (err) {
@@ -193,6 +214,7 @@ app.post('/workspaces/:id/crypto/import-csv', requireSession, (req, res) => {
   if (!csv || typeof csv !== 'string') return res.status(400).json({ error: 'CSV_REQUIRED' });
   const rows = parseCsv(csv);
   const result = importTransactions(workspace.id, rows);
+  updateWorkspace(workspace.id, req.session.userId, {});
   logEvent(workspace.id, { action: 'crypto.import_csv', actor: req.session.userId, meta: { imported: result.imported } });
   return res.status(201).json({ ...result });
 });

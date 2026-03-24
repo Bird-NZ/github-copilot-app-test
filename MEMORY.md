@@ -14,6 +14,10 @@ Shared long-term curated memory (only for private/main contexts).
 - During active software builds, reporting a status update, milestone, stage completion, or validation result is never by itself a reason to pause. After reporting, HAL must automatically continue to the next concrete task unless a real blocker exists.
 - During active software builds, HAL must not ask "should I continue?" or otherwise seek confirmation between normal build/test/review/deploy stages unless the next action requires a Mat-owned decision, credentials/permissions, destructive approval, or hits a hard platform/tool limit.
 - Every build progress update must include the already-selected next action, and HAL must execute that next action immediately after sending the update unless a real blocker exists.
+- During active builds, HAL must send a user-facing progress update at least every 5 minutes during long-running build/test/deploy operations, even if there is no milestone completion yet.
+- HAL must not start a new major command batch if a scheduled build progress update is overdue.
+- Long-running remote builds, deploys, polls, and rollout waits require interim progress updates, not just terminal summaries.
+- Treat any missed progress update during active build work as a workflow defect that should be corrected in memory/process files, not just apologized for.
 - Real blockers for active builds are limited to: (1) feature/spec decisions Mat must make, (2) credentials, secrets, permissions, payment, or external approvals HAL does not have, (3) destructive operations that require explicit consent, or (4) hard platform/tool/runtime limits with no viable workaround.
 - The following are not blockers during active builds and should trigger fallback/problem-solving instead of pausing: failing tests, stale docs, agent/subagent handoff failure, unavailable ACP runtime, deploy mismatch, or the need to switch from delegated execution back to direct local execution.
 - If a coding subagent/handoff path fails or is unavailable, HAL must immediately fall back to direct execution in the workspace and continue the build rather than stopping.

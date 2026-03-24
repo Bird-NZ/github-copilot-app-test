@@ -15,6 +15,7 @@ export type QuestionnaireStatus = {
 }
 
 export type QuestionnaireResult = {
+  answers: QuestionnaireAnswers
   visible: QuestionnaireQuestion[]
   status: QuestionnaireStatus
 }
@@ -52,8 +53,13 @@ export type DraftExport = {
 }
 
 export const workspaceFlowsApi = {
-  async evaluateQuestionnaire(answers: QuestionnaireAnswers): Promise<QuestionnaireResult> {
-    const response = await apiClient.post('/questionnaire/evaluate', { answers })
+  async getQuestionnaire(workspaceId: string): Promise<QuestionnaireResult> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/questionnaire`)
+    return response.data
+  },
+
+  async saveQuestionnaire(workspaceId: string, answers: QuestionnaireAnswers): Promise<QuestionnaireResult> {
+    const response = await apiClient.put(`/workspaces/${workspaceId}/questionnaire`, { answers })
     return response.data
   },
 
