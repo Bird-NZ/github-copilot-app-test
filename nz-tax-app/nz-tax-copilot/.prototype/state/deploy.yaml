@@ -155,8 +155,8 @@ deployment_stages:
   - concept/external/b2c/setup-b2c.sh
   - concept/external/b2c/verify-b2c.sh
   - concept/external/b2c/deploy.sh
-  deploy_status: failed
-  deploy_timestamp: '2026-03-22T10:40:01.540455+00:00'
+  deploy_status: pending
+  deploy_timestamp: null
   deploy_output: ''
   deploy_error: ''
   rollback_timestamp: null
@@ -381,10 +381,16 @@ deployment_stages:
   - concept/infra/terraform/stage-11-container-env/outputs.tf
   - concept/infra/terraform/stage-11-container-env/deploy.sh
   - concept/infra/terraform/stage-11-container-env/README.md
-  deploy_status: pending
-  deploy_timestamp: null
+  deploy_status: failed
+  deploy_timestamp: '2026-03-23T10:53:59.171662+00:00'
   deploy_output: ''
-  deploy_error: ''
+  deploy_error: "Error: Invalid function argument\n\n  on outputs.tf line 13, in output \"container_apps_environment_default_domain\"\
+    :\n  13:   value       = jsondecode(azapi_resource.container_apps_environment.output).properties.defaultDomain\n    ├────────────────\n\
+    \    │ while calling jsondecode(str)\n    │ azapi_resource.container_apps_environment.output is object with 4 attributes\n\
+    \nInvalid value for \"str\" parameter: string required, but have object.\n\nError: Invalid function argument\n\n  on outputs.tf\
+    \ line 18, in output \"container_apps_environment_static_ip\":\n  18:   value       = jsondecode(azapi_resource.container_apps_environment.output).properties.staticIp\n\
+    \    ├────────────────\n    │ while calling jsondecode(str)\n    │ azapi_resource.container_apps_environment.output is\
+    \ object with 4 attributes\n\nInvalid value for \"str\" parameter: string required, but have object."
   rollback_timestamp: null
 - stage: 12
   name: SQL Schema
@@ -546,18 +552,24 @@ deployment_stages:
   rollback_timestamp: null
 preflight_results: []
 deploy_log:
-- stage: 4
+- stage: 11
   action: deploying
   detail: ''
-  timestamp: '2026-03-22T10:39:58.242639+00:00'
-- stage: 4
+  timestamp: '2026-03-23T10:49:50.622904+00:00'
+- stage: 11
   action: failed
-  detail: ''
-  timestamp: '2026-03-22T10:40:01.540475+00:00'
+  detail: "Error: Invalid function argument\n\n  on outputs.tf line 13, in output \"container_apps_environment_default_domain\"\
+    :\n  13:   value       = jsondecode(azapi_resource.container_apps_environment.output).properties.defaultDomain\n    ├────────────────\n\
+    \    │ while calling jsondecode(str)\n    │ azapi_resource.container_apps_environment.output is object with 4 attributes\n\
+    \nInvalid value for \"str\" parameter: string required, but have object.\n\nError: Invalid function argument\n\n  on outputs.tf\
+    \ line 18, in output \"container_apps_environment_static_ip\":\n  18:   value       = jsondecode(azapi_resource.container_apps_environment.output).properties.staticIp\n\
+    \    ├────────────────\n    │ while calling jsondecode(str)\n    │ azapi_resource.container_apps_environment.output is\
+    \ object with 4 attributes\n\nInvalid value for \"str\" parameter: string required, but have object."
+  timestamp: '2026-03-23T10:53:59.171726+00:00'
 rollback_log: []
 captured_outputs: {}
 conversation_history: []
 _metadata:
-  created: '2026-03-22T10:39:56.653648+00:00'
-  last_updated: '2026-03-22T10:40:01.567172+00:00'
+  created: '2026-03-23T10:49:49.084041+00:00'
+  last_updated: '2026-03-23T10:53:59.199604+00:00'
   iteration: 0

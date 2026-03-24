@@ -87,3 +87,15 @@ Append-only ledger for active build work.
   - Next action: Wait for healthy state and re-verify Documents strings in live bundle.
   - Status: In Progress
   - Next update due by: 21:38 NZDT
+
+- 21:34 NZDT
+  - What changed: Feature 3 committed and live (`984ace3`).
+  - Next action: Implement Feature 4 audit trail tab in workspace.
+  - Status: In Progress
+  - Next update due by: 21:39 NZDT
+
+- 21:35 NZDT
+  - What changed: Feature 4 (audit trail tab) passed local build validation.
+  - Next action: Build/deploy frontend revision and verify live audit-tab strings.
+  - Status: In Progress
+  - Next update due by: 21:40 NZDT

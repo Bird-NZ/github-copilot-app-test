@@ -2,7 +2,7 @@
 data "terraform_remote_state" "stage1" {
   backend = "local"
   config = {
-    path = "../.terraform-state/stage1-foundation.tfstate"
+    path = "../.terraform-state/stage-1-foundation.tfstate"
   }
 }
 
@@ -23,18 +23,10 @@ resource "azapi_resource" "acr" {
 
   body = {
     sku = {
-      name = "Basic"
+      name = "Standard"
     }
     properties = {
-      adminUserEnabled      = false
-      publicNetworkAccess   = "Disabled"
-      networkRuleBypassOptions = "AzureServices"
-      policies = {
-        retentionPolicy = {
-          status = "enabled"
-          days   = 7
-        }
-      }
+      adminUserEnabled = false
     }
     identity = {
       type = "SystemAssigned"
@@ -44,57 +36,6 @@ resource "azapi_resource" "acr" {
   tags = local.common_tags
 
   response_export_values = ["identity.principalId"]
-}
-
-# Private Endpoint for Container Registry
-resource "azapi_resource" "pe_acr" {
-  type      = "Microsoft.Network/privateEndpoints@2024-01-01"
-  name      = "pe-acr-${local.project}"
-  parent_id = data.terraform_remote_state.stage1.outputs.resource_group_id
-  location  = local.location
-
-  body = {
-    properties = {
-      subnet = {
-        id = data.terraform_remote_state.stage2.outputs.subnet_data_id
-      }
-      privateLinkServiceConnections = [
-        {
-          name = "acr-connection"
-          properties = {
-            privateLinkServiceId = azapi_resource.acr.id
-            groupIds             = ["registry"]
-          }
-        }
-      ]
-    }
-  }
-
-  tags = local.common_tags
-
-  depends_on = [azapi_resource.acr]
-}
-
-# Private DNS Zone Group for ACR Private Endpoint
-resource "azapi_resource" "pe_acr_dns_group" {
-  type      = "Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-01-01"
-  name      = "acr-dns-zone-group"
-  parent_id = azapi_resource.pe_acr.id
-
-  body = {
-    properties = {
-      privateDnsZoneConfigs = [
-        {
-          name = "privatelink-azurecr-io"
-          properties = {
-            privateDnsZoneId = data.terraform_remote_state.stage2.outputs.private_dns_zone_acr_id
-          }
-        }
-      ]
-    }
-  }
-
-  depends_on = [azapi_resource.pe_acr]
 }
 
 # Diagnostic Settings for Container Registry

@@ -11,17 +11,17 @@ output "acr_name" {
 
 output "acr_login_server" {
   description = "Azure Container Registry login server URL"
-  value       = jsondecode(azapi_resource.acr.output).properties.loginServer
+  value       = "${azapi_resource.acr.name}.azurecr.io"
 }
 
 output "acr_identity_principal_id" {
   description = "Principal ID of ACR system-assigned managed identity"
-  value       = jsondecode(azapi_resource.acr.output).identity.principalId
+  value       = try(azapi_resource.acr.output.identity.principalId, null)
 }
 
 output "private_endpoint_ip" {
-  description = "Private IP address of ACR private endpoint"
-  value       = try(jsondecode(azapi_resource.pe_acr.output).properties.customDnsConfigs[0].ipAddresses[0], null)
+  description = "Private IP address of ACR private endpoint (not used in V1 path)"
+  value       = null
 }
 
 # Stage metadata

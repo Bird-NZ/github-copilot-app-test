@@ -1,7 +1,7 @@
 # Container Apps Environment
 # https://learn.microsoft.com/en-us/azure/templates/microsoft.app/2025-06-01/managedenvironments
 resource "azapi_resource" "container_apps_environment" {
-  type      = "Microsoft.App/managedEnvironments@2025-06-01"
+  type      = "Microsoft.App/managedEnvironments@2025-07-01"
   name      = local.cae_name
   parent_id = data.azurerm_resource_group.main.id
   location  = var.location
@@ -56,7 +56,7 @@ resource "azapi_resource" "container_apps_environment" {
 # Diagnostic settings for Container Apps Environment
 # https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2025-06-01/diagnosticsettings
 resource "azapi_resource" "cae_diagnostic_settings" {
-  type      = "Microsoft.Insights/diagnosticSettings@2025-06-01"
+  type      = "Microsoft.Insights/diagnosticSettings@2021-05-01-preview"
   name      = "diag-cae"
   parent_id = azapi_resource.container_apps_environment.id
 

@@ -83,6 +83,12 @@ export default function WorkspaceDetail() {
     enabled: Boolean(workspaceId),
   })
 
+  const auditQuery = useQuery({
+    queryKey: ['workspace-audit', workspaceId],
+    queryFn: () => workspaceFlowsApi.getAudit(workspaceId || ''),
+    enabled: Boolean(workspaceId),
+  })
+
   const calcQuery = useQuery({
     queryKey: ['workspace-calc', workspaceId],
     queryFn: () => workspaceFlowsApi.getIr3Calc(workspaceId || ''),
@@ -260,6 +266,7 @@ export default function WorkspaceDetail() {
               <Tab label="Income" />
               <Tab label="Crypto" />
               <Tab label="Documents" />
+              <Tab label="Audit" />
               <Tab label="IR3 Summary" />
             </Tabs>
 
@@ -447,7 +454,35 @@ export default function WorkspaceDetail() {
               </Stack>
             ) : null}
 
+
             {tab === 4 ? (
+              <Stack spacing={2}>
+                <Typography variant="h6">Audit trail</Typography>
+                {auditQuery.data && auditQuery.data.length > 0 ? (
+                  <Stack spacing={1}>
+                    {auditQuery.data.slice().reverse().map((event, index) => (
+                      <Card key={`${event.at}-${index}`} variant="outlined">
+                        <CardContent>
+                          <Typography variant="body1">{event.action}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {event.actor} · {formatDate(event.at)}
+                          </Typography>
+                          {event.meta ? (
+                            <Typography variant="caption" color="text.secondary">
+                              {JSON.stringify(event.meta)}
+                            </Typography>
+                          ) : null}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </Stack>
+                ) : (
+                  <Alert severity="info">No audit events yet.</Alert>
+                )}
+              </Stack>
+            ) : null}
+
+            {tab === 5 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">IR3 summary</Typography>
                 {summaryItems.length > 0 ? (

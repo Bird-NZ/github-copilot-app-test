@@ -65,6 +65,13 @@ export type ChecklistItem = {
   count: number
 }
 
+export type AuditEvent = {
+  at: string
+  action: string
+  actor: string
+  meta?: Record<string, unknown>
+}
+
 export type Ir3CalcResult = {
   map: Record<string, number>
   calc: Record<string, number>
@@ -122,6 +129,11 @@ export const workspaceFlowsApi = {
   async getChecklist(workspaceId: string): Promise<ChecklistItem[]> {
     const response = await apiClient.get(`/workspaces/${workspaceId}/checklist`)
     return response.data?.checklist || []
+  },
+
+  async getAudit(workspaceId: string): Promise<AuditEvent[]> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/audit`)
+    return response.data?.events || []
   },
 
   async importCryptoCsv(workspaceId: string, csv: string): Promise<{ imported: number; total: number }> {

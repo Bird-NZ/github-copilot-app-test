@@ -21,3 +21,9 @@ variable "region_short" {
   type        = string
   default     = "aue"
 }
+
+variable "subscription_id" {
+  description = "Optional subscription id passed by deploy orchestration"
+  type        = string
+  default     = ""
+}

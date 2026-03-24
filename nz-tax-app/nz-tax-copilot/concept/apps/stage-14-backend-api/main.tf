@@ -34,13 +34,6 @@ data "terraform_remote_state" "stage3" {
   }
 }
 
-data "terraform_remote_state" "stage4" {
-  backend = "azurerm"
-  config = {
-    key = "stage4-azure-ad-b2c.tfstate"
-  }
-}
-
 data "terraform_remote_state" "stage5" {
   backend = "azurerm"
   config = {
@@ -102,10 +95,6 @@ locals {
   # Key Vault outputs
   key_vault_id   = data.terraform_remote_state.stage3.outputs.key_vault_id
   key_vault_name = data.terraform_remote_state.stage3.outputs.key_vault_name
-  
-  # Azure AD B2C outputs
-  b2c_tenant_name = data.terraform_remote_state.stage4.outputs.tenant_name
-  b2c_tenant_id   = data.terraform_remote_state.stage4.outputs.tenant_id
   
   # SQL Database outputs
   sql_server_fqdn   = data.terraform_remote_state.stage5.outputs.sql_server_fqdn
@@ -227,15 +216,9 @@ resource "azurerm_container_app" "api" {
         value = local.managed_identity_client_id
       }
       
-      # Azure AD B2C configuration
       env {
-        name  = "B2C_TENANT_NAME"
-        value = local.b2c_tenant_name
-      }
-      
-      env {
-        name  = "B2C_TENANT_ID"
-        value = local.b2c_tenant_id
+        name  = "AUTH_MODE"
+        value = "none"
       }
       
       # Key Vault references for service endpoints
