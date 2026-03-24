@@ -3,11 +3,16 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+ARG VITE_API_URL=http://localhost:8787
+ARG VITE_AUTH_MODE=none
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_AUTH_MODE=${VITE_AUTH_MODE}
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies needed for build
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -26,16 +31,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy health check file
 COPY public/health.html /usr/share/nginx/html/health
-
-# Non-root user
-RUN addgroup -S app && adduser -S app -G app && \
-    chown -R app:app /usr/share/nginx/html && \
-    chown -R app:app /var/cache/nginx && \
-    chown -R app:app /var/log/nginx && \
-    touch /var/run/nginx.pid && \
-    chown -R app:app /var/run/nginx.pid
-
-USER app
 
 EXPOSE 80
 
