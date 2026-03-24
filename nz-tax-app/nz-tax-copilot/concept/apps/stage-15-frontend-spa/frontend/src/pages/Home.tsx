@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Container, Stack, Typography } from '@mui/material'
+import { Box, Button, Container, Stack, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
@@ -16,10 +16,6 @@ export default function Home() {
               Simplified tax preparation for New Zealand individual taxpayers
             </Typography>
           </Box>
-
-          <Alert severity="info" sx={{ textAlign: 'left' }}>
-            V1 is currently running in no-auth mode so the core tax workflow can be tested end-to-end without sign-in.
-          </Alert>
 
           <Box>
             <Button variant="contained" size="large" onClick={() => navigate('/workspaces')}>

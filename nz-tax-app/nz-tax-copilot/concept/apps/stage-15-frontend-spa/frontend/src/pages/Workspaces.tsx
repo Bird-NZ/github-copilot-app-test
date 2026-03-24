@@ -96,9 +96,6 @@ export default function Workspaces() {
           <Typography variant="h4" component="h1" gutterBottom>
             My Tax Workspaces
           </Typography>
-          <Typography variant="body1" color="text.secondary">
-            No-auth V1 mode is active. You can create and manage draft tax workspaces without signing in.
-          </Typography>
         </Box>
 
         <Card>
