@@ -22,9 +22,18 @@ export type QuestionnaireResult = {
 
 export type PayeIncomeItem = {
   id: string
-  gross: number
-  payeWithheld: number
+  gross?: number
+  payeWithheld?: number
+  amount?: number
+  sourceName?: string
   createdAt?: string
+}
+
+export type IncomeBucket = {
+  paye: PayeIncomeItem[]
+  interest: PayeIncomeItem[]
+  dividends: PayeIncomeItem[]
+  other: PayeIncomeItem[]
 }
 
 export type CryptoTransaction = {
@@ -63,12 +72,16 @@ export const workspaceFlowsApi = {
     return response.data
   },
 
-  async addPayeIncome(workspaceId: string, payload: { gross: number; payeWithheld: number }): Promise<PayeIncomeItem> {
-    const response = await apiClient.post(`/workspaces/${workspaceId}/income/paye`, payload)
+  async addIncome(
+    workspaceId: string,
+    type: 'paye' | 'interest' | 'dividends' | 'other',
+    payload: Record<string, unknown>
+  ): Promise<PayeIncomeItem> {
+    const response = await apiClient.post(`/workspaces/${workspaceId}/income/${type}`, payload)
     return response.data?.item
   },
 
-  async listIncome(workspaceId: string): Promise<{ paye: PayeIncomeItem[]; interest: unknown[]; dividends: unknown[]; other: unknown[] }> {
+  async listIncome(workspaceId: string): Promise<IncomeBucket> {
     const response = await apiClient.get(`/workspaces/${workspaceId}/income`)
     return response.data?.income
   },

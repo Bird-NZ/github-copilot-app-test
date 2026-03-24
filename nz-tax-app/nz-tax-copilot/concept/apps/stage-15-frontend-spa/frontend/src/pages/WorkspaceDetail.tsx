@@ -19,7 +19,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket } from '../api/workspaceFlows'
 
 function formatDate(value?: string) {
   if (!value) return '—'
@@ -37,8 +37,12 @@ export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
   const [tab, setTab] = useState(0)
+  const [incomeType, setIncomeType] = useState<'paye' | 'interest' | 'dividends' | 'other'>('paye')
   const [gross, setGross] = useState('')
   const [payeWithheld, setPayeWithheld] = useState('')
+  const [incomeAmount, setIncomeAmount] = useState('')
+  const [incomeSourceName, setIncomeSourceName] = useState('')
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null)
   const [csvText, setCsvText] = useState('date,asset,type,amount,price_nzd,fee_nzd,exchange\n2025-06-01,BTC,buy,0.01,100000,15,Binance')
 
   const workspaceQuery = useQuery({
@@ -85,9 +89,9 @@ export default function WorkspaceDetail() {
     },
   })
 
-  const addPayeMutation = useMutation({
-    mutationFn: (payload: { gross: number; payeWithheld: number }) =>
-      workspaceFlowsApi.addPayeIncome(workspaceId || '', payload),
+  const addIncomeMutation = useMutation({
+    mutationFn: (payload: { type: 'paye' | 'interest' | 'dividends' | 'other'; body: Record<string, unknown> }) =>
+      workspaceFlowsApi.addIncome(workspaceId || '', payload.type, payload.body),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['workspace-income', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
@@ -95,6 +99,8 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspace'] })
       setGross('')
       setPayeWithheld('')
+      setIncomeAmount('')
+      setIncomeSourceName('')
     },
   })
 
@@ -111,7 +117,11 @@ export default function WorkspaceDetail() {
   const answers = questionnaireQuery.data?.answers || {}
   const visibleQuestions = questionnaireQuery.data?.visible || []
   const status = questionnaireQuery.data?.status
-  const payeRows = incomeQuery.data?.paye || []
+  const incomeBuckets: IncomeBucket | undefined = incomeQuery.data
+  const payeRows = incomeBuckets?.paye || []
+  const interestRows = incomeBuckets?.interest || []
+  const dividendRows = incomeBuckets?.dividends || []
+  const otherIncomeRows = incomeBuckets?.other || []
   const cryptoRows = cryptoQuery.data || []
 
   const summaryItems = useMemo(() => {
@@ -123,12 +133,13 @@ export default function WorkspaceDetail() {
   const dashboard = useMemo(() => {
     const questionnaireDone = status?.answeredVisible || 0
     const questionnaireTotal = status?.totalVisible || 0
-    const incomeDone = payeRows.length > 0 ? 1 : 0
+    const incomeCount = payeRows.length + interestRows.length + dividendRows.length + otherIncomeRows.length
+    const incomeDone = incomeCount > 0 ? 1 : 0
     const cryptoDone = cryptoRows.length > 0 ? 1 : 0
     const calcDone = summaryItems.length > 0 ? 1 : 0
     const sections = [
       { label: 'Questionnaire', done: questionnaireDone, total: questionnaireTotal || 1, detail: questionnaireTotal ? `${questionnaireDone}/${questionnaireTotal} answered` : 'No visible questions yet' },
-      { label: 'Income', done: incomeDone, total: 1, detail: payeRows.length > 0 ? `${payeRows.length} PAYE entries added` : 'No PAYE entries yet' },
+      { label: 'Income', done: incomeDone, total: 1, detail: incomeCount > 0 ? `${incomeCount} income entries added` : 'No income entries yet' },
       { label: 'Crypto', done: cryptoDone, total: 1, detail: cryptoRows.length > 0 ? `${cryptoRows.length} transactions imported` : 'No crypto data yet' },
       { label: 'IR3 Summary', done: calcDone, total: 1, detail: summaryItems.length > 0 ? `${summaryItems.length} values generated` : 'No calculation output yet' },
     ]
@@ -138,7 +149,7 @@ export default function WorkspaceDetail() {
       sections,
       overallPercent: percent(doneUnits, totalUnits),
     }
-  }, [status, payeRows.length, cryptoRows.length, summaryItems.length])
+  }, [status, payeRows.length, interestRows.length, dividendRows.length, otherIncomeRows.length, cryptoRows.length, summaryItems.length])
 
   return (
     <Container maxWidth="lg">
@@ -231,8 +242,9 @@ export default function WorkspaceDetail() {
               <Stack spacing={2}>
                 <Typography variant="h6">Questionnaire</Typography>
                 {status ? (
-                  <Alert severity={status.complete ? 'success' : 'info'}>
+                  <Alert severity={status.complete ? 'success' : saveQuestionnaireMutation.isPending ? 'warning' : 'info'}>
                     {status.answeredVisible} of {status.totalVisible} visible questions answered
+                    {saveQuestionnaireMutation.isPending ? ' · Saving…' : lastSavedAt ? ` · Saved at ${lastSavedAt}` : ''}
                   </Alert>
                 ) : null}
                 {visibleQuestions.map((question) => (
@@ -247,7 +259,7 @@ export default function WorkspaceDetail() {
                         ...answers,
                         [question.id]: value === 'true',
                       }
-                      saveQuestionnaireMutation.mutate(nextAnswers)
+                      saveQuestionnaireMutation.mutate(nextAnswers, { onSuccess: () => setLastSavedAt(new Date().toLocaleTimeString()) })
                     }}
                     fullWidth
                   >
@@ -261,31 +273,53 @@ export default function WorkspaceDetail() {
 
             {tab === 1 ? (
               <Stack spacing={2}>
-                <Typography variant="h6">PAYE income</Typography>
-                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                  <TextField label="Gross income (NZD)" type="number" value={gross} onChange={(event) => setGross(event.target.value)} fullWidth />
-                  <TextField label="PAYE withheld (NZD)" type="number" value={payeWithheld} onChange={(event) => setPayeWithheld(event.target.value)} fullWidth />
-                </Stack>
+                <Typography variant="h6">Income</Typography>
+                <TextField select label="Income type" value={incomeType} onChange={(event) => setIncomeType(event.target.value as 'paye' | 'interest' | 'dividends' | 'other')} fullWidth>
+                  <MenuItem value="paye">PAYE</MenuItem>
+                  <MenuItem value="interest">Interest</MenuItem>
+                  <MenuItem value="dividends">Dividends</MenuItem>
+                  <MenuItem value="other">Other income</MenuItem>
+                </TextField>
+                {incomeType === 'paye' ? (
+                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                    <TextField label="Gross income (NZD)" type="number" value={gross} onChange={(event) => setGross(event.target.value)} fullWidth />
+                    <TextField label="PAYE withheld (NZD)" type="number" value={payeWithheld} onChange={(event) => setPayeWithheld(event.target.value)} fullWidth />
+                  </Stack>
+                ) : (
+                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                    <TextField label="Amount (NZD)" type="number" value={incomeAmount} onChange={(event) => setIncomeAmount(event.target.value)} fullWidth />
+                    <TextField label="Source" value={incomeSourceName} onChange={(event) => setIncomeSourceName(event.target.value)} fullWidth />
+                  </Stack>
+                )}
                 <Button
                   variant="contained"
-                  disabled={!gross || !payeWithheld || addPayeMutation.isPending}
-                  onClick={() => addPayeMutation.mutate({ gross: Number(gross), payeWithheld: Number(payeWithheld) })}
+                  disabled={incomeType === 'paye' ? (!gross || !payeWithheld || addIncomeMutation.isPending) : (!incomeAmount || addIncomeMutation.isPending)}
+                  onClick={() => addIncomeMutation.mutate({
+                    type: incomeType,
+                    body: incomeType === 'paye'
+                      ? { gross: Number(gross), payeWithheld: Number(payeWithheld) }
+                      : { amount: Number(incomeAmount), sourceName: incomeSourceName },
+                  })}
                 >
-                  {addPayeMutation.isPending ? 'Saving…' : 'Add PAYE income'}
+                  {addIncomeMutation.isPending ? 'Saving…' : `Add ${incomeType} income`}
                 </Button>
-                {payeRows.length > 0 ? (
+                {payeRows.length + interestRows.length + dividendRows.length + otherIncomeRows.length > 0 ? (
                   <Stack spacing={1}>
                     {payeRows.map((row) => (
-                      <Card key={row.id} variant="outlined">
-                        <CardContent>
-                          <Typography variant="body1">Gross: ${row.gross}</Typography>
-                          <Typography variant="body2" color="text.secondary">PAYE withheld: ${row.payeWithheld}</Typography>
-                        </CardContent>
-                      </Card>
+                      <Card key={row.id} variant="outlined"><CardContent><Typography variant="body1">PAYE · Gross: ${row.gross}</Typography><Typography variant="body2" color="text.secondary">PAYE withheld: ${row.payeWithheld}</Typography></CardContent></Card>
+                    ))}
+                    {interestRows.map((row) => (
+                      <Card key={row.id} variant="outlined"><CardContent><Typography variant="body1">Interest · ${row.amount}</Typography><Typography variant="body2" color="text.secondary">Source: {row.sourceName || '—'}</Typography></CardContent></Card>
+                    ))}
+                    {dividendRows.map((row) => (
+                      <Card key={row.id} variant="outlined"><CardContent><Typography variant="body1">Dividends · ${row.amount}</Typography><Typography variant="body2" color="text.secondary">Source: {row.sourceName || '—'}</Typography></CardContent></Card>
+                    ))}
+                    {otherIncomeRows.map((row) => (
+                      <Card key={row.id} variant="outlined"><CardContent><Typography variant="body1">Other income · ${row.amount}</Typography><Typography variant="body2" color="text.secondary">Source: {row.sourceName || '—'}</Typography></CardContent></Card>
                     ))}
                   </Stack>
                 ) : (
-                  <Alert severity="info">No PAYE income added yet.</Alert>
+                  <Alert severity="info">No income added yet.</Alert>
                 )}
               </Stack>
             ) : null}

@@ -54,9 +54,11 @@ Only stop and wait for Mat if one of these is true:
   - what is next
   - status: Done / In Progress / Blocked
 - Long-running remote builds, deploys, polls, and rollout waits require interim updates, not just terminal summaries
+- `PROGRESS_LEDGER.md` is mandatory during active build work and must be updated before and after each major command batch
+- Treat missing chat update + missing ledger entry as a workflow defect
 - Track timing explicitly during active work:
-  - `last_user_update_at`: 2026-03-24 19:00 NZDT
-  - `next_update_due_at`: 2026-03-24 19:05 NZDT
+  - `last_user_update_at`: 2026-03-24 20:59 NZDT
+  - `next_update_due_at`: 2026-03-24 21:04 NZDT
 
 ## Definition of done for current slice
 This slice is done only when all of the following are true:
