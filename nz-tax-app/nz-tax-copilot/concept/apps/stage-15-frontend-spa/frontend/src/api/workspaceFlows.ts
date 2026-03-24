@@ -47,6 +47,24 @@ export type CryptoTransaction = {
   source?: string
 }
 
+export type WorkspaceDocument = {
+  id: string
+  workspaceId: string
+  filename: string
+  originalName: string
+  mimeType: string
+  size: number
+  docType: string
+  status: string
+  uploadedAt: string
+}
+
+export type ChecklistItem = {
+  docType: string
+  status: 'missing' | 'received'
+  count: number
+}
+
 export type Ir3CalcResult = {
   map: Record<string, number>
   calc: Record<string, number>
@@ -84,6 +102,26 @@ export const workspaceFlowsApi = {
   async listIncome(workspaceId: string): Promise<IncomeBucket> {
     const response = await apiClient.get(`/workspaces/${workspaceId}/income`)
     return response.data?.income
+  },
+
+  async uploadDocument(workspaceId: string, file: File, docType: string): Promise<WorkspaceDocument> {
+    const form = new FormData()
+    form.append('file', file)
+    form.append('docType', docType)
+    const response = await apiClient.post(`/workspaces/${workspaceId}/documents`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data?.document
+  },
+
+  async listDocuments(workspaceId: string): Promise<WorkspaceDocument[]> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/documents`)
+    return response.data?.items || []
+  },
+
+  async getChecklist(workspaceId: string): Promise<ChecklistItem[]> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/checklist`)
+    return response.data?.checklist || []
   },
 
   async importCryptoCsv(workspaceId: string, csv: string): Promise<{ imported: number; total: number }> {

@@ -57,3 +57,33 @@ Append-only ledger for active build work.
   - Next action: Wait for healthy status and re-check for the full autosave + income-type string set.
   - Status: In Progress
   - Next update due by: 21:29 NZDT
+
+- 21:26 NZDT
+  - What changed: Feature pair 1 + 2 is committed and live (`78809fb`).
+  - Next action: Implement feature 3: document upload inside workspace.
+  - Status: In Progress
+  - Next update due by: 21:31 NZDT
+
+- 21:35 NZDT
+  - What changed: Switched to tiny-update-first mode before command batches (WhatsApp reliability fix).
+  - Next action: Implement Feature 3 document upload tab + checklist in workspace.
+  - Status: In Progress
+  - Next update due by: 21:40 NZDT
+
+- 21:31 NZDT
+  - What changed: Feature 3 (Documents tab with upload/checklist/list) passed local build validation.
+  - Next action: Build + deploy frontend revision and verify live strings for document workflow.
+  - Status: In Progress
+  - Next update due by: 21:36 NZDT
+
+- 21:31 NZDT
+  - What changed: Feature 3 frontend image build/push completed successfully.
+  - Next action: Roll frontend revision and verify Documents-tab UI strings live.
+  - Status: In Progress
+  - Next update due by: 21:36 NZDT
+
+- 21:33 NZDT
+  - What changed: New revision doc213132 is active but still warming; public bundle has not switched yet.
+  - Next action: Wait for healthy state and re-verify Documents strings in live bundle.
+  - Status: In Progress
+  - Next update due by: 21:38 NZDT

@@ -44,6 +44,8 @@ export default function WorkspaceDetail() {
   const [incomeSourceName, setIncomeSourceName] = useState('')
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null)
   const [csvText, setCsvText] = useState('date,asset,type,amount,price_nzd,fee_nzd,exchange\n2025-06-01,BTC,buy,0.01,100000,15,Binance')
+  const [docType, setDocType] = useState('paye_summary')
+  const [docFile, setDocFile] = useState<File | null>(null)
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -66,6 +68,18 @@ export default function WorkspaceDetail() {
   const cryptoQuery = useQuery({
     queryKey: ['workspace-crypto', workspaceId],
     queryFn: () => workspaceFlowsApi.listCryptoTransactions(workspaceId || ''),
+    enabled: Boolean(workspaceId),
+  })
+
+  const docsQuery = useQuery({
+    queryKey: ['workspace-docs', workspaceId],
+    queryFn: () => workspaceFlowsApi.listDocuments(workspaceId || ''),
+    enabled: Boolean(workspaceId),
+  })
+
+  const checklistQuery = useQuery({
+    queryKey: ['workspace-checklist', workspaceId],
+    queryFn: () => workspaceFlowsApi.getChecklist(workspaceId || ''),
     enabled: Boolean(workspaceId),
   })
 
@@ -114,6 +128,16 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const uploadDocumentMutation = useMutation({
+    mutationFn: (payload: { file: File; docType: string }) => workspaceFlowsApi.uploadDocument(workspaceId || '', payload.file, payload.docType),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-docs', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-checklist', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+      setDocFile(null)
+    },
+  })
+
   const answers = questionnaireQuery.data?.answers || {}
   const visibleQuestions = questionnaireQuery.data?.visible || []
   const status = questionnaireQuery.data?.status
@@ -123,6 +147,8 @@ export default function WorkspaceDetail() {
   const dividendRows = incomeBuckets?.dividends || []
   const otherIncomeRows = incomeBuckets?.other || []
   const cryptoRows = cryptoQuery.data || []
+  const docs = docsQuery.data || []
+  const checklist = checklistQuery.data || []
 
   const summaryItems = useMemo(() => {
     const mapped = calcQuery.data?.map || {}
@@ -233,6 +259,7 @@ export default function WorkspaceDetail() {
               <Tab label="Questionnaire" />
               <Tab label="Income" />
               <Tab label="Crypto" />
+              <Tab label="Documents" />
               <Tab label="IR3 Summary" />
             </Tabs>
 
@@ -348,7 +375,79 @@ export default function WorkspaceDetail() {
               </Stack>
             ) : null}
 
+
             {tab === 3 ? (
+              <Stack spacing={2}>
+                <Typography variant="h6">Documents</Typography>
+                <TextField
+                  select
+                  label="Document type"
+                  value={docType}
+                  onChange={(event) => setDocType(event.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="paye_summary">PAYE summary</MenuItem>
+                  <MenuItem value="interest_dividend_slips">Interest/dividend slips</MenuItem>
+                  <MenuItem value="student_loan_statement">Student loan statement</MenuItem>
+                  <MenuItem value="crypto_csv">Crypto CSV</MenuItem>
+                  <MenuItem value="donation_receipts">Donation receipts</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
+                </TextField>
+                <Button variant="outlined" component="label">
+                  {docFile ? `Selected: ${docFile.name}` : 'Choose file'}
+                  <input
+                    hidden
+                    type="file"
+                    onChange={(event) => setDocFile(event.target.files?.[0] || null)}
+                  />
+                </Button>
+                <Button
+                  variant="contained"
+                  disabled={!docFile || uploadDocumentMutation.isPending}
+                  onClick={() => docFile && uploadDocumentMutation.mutate({ file: docFile, docType })}
+                >
+                  {uploadDocumentMutation.isPending ? 'Uploading…' : 'Upload document'}
+                </Button>
+
+                <Typography variant="subtitle1">Checklist</Typography>
+                {checklist.length > 0 ? (
+                  <Stack spacing={1}>
+                    {checklist.map((item) => (
+                      <Card key={item.docType} variant="outlined">
+                        <CardContent>
+                          <Typography variant="body1">{item.docType}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {item.status} ({item.count})
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </Stack>
+                ) : (
+                  <Alert severity="info">No checklist yet.</Alert>
+                )}
+
+                <Typography variant="subtitle1">Uploaded documents</Typography>
+                {docs.length > 0 ? (
+                  <Stack spacing={1}>
+                    {docs.map((doc) => (
+                      <Card key={doc.id} variant="outlined">
+                        <CardContent>
+                          <Typography variant="body1">{doc.originalName}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {doc.docType} · {Math.round((doc.size || 0) / 1024)} KB · {doc.status}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </Stack>
+                ) : (
+                  <Alert severity="info">No documents uploaded yet.</Alert>
+                )}
+              </Stack>
+            ) : null}
+
+            {tab === 4 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">IR3 summary</Typography>
                 {summaryItems.length > 0 ? (
