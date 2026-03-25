@@ -72,6 +72,29 @@ export type AuditEvent = {
   meta?: Record<string, unknown>
 }
 
+export type ReviewPayload = {
+  readiness: {
+    score: number
+    status: 'strong' | 'review_needed' | 'needs_attention'
+  }
+  warnings: Array<{ code: string; severity: string; message: string }>
+  assumptions: string[]
+  evidence: Array<{ supports: string; document: string }>
+  summary: {
+    donationAmount: number
+    pieIncome: number
+    pieTaxCredits: number
+    studentLoanRepayments: number
+  }
+}
+
+export type WorkspaceAdjustments = {
+  donationAmount: number
+  pieIncome: number
+  pieTaxCredits: number
+  studentLoanRepayments: number
+}
+
 export type Ir3CalcResult = {
   map: Record<string, unknown>
   calc: Record<string, unknown>
@@ -89,6 +112,7 @@ export type DraftExport = {
     bullets?: string[]
     fieldNotes?: Array<{ ref: string; note: string }>
   }
+  review?: ReviewPayload
   pdf: {
     title: string
     generatedAt: string
@@ -108,6 +132,21 @@ export const workspaceFlowsApi = {
   async saveQuestionnaire(workspaceId: string, answers: QuestionnaireAnswers): Promise<QuestionnaireResult> {
     const response = await apiClient.put(`/workspaces/${workspaceId}/questionnaire`, { answers })
     return response.data
+  },
+
+  async getAdjustments(workspaceId: string): Promise<WorkspaceAdjustments> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/adjustments`)
+    return response.data?.adjustments
+  },
+
+  async saveAdjustments(workspaceId: string, adjustments: WorkspaceAdjustments): Promise<WorkspaceAdjustments> {
+    const response = await apiClient.put(`/workspaces/${workspaceId}/adjustments`, adjustments)
+    return response.data?.adjustments
+  },
+
+  async getReview(workspaceId: string): Promise<ReviewPayload> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/review`)
+    return response.data?.review
   },
 
   async addIncome(

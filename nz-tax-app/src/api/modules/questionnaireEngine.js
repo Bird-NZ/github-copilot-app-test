@@ -1,5 +1,8 @@
 const QUESTION_SET = [
   { id: 'has_student_loan', type: 'boolean', label: 'Do you have a student loan?' },
+  { id: 'has_donations', type: 'boolean', label: 'Did you make donation claims this year?' },
+  { id: 'donation_receipts_uploaded', type: 'boolean', label: 'Have you uploaded donation receipts?', visibleIf: { has_donations: true } },
+  { id: 'has_pie_income', type: 'boolean', label: 'Did you receive PIE income this year?' },
   { id: 'student_loan_statement_uploaded', type: 'boolean', label: 'Have you uploaded latest IRD student loan statement?', visibleIf: { has_student_loan: true } },
   { id: 'has_crypto', type: 'boolean', label: 'Did you have cryptocurrency transactions this year?' },
   { id: 'crypto_csv_uploaded', type: 'boolean', label: 'Have you uploaded your exchange/wallet CSV?', visibleIf: { has_crypto: true } },

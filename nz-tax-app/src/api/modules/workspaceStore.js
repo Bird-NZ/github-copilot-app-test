@@ -11,6 +11,12 @@ export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd
     taxYearEnd,
     status: 'in_progress',
     questionnaireAnswers: {},
+    adjustments: {
+      donationAmount: 0,
+      pieIncome: 0,
+      pieTaxCredits: 0,
+      studentLoanRepayments: 0,
+    },
     createdAt: now,
     updatedAt: now,
   };

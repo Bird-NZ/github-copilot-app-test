@@ -114,3 +114,13 @@ Append-only ledger for active build work.
   - Next action: Commit the completed auth/persistence/calc/explanation/export/polish tranche.
   - Status: Done
   - Next update due by: n/a
+- 21:35 NZDT
+  - What changed: Created Tranche 2 backlog for confidence, deductions, evidence, and submission-ready review/export.
+  - Next action: Start first shippable slice: deductions/adjustments model + first-pass review warnings.
+  - Status: In Progress
+  - Next update due by: 21:40 NZDT
+- 21:59 NZDT
+  - What changed: Tranche 2 backend slice 1 (adjustments + review service) is now passing tests.
+  - Next action: Add adjustments + review warnings to workspace UI and validate frontend build.
+  - Status: In Progress
+  - Next update due by: 22:04 NZDT

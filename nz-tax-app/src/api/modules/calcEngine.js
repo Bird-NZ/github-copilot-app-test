@@ -22,13 +22,7 @@ function calcNzIncomeTax(taxableIncome) {
     const taxedAmount = Math.min(remaining, bandWidth);
     const tax = taxedAmount * band.rate;
     total += tax;
-    breakdown.push({
-      from: previousCap,
-      to: band.upTo === Infinity ? null : band.upTo,
-      rate: band.rate,
-      income: roundCurrency(taxedAmount),
-      tax: roundCurrency(tax),
-    });
+    breakdown.push({ from: previousCap, to: band.upTo === Infinity ? null : band.upTo, rate: band.rate, income: roundCurrency(taxedAmount), tax: roundCurrency(tax) });
     remaining -= taxedAmount;
     previousCap = band.upTo;
   }
@@ -37,10 +31,13 @@ function calcNzIncomeTax(taxableIncome) {
 }
 
 export function calculateDraft(ir3Map) {
-  const taxableIncome = roundCurrency(Number(ir3Map['11B'] || 0) + Number(ir3Map['28'] || 0));
-  const taxDeductions = roundCurrency(Number(ir3Map['11E'] || 0) + Number(ir3Map['36A'] || 0));
+  const grossIncome = roundCurrency(Number(ir3Map['11B'] || 0) + Number(ir3Map['28'] || 0) + Number(ir3Map['36B'] || 0));
+  const donationAmount = roundCurrency(Number(ir3Map?.summary?.donationAmount || 0));
+  const donationClaim = roundCurrency(donationAmount * 0.3333);
+  const taxableIncome = roundCurrency(Math.max(0, grossIncome));
+  const taxCreditsAndDeductions = roundCurrency(Number(ir3Map['11E'] || 0) + Number(ir3Map['36A'] || 0) + donationClaim);
   const incomeTax = calcNzIncomeTax(taxableIncome);
-  const residual = roundCurrency(incomeTax.total - taxDeductions);
+  const residual = roundCurrency(incomeTax.total - taxCreditsAndDeductions);
   const terminalTaxToPay = Math.max(0, residual);
   const estimatedRefund = Math.max(0, -residual);
   const provisional = terminalTaxToPay > 5000 ? roundCurrency(terminalTaxToPay * 1.05) : 0;
@@ -53,8 +50,10 @@ export function calculateDraft(ir3Map) {
     '40B': roundCurrency(provisional),
     summary: {
       taxableIncome,
+      grossIncome,
+      donationClaim,
       incomeTax: incomeTax.total,
-      taxCreditsAndDeductions: taxDeductions,
+      taxCreditsAndDeductions,
       residualIncomeTax: residual,
       terminalTaxToPay: roundCurrency(terminalTaxToPay),
       estimatedRefund: roundCurrency(estimatedRefund),

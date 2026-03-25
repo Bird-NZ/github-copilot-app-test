@@ -11,6 +11,7 @@ import { mapToIr3 } from './modules/mappingEngine.js';
 import { calculateDraft } from './modules/calcEngine.js';
 import { buildCsv, buildPdfDocument } from './modules/exportService.js';
 import { listEvents, logEvent } from './modules/auditStore.js';
+import { buildReview } from './modules/reviewService.js';
 
 const app = express();
 app.use((req, res, next) => {
@@ -240,7 +241,7 @@ app.get('/workspaces/:id/ir3/map', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx });
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
   return res.json({ map });
 });
 
@@ -249,7 +250,7 @@ app.get('/workspaces/:id/ir3/calc', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx });
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
   return res.json({ map, calc, explanation });
@@ -260,12 +261,24 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx });
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
+  const review = buildReview(workspace, map, calc, documents(workspace.id));
   const csv = buildCsv(map, calc, explanation);
   const pdf = await buildPdfDocument(map, calc, explanation);
-  return res.json({ csv, pdf, explanation });
+  return res.json({ csv, pdf, explanation, review });
+});
+
+app.get('/workspaces/:id/review', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const calc = calculateDraft(map);
+  const review = buildReview(workspace, map, calc, documents(workspace.id));
+  return res.json({ review });
 });
 
 app.get('/workspaces/:id/audit', requireSession, (req, res) => {

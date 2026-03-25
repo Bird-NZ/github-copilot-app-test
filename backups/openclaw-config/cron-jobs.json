@@ -39,7 +39,7 @@
       "name": "7am daily weather brief",
       "enabled": true,
       "createdAtMs": 1770582853515,
-      "updatedAtMs": 1774288814234,
+      "updatedAtMs": 1774375204741,
       "schedule": {
         "kind": "cron",
         "expr": "0 7 * * *",
@@ -58,13 +58,14 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774375200000,
-        "lastRunAtMs": 1774288801193,
-        "lastStatus": "ok",
-        "lastDurationMs": 13041,
-        "consecutiveErrors": 0,
-        "lastRunStatus": "ok",
-        "lastDeliveryStatus": "unknown"
+        "nextRunAtMs": 1774461600000,
+        "lastRunAtMs": 1774375200961,
+        "lastStatus": "error",
+        "lastDurationMs": 3780,
+        "consecutiveErrors": 1,
+        "lastRunStatus": "error",
+        "lastDeliveryStatus": "unknown",
+        "lastError": "An error occurred while processing your request. You can retry your request, or contact us through our help center at help.openai.com if the error persists. Please include the request ID req_437bb7cf11fd4f07a0725fd3f132dbb5 in your message."
       },
       "failureAlert": {
         "after": 1,
@@ -79,7 +80,7 @@
       "name": "daily github backup push",
       "enabled": true,
       "createdAtMs": 1770848698317,
-      "updatedAtMs": 1774261814459,
+      "updatedAtMs": 1774348212211,
       "schedule": {
         "kind": "cron",
         "expr": "30 23 * * *",
@@ -98,14 +99,14 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774348200000,
-        "lastRunAtMs": 1774261800034,
+        "nextRunAtMs": 1774434600000,
+        "lastRunAtMs": 1774348200110,
         "lastStatus": "ok",
-        "lastDurationMs": 14425,
+        "lastDurationMs": 12101,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown",
-        "runningAtMs": 1774348200045
+        "runningAtMs": 1774434600025
       },
       "failureAlert": {
         "after": 1,
@@ -120,7 +121,7 @@
       "name": "Monitor @onchaindomainer (light every 3h)",
       "enabled": true,
       "createdAtMs": 1771033467347,
-      "updatedAtMs": 1774337756947,
+      "updatedAtMs": 1774424171698,
       "schedule": {
         "kind": "every",
         "everyMs": 10800000,
@@ -140,14 +141,13 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774348543033,
-        "lastRunAtMs": 1774337743033,
+        "nextRunAtMs": 1774434949851,
+        "lastRunAtMs": 1774424149851,
         "lastStatus": "ok",
-        "lastDurationMs": 13914,
+        "lastDurationMs": 21847,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
-        "lastDeliveryStatus": "not-delivered",
-        "lastDelivered": false
+        "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
         "after": 1,
@@ -288,7 +288,7 @@
       "name": "Reviewer hybrid audit (6h light + trigger deep)",
       "enabled": true,
       "createdAtMs": 1771129529499,
-      "updatedAtMs": 1774338083594,
+      "updatedAtMs": 1774424483363,
       "schedule": {
         "kind": "every",
         "everyMs": 21600000,
@@ -308,10 +308,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774359668197,
-        "lastRunAtMs": 1774338068197,
+        "nextRunAtMs": 1774446074556,
+        "lastRunAtMs": 1774424474556,
         "lastStatus": "ok",
-        "lastDurationMs": 15397,
+        "lastDurationMs": 8807,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "not-delivered",
@@ -330,7 +330,7 @@
       "name": "CCIS fast mode daily patch bundle",
       "enabled": true,
       "createdAtMs": 1771133307985,
-      "updatedAtMs": 1774330125627,
+      "updatedAtMs": 1774416530467,
       "schedule": {
         "kind": "every",
         "everyMs": 86400000,
@@ -350,14 +350,13 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774416511519,
-        "lastRunAtMs": 1774330111519,
-        "lastStatus": "error",
-        "lastDurationMs": 14108,
-        "consecutiveErrors": 1,
-        "lastRunStatus": "error",
-        "lastDeliveryStatus": "unknown",
-        "lastError": "An error occurred while processing your request. You can retry your request, or contact us through our help center at help.openai.com if the error persists. Please include the request ID req_1edef598715c44ae90b44c262e65bb25 in your message."
+        "nextRunAtMs": 1774502911608,
+        "lastRunAtMs": 1774416511608,
+        "lastStatus": "ok",
+        "lastDurationMs": 18859,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
         "after": 1,
@@ -403,7 +402,7 @@
       "name": "Reviewer daily full audit digest + log writer",
       "enabled": true,
       "createdAtMs": 1771205129571,
-      "updatedAtMs": 1774328466912,
+      "updatedAtMs": 1774414834746,
       "schedule": {
         "kind": "cron",
         "expr": "0 18 * * *",
@@ -423,10 +422,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774414800000,
-        "lastRunAtMs": 1774328402088,
+        "nextRunAtMs": 1774501200000,
+        "lastRunAtMs": 1774414802172,
         "lastStatus": "ok",
-        "lastDurationMs": 64824,
+        "lastDurationMs": 32574,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -476,7 +475,7 @@
       "name": "Daily: World Mobile ecosystem news + progress update",
       "enabled": true,
       "createdAtMs": 1771571388520,
-      "updatedAtMs": 1774337669617,
+      "updatedAtMs": 1774423879278,
       "schedule": {
         "kind": "cron",
         "expr": "30 20 * * *",
@@ -495,10 +494,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774423800000,
-        "lastRunAtMs": 1774337400091,
+        "nextRunAtMs": 1774510200000,
+        "lastRunAtMs": 1774423800092,
         "lastStatus": "ok",
-        "lastDurationMs": 269526,
+        "lastDurationMs": 79186,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -516,7 +515,7 @@
       "name": "Daily Reviewer RSI Cycle",
       "enabled": true,
       "createdAtMs": 1771640437799,
-      "updatedAtMs": 1774296011897,
+      "updatedAtMs": 1774382406036,
       "schedule": {
         "kind": "cron",
         "expr": "0 9 * * *",
@@ -535,13 +534,14 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774382400000,
-        "lastRunAtMs": 1774296000055,
-        "lastStatus": "ok",
-        "lastDurationMs": 11842,
-        "consecutiveErrors": 0,
-        "lastRunStatus": "ok",
-        "lastDeliveryStatus": "unknown"
+        "nextRunAtMs": 1774468800000,
+        "lastRunAtMs": 1774382402612,
+        "lastStatus": "error",
+        "lastDurationMs": 3424,
+        "consecutiveErrors": 1,
+        "lastRunStatus": "error",
+        "lastDeliveryStatus": "unknown",
+        "lastError": "An error occurred while processing your request. You can retry your request, or contact us through our help center at help.openai.com if the error persists. Please include the request ID req_5e07e3219c1e421bb98bbfd1a59ea690 in your message."
       },
       "failureAlert": {
         "after": 1,
@@ -556,7 +556,7 @@
       "name": "Group unmentioned-reply RSI (HAL+Bender)",
       "enabled": true,
       "createdAtMs": 1771719448586,
-      "updatedAtMs": 1774300529477,
+      "updatedAtMs": 1774386929392,
       "schedule": {
         "kind": "cron",
         "expr": "15 10 * * *",
@@ -576,10 +576,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774386900000,
-        "lastRunAtMs": 1774300502643,
+        "nextRunAtMs": 1774473300000,
+        "lastRunAtMs": 1774386900062,
         "lastStatus": "ok",
-        "lastDurationMs": 26834,
+        "lastDurationMs": 29330,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "not-delivered",
@@ -637,7 +637,7 @@
       "name": "8am daily AI research brief",
       "enabled": true,
       "createdAtMs": 1773384015419,
-      "updatedAtMs": 1774292461463,
+      "updatedAtMs": 1774378866344,
       "schedule": {
         "kind": "cron",
         "expr": "0 8 * * *",
@@ -657,14 +657,14 @@
         "bestEffort": true
       },
       "state": {
-        "consecutiveErrors": 2,
-        "nextRunAtMs": 1774378800000,
-        "lastRunAtMs": 1774292401185,
+        "consecutiveErrors": 3,
+        "nextRunAtMs": 1774465200000,
+        "lastRunAtMs": 1774378801974,
         "lastRunStatus": "error",
         "lastStatus": "error",
-        "lastDurationMs": 60278,
+        "lastDurationMs": 64370,
         "lastDeliveryStatus": "unknown",
-        "lastError": "Ollama API error 500: {\"error\":\"model requires more system memory (16.8 GiB) than is available (3.6 GiB)\"}"
+        "lastError": "Ollama API error 500: {\"error\":\"model requires more system memory (16.8 GiB) than is available (3.4 GiB)\"}"
       },
       "failureAlert": {
         "after": 1,
@@ -720,7 +720,7 @@
       "name": "9pm daily backup health check",
       "enabled": true,
       "createdAtMs": 1773384015419,
-      "updatedAtMs": 1774339209503,
+      "updatedAtMs": 1774425610106,
       "schedule": {
         "kind": "cron",
         "expr": "0 21 * * *",
@@ -740,11 +740,11 @@
       },
       "state": {
         "consecutiveErrors": 0,
-        "nextRunAtMs": 1774425600000,
-        "lastRunAtMs": 1774339200074,
+        "nextRunAtMs": 1774512000000,
+        "lastRunAtMs": 1774425600099,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 9429,
+        "lastDurationMs": 10007,
         "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
@@ -801,7 +801,7 @@
       "name": "healthcheck:security-audit",
       "enabled": true,
       "createdAtMs": 1773991806959,
-      "updatedAtMs": 1774337735566,
+      "updatedAtMs": 1774424136124,
       "schedule": {
         "kind": "every",
         "everyMs": 21600000,
@@ -822,11 +822,11 @@
       },
       "state": {
         "consecutiveErrors": 0,
-        "nextRunAtMs": 1774359271880,
-        "lastRunAtMs": 1774337671880,
+        "nextRunAtMs": 1774445677304,
+        "lastRunAtMs": 1774424077304,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 63686,
+        "lastDurationMs": 58820,
         "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
@@ -877,7 +877,7 @@
       "name": "Daily memory health check",
       "enabled": true,
       "createdAtMs": 1774253919845,
-      "updatedAtMs": 1774340121616,
+      "updatedAtMs": 1774426521867,
       "schedule": {
         "kind": "cron",
         "expr": "15 21 * * *",
@@ -903,11 +903,11 @@
         "cooldownMs": 1800000
       },
       "state": {
-        "nextRunAtMs": 1774426500000,
-        "lastRunAtMs": 1774340100078,
+        "nextRunAtMs": 1774512900000,
+        "lastRunAtMs": 1774426500093,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 21538,
+        "lastDurationMs": 21774,
         "lastDelivered": false,
         "lastDeliveryStatus": "not-delivered",
         "consecutiveErrors": 0

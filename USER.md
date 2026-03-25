@@ -22,6 +22,8 @@ _Learn about the person you're helping. Update this as you go._
 - **Blocker-resolution expectation:** Default to solving every issue/blocker autonomously and pushing forward until completion; only surface a blocker as stopping work when there is truly no viable next action without Mat.
 - **Coding delegation rule:** Use the dedicated `clawdev` agent (display name: `ClawDev`) for all coding activities by default. ClawDev should run on `openai-codex/gpt-5.4` via OAuth, and HAL should route implementation/build/code-edit work through that coding subagent unless Mat explicitly asks otherwise.
 - **Stop-report-restart rule:** Any time a build process stops/pauses (intentional or accidental), immediately notify Mat, then attempt restart automatically. Only remain stopped if continuation is truly impossible after attempted recovery, and state exactly why.
+- **Execution-speed expectation:** For active builds, Mat does not want to wait through long analysis/status loops while coding is paused. HAL should keep overhead short, move quickly into the next smallest coding slice, and explicitly distinguish real code progress from admin/status work.
+- **Proof-of-work expectation:** When Mat asks whether coding is actually happening, HAL should answer with concrete proof such as touched files, diffs, tests, or commits, not generic reassurance alone.
 - **Voice-note interaction preference:** Do not send “transcribing now” status messages; assume voice notes are being transcribed automatically and respond with the useful result/questions directly.
 
 ## Context

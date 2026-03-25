@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Alert,
   Box,
@@ -19,7 +19,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload } from '../api/workspaceFlows'
 import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
@@ -48,6 +48,10 @@ export default function WorkspaceDetail() {
   const [csvText, setCsvText] = useState('date,asset,type,amount,price_nzd,fee_nzd,exchange\n2025-06-01,BTC,buy,0.01,100000,15,Binance')
   const [docType, setDocType] = useState('paye_summary')
   const [docFile, setDocFile] = useState<File | null>(null)
+  const [donationAmount, setDonationAmount] = useState('0')
+  const [pieIncome, setPieIncome] = useState('0')
+  const [pieTaxCredits, setPieTaxCredits] = useState('0')
+  const [studentLoanRepayments, setStudentLoanRepayments] = useState('0')
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -103,6 +107,18 @@ export default function WorkspaceDetail() {
     enabled: Boolean(workspaceId),
   })
 
+  const adjustmentsQuery = useQuery({
+    queryKey: ['workspace-adjustments', workspaceId],
+    queryFn: () => workspaceFlowsApi.getAdjustments(workspaceId || ''),
+    enabled: Boolean(workspaceId),
+  })
+
+  const reviewQuery = useQuery({
+    queryKey: ['workspace-review', workspaceId],
+    queryFn: () => workspaceFlowsApi.getReview(workspaceId || ''),
+    enabled: Boolean(workspaceId),
+  })
+
   const saveQuestionnaireMutation = useMutation({
     mutationFn: (answers: QuestionnaireAnswers) => workspaceFlowsApi.saveQuestionnaire(workspaceId || '', answers),
     onSuccess: async () => {
@@ -136,6 +152,17 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const saveAdjustmentsMutation = useMutation({
+    mutationFn: (adjustments: WorkspaceAdjustments) => workspaceFlowsApi.saveAdjustments(workspaceId || '', adjustments),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-adjustments', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const uploadDocumentMutation = useMutation({
     mutationFn: (payload: { file: File; docType: string }) => workspaceFlowsApi.uploadDocument(workspaceId || '', payload.file, payload.docType),
     onSuccess: async () => {
@@ -165,6 +192,21 @@ export default function WorkspaceDetail() {
   }, [calcQuery.data])
 
   const explanation = exportQuery.data?.explanation || calcQuery.data?.explanation
+  const review: ReviewPayload | undefined = reviewQuery.data || exportQuery.data?.review
+
+  const adjustments = adjustmentsQuery.data || {
+    donationAmount: 0,
+    pieIncome: 0,
+    pieTaxCredits: 0,
+    studentLoanRepayments: 0,
+  }
+
+  useEffect(() => {
+    setDonationAmount(String(adjustments.donationAmount ?? 0))
+    setPieIncome(String(adjustments.pieIncome ?? 0))
+    setPieTaxCredits(String(adjustments.pieTaxCredits ?? 0))
+    setStudentLoanRepayments(String(adjustments.studentLoanRepayments ?? 0))
+  }, [adjustments.donationAmount, adjustments.pieIncome, adjustments.pieTaxCredits, adjustments.studentLoanRepayments])
 
   const downloadTextFile = (filename: string, content: string, mimeType: string) => {
     const blob = new Blob([content], { type: mimeType })
@@ -192,6 +234,15 @@ export default function WorkspaceDetail() {
 
   if (!isLoading && !isAuthenticated) {
     return <Navigate to="/" replace />
+  }
+
+  const handleSaveAdjustments = () => {
+    saveAdjustmentsMutation.mutate({
+      donationAmount: Number(donationAmount || 0),
+      pieIncome: Number(pieIncome || 0),
+      pieTaxCredits: Number(pieTaxCredits || 0),
+      studentLoanRepayments: Number(studentLoanRepayments || 0),
+    })
   }
 
   const dashboard = useMemo(() => {
@@ -531,6 +582,47 @@ export default function WorkspaceDetail() {
                 ) : (
                   <Alert severity="info">No calculation data yet. Add income or crypto data first.</Alert>
                 )}
+
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography variant="subtitle1" gutterBottom>Adjustments and deductions</Typography>
+                    <Stack spacing={2}>
+                      <TextField label="Donation amount (NZD)" type="number" value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} fullWidth />
+                      <TextField label="PIE income (NZD)" type="number" value={pieIncome} onChange={(e) => setPieIncome(e.target.value)} fullWidth />
+                      <TextField label="PIE tax credits (NZD)" type="number" value={pieTaxCredits} onChange={(e) => setPieTaxCredits(e.target.value)} fullWidth />
+                      <TextField label="Student loan repayments (NZD)" type="number" value={studentLoanRepayments} onChange={(e) => setStudentLoanRepayments(e.target.value)} fullWidth />
+                      <Button variant="contained" onClick={handleSaveAdjustments} disabled={saveAdjustmentsMutation.isPending}>
+                        {saveAdjustmentsMutation.isPending ? 'Saving…' : 'Save adjustments'}
+                      </Button>
+                    </Stack>
+                  </CardContent>
+                </Card>
+
+                {review ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle1" gutterBottom>Review confidence</Typography>
+                      <Alert severity={review.readiness.status === 'strong' ? 'success' : review.readiness.status === 'review_needed' ? 'warning' : 'error'} sx={{ mb: 2 }}>
+                        Readiness score: {review.readiness.score}/100 · {review.readiness.status}
+                      </Alert>
+                      {(review.warnings || []).length > 0 ? (
+                        <Stack spacing={1} sx={{ mb: 2 }}>
+                          {review.warnings.map((warning) => (
+                            <Alert key={warning.code} severity={warning.severity === 'high' ? 'error' : 'warning'}>{warning.message}</Alert>
+                          ))}
+                        </Stack>
+                      ) : null}
+                      {(review.assumptions || []).length > 0 ? (
+                        <Stack spacing={1}>
+                          <Typography variant="subtitle2">Current assumptions</Typography>
+                          {review.assumptions.map((assumption, index) => (
+                            <Typography key={index} variant="body2" color="text.secondary">• {assumption}</Typography>
+                          ))}
+                        </Stack>
+                      ) : null}
+                    </CardContent>
+                  </Card>
+                ) : null}
 
                 {explanation ? (
                   <Card variant="outlined">
