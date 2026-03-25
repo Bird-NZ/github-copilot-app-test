@@ -1,6 +1,5 @@
 import { v4 as uuid } from 'uuid';
-
-const docsByWorkspace = new Map();
+import { readData, updateData } from './dataStore.js';
 
 const REQUIRED_DOC_TYPES = [
   'paye_summary',
@@ -11,8 +10,7 @@ const REQUIRED_DOC_TYPES = [
 ];
 
 function listFor(workspaceId) {
-  if (!docsByWorkspace.has(workspaceId)) docsByWorkspace.set(workspaceId, []);
-  return docsByWorkspace.get(workspaceId);
+  return readData().documentsByWorkspace[workspaceId] || [];
 }
 
 export function addDocument({ workspaceId, filename, originalName, mimeType, size, docType }) {
@@ -27,7 +25,14 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
     status: 'received',
     uploadedAt: new Date().toISOString()
   };
-  listFor(workspaceId).push(item);
+
+  updateData(state => {
+    const next = state.documentsByWorkspace[workspaceId] || [];
+    next.push(item);
+    state.documentsByWorkspace[workspaceId] = next;
+    return state;
+  });
+
   return item;
 }
 

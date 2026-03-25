@@ -33,7 +33,7 @@ curl -s -X POST "$BASE/workspaces/$WS/crypto/import-csv" -H 'content-type: appli
 # ir3 map/calc/export/audit
 curl -s "$BASE/workspaces/$WS/ir3/map" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "map" in d'
 curl -s "$BASE/workspaces/$WS/ir3/calc" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "calc" in d and "map" in d'
-curl -s "$BASE/workspaces/$WS/export/draft" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "csv" in d and "pdf" in d'
+curl -s "$BASE/workspaces/$WS/export/draft" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "csv" in d and "pdf" in d and d["pdf"]["mimeType"]=="application/pdf" and d["pdf"]["bytesBase64"]'
 curl -s "$BASE/workspaces/$WS/audit" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) >= 1'
 
 echo "SMOKE_OK"

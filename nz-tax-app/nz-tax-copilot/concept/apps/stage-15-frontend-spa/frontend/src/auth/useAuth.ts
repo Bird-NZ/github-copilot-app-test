@@ -1,74 +1,108 @@
-import { useMsal } from '@azure/msal-react'
-import { InteractionRequiredAuthError } from '@azure/msal-browser'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import apiClient, { setAuthToken } from '../api/apiClient'
 
-const API_SCOPE = `https://${import.meta.env.VITE_B2C_TENANT_NAME || 'nztaxcopilot'}.onmicrosoft.com/api/read`
+type AuthUser = {
+  id: string
+  email: string
+}
+
+type Session = {
+  userId: string
+  email: string
+  createdAt?: string
+}
+
+const TOKEN_KEY = 'nz_tax_auth_token'
+
+function readStoredToken(): string | null {
+  return window.localStorage.getItem(TOKEN_KEY)
+}
+
+function writeStoredToken(token: string | null) {
+  if (token) {
+    window.localStorage.setItem(TOKEN_KEY, token)
+  } else {
+    window.localStorage.removeItem(TOKEN_KEY)
+  }
+}
 
 export const useAuth = () => {
-  const { instance, accounts } = useMsal()
-  const isAuthenticated = accounts.length > 0
+  const [token, setTokenState] = useState<string | null>(() => readStoredToken())
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const login = async () => {
-    try {
-      await instance.loginRedirect({
-        scopes: ['openid', 'profile', 'email', API_SCOPE],
-      })
-    } catch (error) {
-      console.error('Login error:', error)
-    }
-  }
+  const applyToken = useCallback((nextToken: string | null) => {
+    setTokenState(nextToken)
+    writeStoredToken(nextToken)
+    setAuthToken(nextToken)
+  }, [])
 
-  const logout = async () => {
-    try {
-      await instance.logoutRedirect({
-        account: instance.getActiveAccount() || undefined,
-      })
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
-
-  const getAccessToken = async (): Promise<string> => {
-    const account = instance.getActiveAccount()
-    if (!account) {
-      throw new Error('No active account')
+  const refreshSession = useCallback(async () => {
+    const currentToken = readStoredToken()
+    if (!currentToken) {
+      setSession(null)
+      setLoading(false)
+      return null
     }
 
     try {
-      const response = await instance.acquireTokenSilent({
-        scopes: [API_SCOPE],
-        account,
-      })
-      return response.accessToken
-    } catch (error) {
-      if (error instanceof InteractionRequiredAuthError) {
-        await instance.acquireTokenRedirect({
-          scopes: [API_SCOPE],
-          account,
-        })
-        throw new Error('User interaction required')
+      setAuthToken(currentToken)
+      const response = await apiClient.get('/auth/session')
+      const nextSession = response.data?.session || null
+      setSession(nextSession)
+      setLoading(false)
+      return nextSession
+    } catch {
+      applyToken(null)
+      setSession(null)
+      setLoading(false)
+      return null
+    }
+  }, [applyToken])
+
+  useEffect(() => {
+    void refreshSession()
+  }, [refreshSession])
+
+  const signup = useCallback(async (email: string, password: string): Promise<AuthUser> => {
+    const response = await apiClient.post('/auth/signup', { email, password })
+    return response.data?.user
+  }, [])
+
+  const login = useCallback(async (email: string, password: string) => {
+    const response = await apiClient.post('/auth/signin', { email, password })
+    const nextToken = response.data?.token as string | undefined
+    const user = response.data?.user as AuthUser | undefined
+    if (!nextToken || !user) throw new Error('LOGIN_FAILED')
+    applyToken(nextToken)
+    await refreshSession()
+    return user
+  }, [applyToken, refreshSession])
+
+  const logout = useCallback(async () => {
+    try {
+      if (readStoredToken()) {
+        await apiClient.post('/auth/signout')
       }
-      throw error
+    } catch {
+      // ignore signout cleanup errors
+    } finally {
+      applyToken(null)
+      setSession(null)
     }
-  }
+  }, [applyToken])
 
-  const getUserId = (): string | null => {
-    const account = instance.getActiveAccount()
-    const sub = account?.idTokenClaims?.sub
-    return typeof sub === 'string' ? sub : null
-  }
+  const isAuthenticated = Boolean(session && token)
 
-  const getUserEmail = (): string | null => {
-    const account = instance.getActiveAccount()
-    const email = account?.idTokenClaims?.email
-    return typeof email === 'string' ? email : null
-  }
-
-  return {
+  return useMemo(() => ({
     isAuthenticated,
+    isLoading: loading,
     login,
+    signup,
     logout,
-    getAccessToken,
-    getUserId,
-    getUserEmail,
-  }
+    refreshSession,
+    getAccessToken: async () => readStoredToken() || '',
+    getUserId: () => session?.userId || null,
+    getUserEmail: () => session?.email || null,
+  }), [isAuthenticated, loading, login, signup, logout, refreshSession, session])
 }

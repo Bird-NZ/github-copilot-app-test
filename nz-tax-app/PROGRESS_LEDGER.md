@@ -99,3 +99,18 @@ Append-only ledger for active build work.
   - Next action: Build/deploy frontend revision and verify live audit-tab strings.
   - Status: In Progress
   - Next update due by: 21:40 NZDT
+- 14:02 NZDT
+  - What changed: Local auth + persistent storage are ready for deploy. Existing frontend deploy script is hard-coded to VITE_AUTH_MODE=none, so deploy is being done via corrected manual Azure rollout path.
+  - Next action: Build/push auth-enabled backend and frontend images, update Container Apps revisions, then verify live signup/signin.
+  - Status: In Progress
+  - Next update due by: 14:07 NZDT
+- 20:07 NZDT
+  - What changed: Local tranche now includes improved tax logic, plain-English IR3 explanations, real PDF generation, export/download UI, and broader frontend polish. Backend tests and frontend build are passing.
+  - Next action: Build/push updated backend and frontend images, roll Azure Container Apps, then verify live app.
+  - Status: In Progress
+  - Next update due by: 20:12 NZDT
+- 21:12 NZDT
+  - What changed: Tranche finished cleanly. New backend/frontend revisions are deployed, new revision bundle verified live, test artefacts cleaned up, and repo is being committed.
+  - Next action: Commit the completed auth/persistence/calc/explanation/export/polish tranche.
+  - Status: Done
+  - Next update due by: n/a

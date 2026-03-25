@@ -1,6 +1,5 @@
 import { v4 as uuid } from 'uuid';
-
-const workspaces = new Map();
+import { readData, updateData } from './dataStore.js';
 
 export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd }) {
   const id = uuid();
@@ -15,30 +14,42 @@ export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd
     createdAt: now,
     updatedAt: now,
   };
-  workspaces.set(id, item);
+
+  updateData(state => {
+    state.workspaces.push(item);
+    return state;
+  });
+
   return item;
 }
 
 export function listWorkspaces(userId = 'demo-user') {
-  return Array.from(workspaces.values()).filter(w => w.userId === userId);
+  return readData().workspaces.filter(w => w.userId === userId);
 }
 
 export function getWorkspace(id, userId = 'demo-user') {
-  const w = workspaces.get(id);
+  const w = readData().workspaces.find(item => item.id === id);
   if (!w || w.userId !== userId) return null;
   return w;
 }
 
 export function updateWorkspace(id, userId = 'demo-user', patch = {}) {
-  const current = getWorkspace(id, userId);
-  if (!current) return null;
-  const next = {
-    ...current,
-    ...patch,
-    updatedAt: new Date().toISOString(),
-  };
-  workspaces.set(id, next);
-  return next;
+  let updated = null;
+
+  updateData(state => {
+    state.workspaces = state.workspaces.map(current => {
+      if (current.id !== id || current.userId !== userId) return current;
+      updated = {
+        ...current,
+        ...patch,
+        updatedAt: new Date().toISOString(),
+      };
+      return updated;
+    });
+    return state;
+  });
+
+  return updated;
 }
 
 export function setWorkspaceQuestionnaireAnswers(id, userId = 'demo-user', answers = {}) {

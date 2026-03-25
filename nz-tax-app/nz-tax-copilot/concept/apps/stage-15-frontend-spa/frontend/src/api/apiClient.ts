@@ -13,4 +13,21 @@ const apiClient: AxiosInstance = axios.create({
   },
 })
 
+export function setAuthToken(token: string | null) {
+  if (token) {
+    apiClient.defaults.headers.common.Authorization = `Bearer ${token}`
+  } else {
+    delete apiClient.defaults.headers.common.Authorization
+  }
+}
+
+apiClient.interceptors.request.use((config) => {
+  const token = window.localStorage.getItem('nz_tax_auth_token')
+  if (token) {
+    config.headers = config.headers || {}
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 export default apiClient

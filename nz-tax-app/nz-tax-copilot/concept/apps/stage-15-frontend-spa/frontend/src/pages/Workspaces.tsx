@@ -15,8 +15,9 @@ import {
   Typography,
 } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { workspaceApi, type Workspace } from '../api/workspaces'
+import { useAuth } from '../auth/useAuth'
 
 type TaxYearOption = {
   label: string
@@ -45,7 +46,7 @@ function formatDate(value?: string) {
 
 function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: () => void }) {
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ overflow: 'hidden' }}>
       <CardActionArea onClick={onOpen}>
         <CardContent>
           <Stack spacing={1.5}>
@@ -68,14 +69,16 @@ function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: ()
               />
             </Stack>
 
-            <Typography variant="body2" color="text.secondary">
-              Created: {formatDate(workspace.createdAt)}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Updated: {formatDate(workspace.updatedAt)}
-            </Typography>
-            <Typography variant="body2" color="primary">
-              Tap to open workspace
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <Typography variant="body2" color="text.secondary">
+                Created: {formatDate(workspace.createdAt)}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Updated: {formatDate(workspace.updatedAt)}
+              </Typography>
+            </Stack>
+            <Typography variant="body2" color="primary" fontWeight={600}>
+              Open workspace →
             </Typography>
           </Stack>
         </CardContent>
@@ -87,6 +90,7 @@ function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: ()
 export default function Workspaces() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { isAuthenticated, isLoading, getUserEmail, logout } = useAuth()
   const taxYearOptions = useMemo(() => getNzTaxYearOptions(), [])
   const [selectedTaxYear, setSelectedTaxYear] = useState(taxYearOptions[1]?.taxYearStart || taxYearOptions[0].taxYearStart)
 
@@ -95,6 +99,7 @@ export default function Workspaces() {
   const workspacesQuery = useQuery({
     queryKey: ['workspaces'],
     queryFn: workspaceApi.list,
+    enabled: isAuthenticated,
   })
 
   const createWorkspace = useMutation({
@@ -112,14 +117,30 @@ export default function Workspaces() {
     })
   }
 
+  if (!isLoading && !isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
   return (
     <Container maxWidth="lg">
       <Stack spacing={3} sx={{ py: 4 }}>
-        <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
-            My Tax Workspaces
-          </Typography>
-        </Box>
+        <Card sx={{ background: 'linear-gradient(135deg, rgba(15,118,110,0.95), rgba(15,23,42,0.92))', color: 'white' }}>
+          <CardContent>
+            <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', md: 'center' }} spacing={2}>
+              <Box>
+                <Typography variant="h4" component="h1" gutterBottom>
+                  My Tax Workspaces
+                </Typography>
+                <Typography variant="body1" sx={{ opacity: 0.86 }}>
+                  Signed in as {getUserEmail()} · Create and manage draft IR3 workspaces by tax year.
+                </Typography>
+              </Box>
+              <Button variant="outlined" color="inherit" onClick={() => logout()} sx={{ borderColor: 'rgba(255,255,255,0.35)' }}>
+                Sign out
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardContent>

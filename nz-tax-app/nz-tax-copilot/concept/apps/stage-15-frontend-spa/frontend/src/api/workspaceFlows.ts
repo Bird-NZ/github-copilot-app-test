@@ -73,16 +73,29 @@ export type AuditEvent = {
 }
 
 export type Ir3CalcResult = {
-  map: Record<string, number>
-  calc: Record<string, number>
+  map: Record<string, unknown>
+  calc: Record<string, unknown>
+  explanation?: {
+    headline?: string
+    bullets?: string[]
+    fieldNotes?: Array<{ ref: string; note: string }>
+  }
 }
 
 export type DraftExport = {
   csv: string
+  explanation?: {
+    headline?: string
+    bullets?: string[]
+    fieldNotes?: Array<{ ref: string; note: string }>
+  }
   pdf: {
     title: string
     generatedAt: string
-    sections: Array<{ name: string; values: Record<string, number> }>
+    mimeType: string
+    filename: string
+    bytesBase64: string
+    sections: Array<{ name: string; values: Record<string, unknown> }>
   }
 }
 

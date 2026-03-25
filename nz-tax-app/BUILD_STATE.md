@@ -1,34 +1,38 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Stage 9 / Deploy for questionnaire persistence + progress dashboard slice
-- Stage 7 / Test is complete for this slice
+- Stage 10 / Live verification + commit for the auth/persistence/calc/export/polish tranche
+- Stage 9 / Deploy is complete for this tranche
+- Stage 7 / Test is complete for this tranche
 
 ## Current objective
-Deploy and verify the persisted questionnaire flow plus cleaner workspace summary/progress dashboard, then continue directly into the next 5 highest-value features.
+Finish the tranche cleanly by verifying the live frontend surface, committing the completed work, and documenting the stable-hostname lag on Azure frontend rollout.
 
 ## Last completed milestone
-- Workspace creation/open flow deployed
-- NZ tax year presets deployed
-- Workspace hub deployed with Questionnaire / Income / Crypto / IR3 Summary
-- Questionnaire persistence implemented in backend/frontend code
-- Progress dashboard implemented in frontend code
-- Local validation passed for this slice:
+- Simple local login implemented and deployed to new revisions
+- Persistent storage implemented for users, sessions, workspaces, income, crypto, audit, and documents
+- Improved tax logic implemented with progressive NZ tax bands
+- IR3 plain-English explanations implemented
+- Real PDF generation implemented with PDFKit
+- Export/download flow improved in backend + frontend UI
+- Homepage and workspace UI received broader visual polish
+- Local validation passed for this tranche:
   - backend tests pass
   - frontend build passes
-- Remote image builds status:
+- Remote rollout status:
   - backend image rebuilt and pushed
   - frontend image rebuilt and pushed
+  - API revision `zd-ca-api-dev-aue--calc210250` verified live with `authMode=local`
+  - web revision `zd-ca-web-dev-aue--polish210855` verified live with the new bundle/assets
 
 ## Next tasks
-1. Roll fresh Azure backend revision for persisted questionnaire slice
-2. Roll fresh Azure frontend revision for progress dashboard slice
-3. Verify live app shows persisted questionnaire + dashboard behavior
-4. Commit the slice if needed and update build state
-5. Continue immediately into the next 5 feature additions without stopping
+1. Commit the tranche cleanly in git
+2. Optionally wait/recheck for stable frontend hostname to catch up to the newest revision HTML
+3. Start the next requested scope only after this tranche is committed/documented
 
 ## Known blockers
-- None currently
+- No product/code blocker remains for this tranche
+- Azure stable frontend hostname may lag behind the newest revision HTML even when the new revision and asset bundle are already live
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:
@@ -37,39 +41,19 @@ Only stop and wait for Mat if one of these is true:
 3. A destructive action needs explicit consent
 4. A hard platform/tool/runtime limit exists with no viable workaround
 
-## Not blockers
-- Failing tests
-- Stale documentation
-- Agent/subagent handoff failure
-- ACP runtime unavailable
-- Need to switch tools or execution strategy
-- Need to continue locally instead of through ClawDev
-- Long-running remote builds, deploys, polls, or rollout waits
-
-## Progress update contract
-- Send a user-facing progress update at least every 5 minutes during active build/deploy/test work
-- Do not begin a new major command batch if an update is overdue
-- Every update must state:
-  - what changed
-  - what is next
-  - status: Done / In Progress / Blocked
-- Long-running remote builds, deploys, polls, and rollout waits require interim updates, not just terminal summaries
-- `PROGRESS_LEDGER.md` is mandatory during active build work and must be updated before and after each major command batch
-- Treat missing chat update + missing ledger entry as a workflow defect
-- Track timing explicitly during active work:
-  - `last_user_update_at`: 2026-03-24 20:59 NZDT
-  - `next_update_due_at`: 2026-03-24 21:04 NZDT
-
-## Definition of done for current slice
-This slice is done only when all of the following are true:
-1. Questionnaire answers persist per workspace
-2. Workspace dashboard shows progress across questionnaire, income, crypto, and IR3 summary
-3. Live Azure deployment reflects this slice
-4. Live verification is completed
-5. Remaining gaps are explicitly documented before moving to the next 5 features
+## Definition of done for current tranche
+This tranche is done when all of the following are true:
+1. Local auth is active in the deployed backend/frontend path
+2. Persistent storage is active in the deployed backend path
+3. Improved tax logic + explanation + PDF/export stack are implemented and validated locally
+4. Frontend export/download + polish changes are built successfully
+5. New backend/frontend revisions are deployed
+6. Completion is documented and committed
 
 ## Last validated commands
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/src/api && npm test`
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - `az acr build -r zdacrtaxdevaue -t api:latest /home/mat/.openclaw/workspace/nz-tax-app/src/api`
-- `az acr build -r zdacrtaxdevaue -t frontend:latest --build-arg VITE_API_URL=https://zd-ca-api-dev-aue.agreeablesky-1ad949ae.australiaeast.azurecontainerapps.io --build-arg VITE_AUTH_MODE=none /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend`
+- `az containerapp update -n zd-ca-api-dev-aue -g zd-rg-tax-dev-aue --image zdacrtaxdevaue.azurecr.io/api:latest --set-env-vars AUTH_MODE=local --revision-suffix calc...`
+- `az acr build -r zdacrtaxdevaue -t frontend:latest --build-arg VITE_API_URL=https://zd-ca-api-dev-aue--calc210250.agreeablesky-1ad949ae.australiaeast.azurecontainerapps.io --build-arg VITE_AUTH_MODE=local /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend`
+- `az containerapp update -n zd-ca-web-dev-aue -g zd-rg-tax-dev-aue --image zdacrtaxdevaue.azurecr.io/frontend:latest --revision-suffix polish...`

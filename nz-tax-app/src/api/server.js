@@ -6,10 +6,10 @@ import { completionStatus, getQuestionSet, visibleQuestions } from './modules/qu
 import { addDocument, checklist, documents } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
 import { importTransactions, listTransactions, parseCsv } from './modules/cryptoStore.js';
-import { getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
+import { explainIr3Values, getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
 import { mapToIr3 } from './modules/mappingEngine.js';
 import { calculateDraft } from './modules/calcEngine.js';
-import { buildCsv, buildPdfPlaceholder } from './modules/exportService.js';
+import { buildCsv, buildPdfDocument } from './modules/exportService.js';
 import { listEvents, logEvent } from './modules/auditStore.js';
 
 const app = express();
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
 
-const AUTH_MODE = process.env.AUTH_MODE || process.env.VITE_AUTH_MODE || 'none';
+const AUTH_MODE = process.env.AUTH_MODE || process.env.VITE_AUTH_MODE || 'local';
 const NO_AUTH_MODE = AUTH_MODE === 'none';
 const DEMO_SESSION = {
   userId: process.env.DEMO_USER_ID || 'demo-user',
@@ -251,19 +251,21 @@ app.get('/workspaces/:id/ir3/calc', requireSession, (req, res) => {
   const cryptoTx = listTransactions(workspace.id);
   const map = mapToIr3({ income, cryptoTx });
   const calc = calculateDraft(map);
-  return res.json({ map, calc });
+  const explanation = explainIr3Values(map, calc);
+  return res.json({ map, calc, explanation });
 });
 
-app.get('/workspaces/:id/export/draft', requireSession, (req, res) => {
+app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
   const map = mapToIr3({ income, cryptoTx });
   const calc = calculateDraft(map);
-  const csv = buildCsv(map, calc);
-  const pdf = buildPdfPlaceholder(map, calc);
-  return res.json({ csv, pdf });
+  const explanation = explainIr3Values(map, calc);
+  const csv = buildCsv(map, calc, explanation);
+  const pdf = await buildPdfDocument(map, calc, explanation);
+  return res.json({ csv, pdf, explanation });
 });
 
 app.get('/workspaces/:id/audit', requireSession, (req, res) => {

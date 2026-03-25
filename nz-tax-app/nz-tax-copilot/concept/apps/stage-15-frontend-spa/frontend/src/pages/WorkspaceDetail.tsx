@@ -17,9 +17,10 @@ import {
   Typography,
 } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Link as RouterLink, useParams } from 'react-router-dom'
+import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
 import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket } from '../api/workspaceFlows'
+import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
   if (!value) return '—'
@@ -36,6 +37,7 @@ function percent(done: number, total: number) {
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
+  const { isAuthenticated, isLoading } = useAuth()
   const [tab, setTab] = useState(0)
   const [incomeType, setIncomeType] = useState<'paye' | 'interest' | 'dividends' | 'other'>('paye')
   const [gross, setGross] = useState('')
@@ -159,8 +161,38 @@ export default function WorkspaceDetail() {
   const summaryItems = useMemo(() => {
     const mapped = calcQuery.data?.map || {}
     const calc = calcQuery.data?.calc || {}
-    return [...Object.entries(mapped), ...Object.entries(calc)]
+    return [...Object.entries(mapped), ...Object.entries(calc)].filter(([key]) => key !== 'summary')
   }, [calcQuery.data])
+
+  const explanation = exportQuery.data?.explanation || calcQuery.data?.explanation
+
+  const downloadTextFile = (filename: string, content: string, mimeType: string) => {
+    const blob = new Blob([content], { type: mimeType })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = filename
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const downloadPdfFile = () => {
+    const pdf = exportQuery.data?.pdf
+    if (!pdf?.bytesBase64) return
+    const binary = atob(pdf.bytesBase64)
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
+    const blob = new Blob([bytes], { type: pdf.mimeType || 'application/pdf' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = pdf.filename || 'ir3-draft.pdf'
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
+  if (!isLoading && !isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
 
   const dashboard = useMemo(() => {
     const questionnaireDone = status?.answeredVisible || 0
@@ -491,7 +523,7 @@ export default function WorkspaceDetail() {
                       <Card key={ref} variant="outlined">
                         <CardContent>
                           <Typography variant="body1">{ref}</Typography>
-                          <Typography variant="body2" color="text.secondary">{value}</Typography>
+                          <Typography variant="body2" color="text.secondary">{String(value)}</Typography>
                         </CardContent>
                       </Card>
                     ))}
@@ -500,13 +532,40 @@ export default function WorkspaceDetail() {
                   <Alert severity="info">No calculation data yet. Add income or crypto data first.</Alert>
                 )}
 
+                {explanation ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle1" gutterBottom>Plain-English explanation</Typography>
+                      {explanation.headline ? (
+                        <Alert severity="info" sx={{ mb: 2 }}>{explanation.headline}</Alert>
+                      ) : null}
+                      <Stack spacing={1}>
+                        {(explanation.bullets || []).map((bullet, index) => (
+                          <Typography key={index} variant="body2" color="text.secondary">• {bullet}</Typography>
+                        ))}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ) : null}
+
                 {exportQuery.data ? (
                   <Card variant="outlined">
                     <CardContent>
-                      <Typography variant="subtitle1" gutterBottom>Draft export preview</Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      <Typography variant="subtitle1" gutterBottom>Draft export package</Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {exportQuery.data.pdf.title} · {formatDate(exportQuery.data.pdf.generatedAt)}
                       </Typography>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 2 }}>
+                        <Button
+                          variant="contained"
+                          onClick={() => downloadTextFile(`ir3-draft-${workspaceId || 'workspace'}.csv`, exportQuery.data.csv, 'text/csv;charset=utf-8')}
+                        >
+                          Download CSV
+                        </Button>
+                        <Button variant="outlined" onClick={downloadPdfFile}>
+                          Download PDF
+                        </Button>
+                      </Stack>
                       <TextField value={exportQuery.data.csv} multiline minRows={8} fullWidth InputProps={{ readOnly: true }} />
                     </CardContent>
                   </Card>
