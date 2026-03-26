@@ -193,6 +193,8 @@ export default function WorkspaceDetail() {
 
   const explanation = exportQuery.data?.explanation || calcQuery.data?.explanation
   const review: ReviewPayload | undefined = reviewQuery.data || exportQuery.data?.review
+  const reviewWarnings = review?.warnings || []
+  const highSeverityWarningCount = reviewWarnings.filter((warning) => warning.severity === 'high').length
 
   const adjustments = adjustmentsQuery.data || {
     donationAmount: 0,
@@ -341,6 +343,35 @@ export default function WorkspaceDetail() {
             </Stack>
           </CardContent>
         </Card>
+
+        {reviewWarnings.length > 0 ? (
+          <Card>
+            <CardContent>
+              <Stack spacing={2}>
+                <Typography variant="h6">Review warnings</Typography>
+                <Alert
+                  severity={highSeverityWarningCount > 0 ? 'error' : 'warning'}
+                  action={
+                    <Button color="inherit" size="small" onClick={() => setTab(5)}>
+                      Open IR3 summary
+                    </Button>
+                  }
+                >
+                  {highSeverityWarningCount > 0
+                    ? `${highSeverityWarningCount} high-severity warning${highSeverityWarningCount === 1 ? '' : 's'} need attention before filing.`
+                    : `${reviewWarnings.length} review warning${reviewWarnings.length === 1 ? '' : 's'} detected.`}
+                </Alert>
+                <Stack spacing={1}>
+                  {reviewWarnings.slice(0, 3).map((warning, index) => (
+                    <Alert key={`${warning.code}-${index}`} severity={warning.severity === 'high' ? 'error' : 'warning'}>
+                      {warning.message}
+                    </Alert>
+                  ))}
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+        ) : null}
 
         <Card>
           <CardContent>

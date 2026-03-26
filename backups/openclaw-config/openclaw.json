@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-22T08:53:26.757Z"
+    "lastTouchedAt": "2026-03-26T07:14:13.984Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-08T08:25:07.264Z",
@@ -50,6 +50,35 @@
         "openai/gpt-5.3-codex": {}
       },
       "workspace": "/home/mat/.openclaw/workspace",
+      "memorySearch": {
+        "extraPaths": [
+          "specs",
+          "nz-tax-app/docs"
+        ]
+      },
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h",
+        "keepLastAssistants": 3,
+        "softTrimRatio": 0.3,
+        "hardClearRatio": 0.5,
+        "minPrunableToolChars": 50000,
+        "tools": {
+          "deny": [
+            "browser",
+            "canvas"
+          ]
+        },
+        "softTrim": {
+          "maxChars": 4000,
+          "headChars": 1500,
+          "tailChars": 1500
+        },
+        "hardClear": {
+          "enabled": true,
+          "placeholder": "[Old tool result content cleared]"
+        }
+      },
       "compaction": {
         "mode": "safeguard",
         "reserveTokensFloor": 40000,
@@ -62,38 +91,9 @@
         "memoryFlush": {
           "enabled": true,
           "softThresholdTokens": 6000,
-          "systemPrompt": "Session nearing compaction. Store durable memories now.",
-          "prompt": "Write any lasting notes to memory/YYYY-MM-DD.md or MEMORY.md as appropriate; reply with NO_REPLY if nothing durable needs saving."
+          "prompt": "Write any lasting notes to memory/YYYY-MM-DD.md or MEMORY.md as appropriate; reply with NO_REPLY if nothing durable needs saving.",
+          "systemPrompt": "Session nearing compaction. Store durable memories now."
         }
-      },
-      "contextPruning": {
-        "mode": "cache-ttl",
-        "ttl": "1h",
-        "keepLastAssistants": 3,
-        "softTrimRatio": 0.3,
-        "hardClearRatio": 0.5,
-        "minPrunableToolChars": 50000,
-        "softTrim": {
-          "maxChars": 4000,
-          "headChars": 1500,
-          "tailChars": 1500
-        },
-        "hardClear": {
-          "enabled": true,
-          "placeholder": "[Old tool result content cleared]"
-        },
-        "tools": {
-          "deny": [
-            "browser",
-            "canvas"
-          ]
-        }
-      },
-      "memorySearch": {
-        "extraPaths": [
-          "specs",
-          "nz-tax-app/docs"
-        ]
       }
     },
     "list": [
@@ -307,6 +307,12 @@
     "entries": {
       "whatsapp": {
         "enabled": true
+      },
+      "acpx": {
+        "enabled": true,
+        "config": {
+          "permissionMode": "approve-all"
+        }
       }
     }
   }

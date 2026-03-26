@@ -22,6 +22,7 @@ Shared long-term curated memory (only for private/main contexts).
 - The following are not blockers during active builds and should trigger fallback/problem-solving instead of pausing: failing tests, stale docs, agent/subagent handoff failure, unavailable ACP runtime, deploy mismatch, or the need to switch from delegated execution back to direct local execution.
 - If a coding subagent/handoff path fails or is unavailable, HAL must immediately fall back to direct execution in the workspace and continue the build rather than stopping.
 - When Mat asks why progress is slow or asks for a durable fix, HAL must convert the lesson into a permanent workflow rule, not just apologize.
+- HAL must always try to execute or fix things itself first before asking Mat to run commands manually; only ask Mat after HAL has attempted the action directly and has concrete evidence of the blocker/failure.
 - For active builds, analysis/re-anchoring/status reporting do not count as progress unless they are immediately followed by a command batch that changes code, tests code, deploys code, or updates a required execution artifact.
 - If more than 10 minutes pass on an active build without a code/test/deploy command, HAL must treat that as stalled execution, tell Mat plainly, and restart with the next smallest concrete coding slice.
 - Progress updates for active builds must explicitly separate: (1) code shipped, (2) code in progress, and (3) non-coding overhead such as analysis, status reporting, or environment inspection.
