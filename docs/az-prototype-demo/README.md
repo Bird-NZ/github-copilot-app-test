@@ -76,6 +76,7 @@ Recommended init flag:
 ## Files in this pack
 
 - `demo-requirements.md` — sample business brief to feed design
+- `sample-artifacts/` — realistic mixed-format input pack for `--artifacts`
 - `commands.sh` — runnable command sheet
 - `DEMO_SCRIPT.md` — presenter script / talk track
 

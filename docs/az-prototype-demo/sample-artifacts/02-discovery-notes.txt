@@ -1,0 +1,11 @@
+Retail ops team workshop notes
+
+- Store managers want one place to check daily performance
+- Top questions:
+  - What stores are below forecast today?
+  - Which products are out of stock most often?
+  - What issues are blocking operations this week?
+- Prototype does NOT need ERP writeback
+- Needs login path in the design, even if auth is lightweight in v1
+- Monitoring and audit trail matter because internal users will demo this to leadership
+- Prefer a web app plus simple API foundation for future integrations

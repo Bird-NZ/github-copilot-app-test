@@ -1,0 +1,5 @@
+id,category,priority,summary,impact
+1,stock,high,Frequent out-of-stock blind spots at store level,Managers lose confidence in daily reporting
+2,ops,medium,No single place to view action items,Support issues stay fragmented
+3,analytics,high,Slow turnaround on KPI questions,Leaders wait for manual analyst responses
+4,security,medium,Need clear auth story for internal rollout,Prototype credibility risk

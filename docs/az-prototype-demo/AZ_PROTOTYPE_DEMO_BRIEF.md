@@ -189,7 +189,9 @@ cat prototype.yaml
 
 ---
 
-## 9. Requirement artifact for design stage
+## 9. Requirement artifacts for design stage
+
+### Simple single-file version
 
 Use the prepared requirement file:
 
@@ -202,6 +204,30 @@ Then run design:
 
 ```bash
 az prototype design --artifacts ./requirements --context "Use a pragmatic, demo-friendly Azure architecture with clear next-phase production path."
+```
+
+### Rich sample artifact pack version
+
+If you want a more realistic demo, use the included sample artifact pack with multiple input types:
+
+```bash
+mkdir -p requirements
+cp -R /home/mat/.openclaw/workspace/docs/az-prototype-demo/sample-artifacts/. ./requirements/
+```
+
+This gives you actual example inputs such as:
+- executive brief (`01-executive-brief.md`)
+- discovery notes (`02-discovery-notes.txt`)
+- architecture slide outline (`03-architecture-slides-outline.md`)
+- sample issue list (`04-sample-issues.csv`)
+- non-functional requirements (`05-nonfunctional-requirements.json`)
+- customer brief PDF (`06-customer-brief.pdf`)
+- screenshot mock (`07-dashboard-screenshot.svg`)
+
+Then run:
+
+```bash
+az prototype design --artifacts ./requirements --context "Use these materials to produce a pragmatic Azure prototype design with a clear next-phase production path."
 ```
 
 After design, inspect state:

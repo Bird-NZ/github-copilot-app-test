@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#0b1020"/>
+  <rect x="24" y="24" width="1232" height="72" rx="12" fill="#111833"/>
+  <text x="48" y="68" font-family="Arial, sans-serif" font-size="30" fill="#f3f6ff">Retail Insights Dashboard (sample screenshot)</text>
+  <rect x="24" y="120" width="280" height="220" rx="16" fill="#141d3d"/>
+  <rect x="328" y="120" width="280" height="220" rx="16" fill="#141d3d"/>
+  <rect x="632" y="120" width="280" height="220" rx="16" fill="#141d3d"/>
+  <rect x="936" y="120" width="320" height="220" rx="16" fill="#141d3d"/>
+  <text x="52" y="164" font-family="Arial, sans-serif" font-size="22" fill="#9fb3ff">Today vs Forecast</text>
+  <text x="52" y="224" font-family="Arial, sans-serif" font-size="44" fill="#ffffff">-3.1%</text>
+  <text x="356" y="164" font-family="Arial, sans-serif" font-size="22" fill="#9fb3ff">Out-of-stock alerts</text>
+  <text x="356" y="224" font-family="Arial, sans-serif" font-size="44" fill="#ffffff">14</text>
+  <text x="660" y="164" font-family="Arial, sans-serif" font-size="22" fill="#9fb3ff">Open support issues</text>
+  <text x="660" y="224" font-family="Arial, sans-serif" font-size="44" fill="#ffffff">7</text>
+  <text x="964" y="164" font-family="Arial, sans-serif" font-size="22" fill="#9fb3ff">Assistant panel</text>
+  <rect x="952" y="196" width="288" height="120" rx="12" fill="#0f1530" stroke="#2b3d7c"/>
+  <text x="972" y="230" font-family="Arial, sans-serif" font-size="20" fill="#dbe4ff">Top question:</text>
+  <text x="972" y="262" font-family="Arial, sans-serif" font-size="18" fill="#ffffff">Which stores are below forecast?</text>
+  <rect x="24" y="372" width="1232" height="324" rx="16" fill="#111833"/>
+  <text x="48" y="414" font-family="Arial, sans-serif" font-size="24" fill="#9fb3ff">Operations trend view</text>
+  <polyline points="72,620 192,560 312,590 432,500 552,520 672,450 792,480 912,410 1032,430 1152,360" fill="none" stroke="#6ea8fe" stroke-width="6"/>
+</svg>

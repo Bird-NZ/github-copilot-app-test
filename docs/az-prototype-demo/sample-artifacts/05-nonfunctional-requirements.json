@@ -1,0 +1,16 @@
+{
+  "security": [
+    "Prefer managed identity where possible",
+    "Avoid secrets in code",
+    "Design for internal authenticated users"
+  ],
+  "operations": [
+    "Centralized monitoring",
+    "Basic auditability for actions",
+    "Simple deployment and rollback story"
+  ],
+  "cost": [
+    "Prototype should stay cost-conscious",
+    "Use scalable services only where justified"
+  ]
+}
