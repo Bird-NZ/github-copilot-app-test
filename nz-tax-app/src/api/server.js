@@ -264,7 +264,7 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
-  const review = buildReview(workspace, map, calc, documents(workspace.id));
+  const review = buildReview(workspace, map, calc, documents(workspace.id), cryptoTx);
   const csv = buildCsv(map, calc, explanation);
   const pdf = await buildPdfDocument(map, calc, explanation);
   const json = {
@@ -291,7 +291,7 @@ app.get('/workspaces/:id/review', requireSession, (req, res) => {
   const cryptoTx = listTransactions(workspace.id);
   const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
   const calc = calculateDraft(map);
-  const review = buildReview(workspace, map, calc, documents(workspace.id));
+  const review = buildReview(workspace, map, calc, documents(workspace.id), cryptoTx);
   return res.json({ review });
 });
 
