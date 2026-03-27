@@ -1,12 +1,12 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Stage 10 / Live verification + commit for the auth/persistence/calc/export/polish tranche
+- Stage 10 / Closeout complete for the auth/persistence/calc/export/polish tranche
 - Stage 9 / Deploy is complete for this tranche
 - Stage 7 / Test is complete for this tranche
 
 ## Current objective
-Finish the tranche cleanly by verifying the live frontend surface, committing the completed work, and documenting the stable-hostname lag on Azure frontend rollout.
+This tranche is closed out. The next step is to begin the next approved scope/tranche.
 
 ## Last completed milestone
 - Simple local login implemented and deployed to new revisions
@@ -26,13 +26,13 @@ Finish the tranche cleanly by verifying the live frontend surface, committing th
   - web revision `zd-ca-web-dev-aue--polish210855` verified live with the new bundle/assets
 
 ## Next tasks
-1. Commit the tranche cleanly in git
-2. Optionally wait/recheck for stable frontend hostname to catch up to the newest revision HTML
-3. Start the next requested scope only after this tranche is committed/documented
+1. Start the next requested scope/tranche
+2. Re-run local validation if the next tranche changes backend or frontend behavior
+3. Keep Azure hostname drift in mind on future rollouts, but no active wait/recheck is required for this tranche
 
 ## Known blockers
 - No product/code blocker remains for this tranche
-- Azure stable frontend hostname may lag behind the newest revision HTML even when the new revision and asset bundle are already live
+- No active deployment lag remains at closeout time: the stable frontend hostname and pinned web revision were both serving the same asset bundle (`/assets/index-CVs5voSE.js`) when rechecked
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:
@@ -49,6 +49,14 @@ This tranche is done when all of the following are true:
 4. Frontend export/download + polish changes are built successfully
 5. New backend/frontend revisions are deployed
 6. Completion is documented and committed
+7. Stable frontend hostname has been rechecked after rollout closeout
+
+## Closeout verification
+- Rechecked stable frontend hostname: `https://zd-ca-web-dev-aue.agreeablesky-1ad949ae.australiaeast.azurecontainerapps.io`
+- Rechecked pinned web revision: `https://zd-ca-web-dev-aue--polish210855.agreeablesky-1ad949ae.australiaeast.azurecontainerapps.io`
+- Rechecked pinned API revision health: `https://zd-ca-api-dev-aue--calc210250.agreeablesky-1ad949ae.australiaeast.azurecontainerapps.io/health`
+- Stable frontend hostname and pinned web revision both served the same current asset bundle: `/assets/index-CVs5voSE.js`
+- API health returned `{"ok":true,"authMode":"local"}`
 
 ## Last validated commands
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/src/api && npm test`
