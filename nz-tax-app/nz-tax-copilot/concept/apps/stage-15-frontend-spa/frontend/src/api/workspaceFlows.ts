@@ -66,10 +66,32 @@ export type ChecklistItem = {
 }
 
 export type AuditEvent = {
+  id: string
   at: string
   action: string
   actor: string
+  category: string
+  label: string
+  details?: string | null
   meta?: Record<string, unknown>
+}
+
+export type AuditSummary = {
+  totalEvents: number
+  latestEventAt: string | null
+  byCategory: Record<string, number>
+}
+
+export type AuditResult = {
+  events: AuditEvent[]
+  summary: AuditSummary
+  overallSummary: AuditSummary
+  availableCategories: string[]
+  filters: {
+    category: string | null
+    q: string | null
+    limit: number | null
+  }
 }
 
 export type ReviewPayload = {
@@ -201,9 +223,14 @@ export const workspaceFlowsApi = {
     return response.data?.checklist || []
   },
 
-  async getAudit(workspaceId: string): Promise<AuditEvent[]> {
-    const response = await apiClient.get(`/workspaces/${workspaceId}/audit`)
-    return response.data?.events || []
+  async getAudit(workspaceId: string, filters?: { category?: string | null; q?: string | null }): Promise<AuditResult> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/audit`, {
+      params: {
+        category: filters?.category || undefined,
+        q: filters?.q || undefined,
+      },
+    })
+    return response.data
   },
 
   async importCryptoCsv(workspaceId: string, csv: string): Promise<{ imported: number; total: number }> {

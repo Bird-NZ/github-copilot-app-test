@@ -126,10 +126,13 @@ export function listEvents(workspaceId, options = {}) {
     return matchesQuery(event, query);
   });
 
+  const overallSummary = buildSummary(allEvents);
+
   return {
     events: limit > 0 ? filteredEvents.slice(0, limit) : filteredEvents,
     summary: buildSummary(filteredEvents),
-    availableCategories: Object.keys(buildSummary(allEvents).byCategory).sort(),
+    overallSummary,
+    availableCategories: Object.keys(overallSummary.byCategory).sort(),
     filters: {
       category,
       q: query || null,

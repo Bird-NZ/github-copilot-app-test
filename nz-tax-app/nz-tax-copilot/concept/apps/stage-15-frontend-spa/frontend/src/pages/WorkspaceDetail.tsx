@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult } from '../api/workspaceFlows'
 import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
@@ -34,6 +34,15 @@ function formatDate(value?: string) {
 function percent(done: number, total: number) {
   if (!total) return 0
   return Math.round((done / total) * 100)
+}
+
+function titleCase(value?: string | null) {
+  if (!value) return 'Unknown'
+  return value
+    .split(/[_\-.\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
 }
 
 export default function WorkspaceDetail() {
@@ -55,6 +64,8 @@ export default function WorkspaceDetail() {
   const [pieTaxCredits, setPieTaxCredits] = useState('0')
   const [studentLoanRepayments, setStudentLoanRepayments] = useState('0')
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
+  const [auditCategory, setAuditCategory] = useState<string>('all')
+  const [auditSearch, setAuditSearch] = useState('')
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -93,8 +104,11 @@ export default function WorkspaceDetail() {
   })
 
   const auditQuery = useQuery({
-    queryKey: ['workspace-audit', workspaceId],
-    queryFn: () => workspaceFlowsApi.getAudit(workspaceId || ''),
+    queryKey: ['workspace-audit', workspaceId, auditCategory, auditSearch],
+    queryFn: () => workspaceFlowsApi.getAudit(workspaceId || '', {
+      category: auditCategory === 'all' ? null : auditCategory,
+      q: auditSearch.trim() || null,
+    }),
     enabled: Boolean(workspaceId),
   })
 
@@ -187,6 +201,13 @@ export default function WorkspaceDetail() {
   const cryptoRows = cryptoQuery.data || []
   const docs = docsQuery.data || []
   const checklist = checklistQuery.data || []
+  const audit: AuditResult = auditQuery.data || {
+    events: [],
+    summary: { totalEvents: 0, latestEventAt: null, byCategory: {} },
+    overallSummary: { totalEvents: 0, latestEventAt: null, byCategory: {} },
+    availableCategories: [],
+    filters: { category: null, q: null, limit: null },
+  }
 
   const summaryItems = useMemo(() => {
     const mapped = calcQuery.data?.map || {}
@@ -595,26 +616,84 @@ export default function WorkspaceDetail() {
             {tab === 4 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">Audit trail</Typography>
-                {auditQuery.data && auditQuery.data.length > 0 ? (
+
+                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                  <Card variant="outlined" sx={{ flex: 1 }}>
+                    <CardContent>
+                      <Typography variant="body2" color="text.secondary">Visible events</Typography>
+                      <Typography variant="h5">{audit.summary.totalEvents}</Typography>
+                    </CardContent>
+                  </Card>
+                  <Card variant="outlined" sx={{ flex: 1 }}>
+                    <CardContent>
+                      <Typography variant="body2" color="text.secondary">Latest activity</Typography>
+                      <Typography variant="body1">{formatDate(audit.summary.latestEventAt || undefined)}</Typography>
+                    </CardContent>
+                  </Card>
+                </Stack>
+
+                {audit.availableCategories.length > 0 ? (
+                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                    <Chip
+                      label={`All (${audit.overallSummary.totalEvents})`}
+                      color={auditCategory === 'all' ? 'primary' : 'default'}
+                      variant={auditCategory === 'all' ? 'filled' : 'outlined'}
+                      onClick={() => setAuditCategory('all')}
+                    />
+                    {audit.availableCategories.map((category) => (
+                      <Chip
+                        key={category}
+                        label={`${titleCase(category)} (${audit.overallSummary.byCategory[category] || 0})`}
+                        color={auditCategory === category ? 'primary' : 'default'}
+                        variant={auditCategory === category ? 'filled' : 'outlined'}
+                        onClick={() => setAuditCategory(category)}
+                      />
+                    ))}
+                  </Stack>
+                ) : null}
+
+                <TextField
+                  label="Search audit events"
+                  value={auditSearch}
+                  onChange={(event) => setAuditSearch(event.target.value)}
+                  placeholder="Search action, details, actor, or metadata"
+                  fullWidth
+                />
+
+                {auditQuery.isFetching ? <LinearProgress /> : null}
+
+                {audit.events.length > 0 ? (
                   <Stack spacing={1}>
-                    {auditQuery.data.slice().reverse().map((event, index) => (
-                      <Card key={`${event.at}-${index}`} variant="outlined">
+                    {audit.events.map((event) => (
+                      <Card key={event.id} variant="outlined">
                         <CardContent>
-                          <Typography variant="body1">{event.action}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {event.actor} · {formatDate(event.at)}
-                          </Typography>
-                          {event.meta ? (
+                          <Stack spacing={1.25}>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" spacing={1}>
+                              <Box>
+                                <Typography variant="body1">{event.label}</Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  {event.actor || 'System'} · {formatDate(event.at)}
+                                </Typography>
+                              </Box>
+                              <Chip label={titleCase(event.category)} size="small" variant="outlined" />
+                            </Stack>
+                            {event.details ? (
+                              <Typography variant="body2">{event.details}</Typography>
+                            ) : null}
                             <Typography variant="caption" color="text.secondary">
-                              {JSON.stringify(event.meta)}
+                              {event.action}
                             </Typography>
-                          ) : null}
+                          </Stack>
                         </CardContent>
                       </Card>
                     ))}
                   </Stack>
                 ) : (
-                  <Alert severity="info">No audit events yet.</Alert>
+                  <Alert severity="info">
+                    {auditSearch || auditCategory !== 'all'
+                      ? 'No audit events match the current filters.'
+                      : 'No audit events yet.'}
+                  </Alert>
                 )}
               </Stack>
             ) : null}
