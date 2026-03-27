@@ -45,6 +45,11 @@ function titleCase(value?: string | null) {
     .join(' ')
 }
 
+function formatFieldValue(value: unknown) {
+  if (typeof value === 'number') return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return String(value)
+}
+
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
@@ -216,6 +221,10 @@ export default function WorkspaceDetail() {
   }, [calcQuery.data])
 
   const explanation = exportQuery.data?.explanation || calcQuery.data?.explanation
+  const fieldNotesByRef = useMemo(() => {
+    const notes = explanation?.fieldNotes || []
+    return Object.fromEntries(notes.map((note: { ref: string; label?: string; note?: string; source?: string }) => [note.ref, note]))
+  }, [explanation])
   const review: ReviewPayload | undefined = reviewQuery.data || exportQuery.data?.review
   const reviewWarnings = review?.warnings || []
   const highSeverityWarningCount = reviewWarnings.filter((warning) => warning.severity === 'high').length
@@ -726,14 +735,32 @@ export default function WorkspaceDetail() {
                 </Alert>
                 {summaryItems.length > 0 ? (
                   <Stack spacing={1}>
-                    {summaryItems.map(([ref, value]) => (
-                      <Card key={ref} variant="outlined">
-                        <CardContent>
-                          <Typography variant="body1">{ref}</Typography>
-                          <Typography variant="body2" color="text.secondary">{String(value)}</Typography>
-                        </CardContent>
-                      </Card>
-                    ))}
+                    {summaryItems.map(([ref, value]) => {
+                      const fieldNote = fieldNotesByRef[ref] as { ref?: string; label?: string; note?: string; source?: string } | undefined
+                      const friendlyLabel = fieldNote?.label || titleCase(ref)
+
+                      return (
+                        <Card key={ref} variant="outlined">
+                          <CardContent>
+                            <Stack spacing={1.25}>
+                              <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" spacing={1}>
+                                <Box>
+                                  <Typography variant="body1">{friendlyLabel}</Typography>
+                                  <Typography variant="body2" color="text.secondary">{formatFieldValue(value)}</Typography>
+                                </Box>
+                                <Chip label={`IR3 ${ref}`} size="small" variant="outlined" />
+                              </Stack>
+                              {fieldNote?.note ? (
+                                <Typography variant="body2" color="text.secondary">{fieldNote.note}</Typography>
+                              ) : null}
+                              {fieldNote?.source ? (
+                                <Typography variant="caption" color="text.secondary">Where this came from: {fieldNote.source}</Typography>
+                              ) : null}
+                            </Stack>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
                   </Stack>
                 ) : (
                   <Alert severity="info">No calculation data yet. Add income or crypto data first.</Alert>
