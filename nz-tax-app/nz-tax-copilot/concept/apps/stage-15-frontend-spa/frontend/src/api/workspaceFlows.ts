@@ -107,6 +107,24 @@ export type Ir3CalcResult = {
 
 export type DraftExport = {
   csv: string
+  json: {
+    workspace: {
+      id: string
+      taxYearStart: string
+      taxYearEnd: string
+      status?: string
+      updatedAt?: string
+    }
+    generatedAt: string
+    map: Record<string, unknown>
+    calc: Record<string, unknown>
+    explanation?: {
+      headline?: string
+      bullets?: string[]
+      fieldNotes?: Array<{ ref: string; note: string }>
+    }
+    review?: ReviewPayload
+  }
   explanation?: {
     headline?: string
     bullets?: string[]

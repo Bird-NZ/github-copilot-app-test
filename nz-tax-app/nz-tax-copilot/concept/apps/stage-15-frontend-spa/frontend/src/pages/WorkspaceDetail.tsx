@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import DownloadIcon from '@mui/icons-material/Download'
 import {
   Alert,
   Box,
@@ -52,6 +54,7 @@ export default function WorkspaceDetail() {
   const [pieIncome, setPieIncome] = useState('0')
   const [pieTaxCredits, setPieTaxCredits] = useState('0')
   const [studentLoanRepayments, setStudentLoanRepayments] = useState('0')
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -232,6 +235,26 @@ export default function WorkspaceDetail() {
     anchor.download = pdf.filename || 'ir3-draft.pdf'
     anchor.click()
     URL.revokeObjectURL(url)
+  }
+
+  const downloadJsonFile = () => {
+    if (!exportQuery.data?.json) return
+    downloadTextFile(
+      `ir3-draft-${workspaceId || 'workspace'}.json`,
+      `${JSON.stringify(exportQuery.data.json, null, 2)}\n`,
+      'application/json;charset=utf-8',
+    )
+  }
+
+  const copyCsvToClipboard = async () => {
+    const csv = exportQuery.data?.csv
+    if (!csv) return
+    try {
+      await navigator.clipboard.writeText(csv)
+      setCopyFeedback('CSV copied to clipboard.')
+    } catch {
+      setCopyFeedback('Clipboard copy failed on this browser.')
+    }
   }
 
   if (!isLoading && !isAuthenticated) {
@@ -678,17 +701,33 @@ export default function WorkspaceDetail() {
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {exportQuery.data.pdf.title} · {formatDate(exportQuery.data.pdf.generatedAt)}
                       </Typography>
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 2 }}>
+                      <Stack spacing={1} sx={{ mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          JSON package includes workspace metadata, mapped values, calculated values, explanation, and review readiness.
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          CSV rows: {exportQuery.data.csv.split('\n').filter(Boolean).length} · JSON generated: {formatDate(exportQuery.data.json.generatedAt)}
+                        </Typography>
+                      </Stack>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 2, flexWrap: 'wrap' }}>
                         <Button
                           variant="contained"
+                          startIcon={<DownloadIcon />}
                           onClick={() => downloadTextFile(`ir3-draft-${workspaceId || 'workspace'}.csv`, exportQuery.data.csv, 'text/csv;charset=utf-8')}
                         >
                           Download CSV
                         </Button>
-                        <Button variant="outlined" onClick={downloadPdfFile}>
+                        <Button variant="outlined" startIcon={<DownloadIcon />} onClick={downloadPdfFile}>
                           Download PDF
                         </Button>
+                        <Button variant="outlined" startIcon={<DownloadIcon />} onClick={downloadJsonFile}>
+                          Download JSON
+                        </Button>
+                        <Button variant="text" startIcon={<ContentCopyIcon />} onClick={copyCsvToClipboard}>
+                          Copy CSV
+                        </Button>
                       </Stack>
+                      {copyFeedback ? <Alert severity={copyFeedback.includes('failed') ? 'warning' : 'success'} sx={{ mb: 2 }}>{copyFeedback}</Alert> : null}
                       <TextField value={exportQuery.data.csv} multiline minRows={8} fullWidth InputProps={{ readOnly: true }} />
                     </CardContent>
                   </Card>

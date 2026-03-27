@@ -267,7 +267,21 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   const review = buildReview(workspace, map, calc, documents(workspace.id));
   const csv = buildCsv(map, calc, explanation);
   const pdf = await buildPdfDocument(map, calc, explanation);
-  return res.json({ csv, pdf, explanation, review });
+  const json = {
+    workspace: {
+      id: workspace.id,
+      taxYearStart: workspace.taxYearStart,
+      taxYearEnd: workspace.taxYearEnd,
+      status: workspace.status,
+      updatedAt: workspace.updatedAt,
+    },
+    generatedAt: new Date().toISOString(),
+    map,
+    calc,
+    explanation,
+    review,
+  };
+  return res.json({ csv, pdf, json, explanation, review });
 });
 
 app.get('/workspaces/:id/review', requireSession, (req, res) => {
