@@ -39,17 +39,20 @@ export default function Home() {
                 <Chip label="NZ Tax Copilot" sx={{ alignSelf: 'flex-start', bgcolor: 'rgba(255,255,255,0.16)', color: 'white' }} />
                 <Box>
                   <Typography variant="h3" component="h1" gutterBottom>
-                    Your modern IR3 draft workspace
+                    Understand your NZ tax return before you fill it in
                   </Typography>
                   <Typography variant="h6" sx={{ opacity: 0.92 }}>
-                    Capture income, explain tax positions in plain English, and export a cleaner draft summary with local login and persistent storage.
+                    Start a guided IR3 workspace, add the numbers from your payslips and bank statements, and see a plain-English draft summary before you file anything.
                   </Typography>
                 </Box>
                 <Stack spacing={1.5}>
-                  <Typography variant="body1">• Simple local account sign-in</Typography>
-                  <Typography variant="body1">• Progressive tax estimate with explanation</Typography>
-                  <Typography variant="body1">• Downloadable CSV + PDF draft package</Typography>
+                  <Typography variant="body1">• Plain-English explanations instead of tax jargon</Typography>
+                  <Typography variant="body1">• Clear prompts about where to find each figure</Typography>
+                  <Typography variant="body1">• Downloadable draft package to review before filing</Typography>
                 </Stack>
+                <Alert severity="info" sx={{ bgcolor: 'rgba(255,255,255,0.12)', color: 'white', '& .MuiAlert-icon': { color: 'white' } }}>
+                  This app helps you organise and understand your return. It does not submit anything to Inland Revenue for you.
+                </Alert>
                 {isAuthenticated ? (
                   <Alert severity="success" sx={{ bgcolor: 'rgba(255,255,255,0.12)', color: 'white', '& .MuiAlert-icon': { color: 'white' } }}>
                     Signed in as {getUserEmail()}. Your workspace is ready.
@@ -67,11 +70,25 @@ export default function Home() {
                     {mode === 'signup' ? 'Create your account' : 'Sign in'}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Use a simple local account to keep your tax workspaces private and persistent.
+                    Use a simple local account so your workspaces stay private and you can come back to them later.
                   </Typography>
                 </Box>
-                <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
-                <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} fullWidth />
+                <TextField
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  helperText="Use the email address you want attached to your saved workspaces."
+                  fullWidth
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  helperText="Create a password you can remember. You'll use it each time you return to your tax workspace."
+                  fullWidth
+                />
                 {error ? <Alert severity="error">{error}</Alert> : null}
                 <Stack spacing={1.5}>
                   <Button variant="contained" size="large" onClick={handleAuth} disabled={!email || !password || pending || isLoading} fullWidth>

@@ -318,10 +318,10 @@ export default function WorkspaceDetail() {
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Box>
             <Typography variant="h4" component="h1" gutterBottom>
-              Workspace
+              Tax workspace
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Run through the core tax workflow for this workspace.
+              Work through your return in plain English: answer a few questions, add income, upload supporting documents, and review the IR3 draft before filing.
             </Typography>
           </Box>
           <Button component={RouterLink} to="/workspaces" variant="outlined">
@@ -334,7 +334,7 @@ export default function WorkspaceDetail() {
             <CardContent>
               <Stack spacing={2}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h5">Workspace {workspaceQuery.data.id.slice(0, 8)}</Typography>
+                  <Typography variant="h5">Tax workspace {workspaceQuery.data.id.slice(0, 8)}</Typography>
                   <Chip
                     label={workspaceQuery.data.status || 'unknown'}
                     color={workspaceQuery.data.status === 'in_progress' ? 'primary' : 'default'}
@@ -342,7 +342,10 @@ export default function WorkspaceDetail() {
                   />
                 </Stack>
                 <Typography variant="body2" color="text.secondary">
-                  Tax year: {workspaceQuery.data.taxYearStart} to {workspaceQuery.data.taxYearEnd}
+                  Tax year covered: {workspaceQuery.data.taxYearStart} to {workspaceQuery.data.taxYearEnd}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Use this space to collect the figures and documents that belong to this one NZ tax year only.
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Updated: {formatDate(workspaceQuery.data.updatedAt)}
@@ -356,6 +359,9 @@ export default function WorkspaceDetail() {
           <CardContent>
             <Stack spacing={2}>
               <Typography variant="h6">Progress dashboard</Typography>
+              <Typography variant="body2" color="text.secondary">
+                This is a simple checklist of what most people need for a first draft. You do not need every section if it does not apply to you.
+              </Typography>
               <Box>
                 <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
                   <Typography variant="body2" color="text.secondary">
@@ -433,6 +439,9 @@ export default function WorkspaceDetail() {
             {tab === 0 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">Questionnaire</Typography>
+                <Alert severity="info">
+                  Answer these quick yes/no questions so the app only shows the parts of the return that matter to you. If you are unsure, answer with your best current understanding and come back later.
+                </Alert>
                 {status ? (
                   <Alert severity={status.complete ? 'success' : saveQuestionnaireMutation.isPending ? 'warning' : 'info'}>
                     {status.answeredVisible} of {status.totalVisible} visible questions answered
@@ -444,6 +453,7 @@ export default function WorkspaceDetail() {
                     key={question.id}
                     select
                     label={question.label}
+                    helperText="This answer controls which tax sections appear next."
                     value={answers[question.id] === undefined ? '' : String(answers[question.id])}
                     onChange={(event) => {
                       const value = event.target.value
@@ -466,7 +476,10 @@ export default function WorkspaceDetail() {
             {tab === 1 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">Income</Typography>
-                <TextField select label="Income type" value={incomeType} onChange={(event) => setIncomeType(event.target.value as 'paye' | 'interest' | 'dividends' | 'other')} fullWidth>
+                <Alert severity="info">
+                  Add income one source at a time. Use the gross amount before deductions unless the label says tax withheld. You can usually find these figures on payslips, bank interest summaries, dividend statements, or year-end tax certificates.
+                </Alert>
+                <TextField select label="Income type" value={incomeType} onChange={(event) => setIncomeType(event.target.value as 'paye' | 'interest' | 'dividends' | 'other')} helperText="Pick the kind of income you are adding so the app asks for the right figures." fullWidth>
                   <MenuItem value="paye">PAYE</MenuItem>
                   <MenuItem value="interest">Interest</MenuItem>
                   <MenuItem value="dividends">Dividends</MenuItem>
@@ -474,13 +487,13 @@ export default function WorkspaceDetail() {
                 </TextField>
                 {incomeType === 'paye' ? (
                   <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                    <TextField label="Gross income (NZD)" type="number" value={gross} onChange={(event) => setGross(event.target.value)} fullWidth />
-                    <TextField label="PAYE withheld (NZD)" type="number" value={payeWithheld} onChange={(event) => setPayeWithheld(event.target.value)} fullWidth />
+                    <TextField label="Gross income (NZD)" type="number" value={gross} onChange={(event) => setGross(event.target.value)} helperText="Enter total pay before tax and deductions. This is often called gross earnings on your payslip or earnings summary." fullWidth />
+                    <TextField label="PAYE withheld (NZD)" type="number" value={payeWithheld} onChange={(event) => setPayeWithheld(event.target.value)} helperText="Enter the tax already taken out by your employer. Look for PAYE tax deducted or tax withheld." fullWidth />
                   </Stack>
                 ) : (
                   <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                    <TextField label="Amount (NZD)" type="number" value={incomeAmount} onChange={(event) => setIncomeAmount(event.target.value)} fullWidth />
-                    <TextField label="Source" value={incomeSourceName} onChange={(event) => setIncomeSourceName(event.target.value)} fullWidth />
+                    <TextField label="Amount (NZD)" type="number" value={incomeAmount} onChange={(event) => setIncomeAmount(event.target.value)} helperText="Enter the amount shown on the statement or summary for this income source." fullWidth />
+                    <TextField label="Source" value={incomeSourceName} onChange={(event) => setIncomeSourceName(event.target.value)} helperText="Example: ANZ savings account, Sharesies dividend, side-job invoice, or rental top-up." fullWidth />
                   </Stack>
                 )}
                 <Button
@@ -544,11 +557,15 @@ export default function WorkspaceDetail() {
             {tab === 3 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">Documents</Typography>
+                <Alert severity="info">
+                  Upload the records that support your figures. This helps you double-check numbers now and makes review easier later if anything looks off.
+                </Alert>
                 <TextField
                   select
                   label="Document type"
                   value={docType}
                   onChange={(event) => setDocType(event.target.value)}
+                  helperText="Choose the document type that best matches the file so it lands in the right checklist bucket."
                   fullWidth
                 >
                   <MenuItem value="paye_summary">PAYE summary</MenuItem>
@@ -701,6 +718,9 @@ export default function WorkspaceDetail() {
             {tab === 5 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">IR3 summary</Typography>
+                <Alert severity="info">
+                  This section turns what you entered into an IR3-style draft. Review it carefully: it is designed to help you understand your likely return, not replace your own final check.
+                </Alert>
                 {summaryItems.length > 0 ? (
                   <Stack spacing={1}>
                     {summaryItems.map(([ref, value]) => (
@@ -719,11 +739,14 @@ export default function WorkspaceDetail() {
                 <Card variant="outlined">
                   <CardContent>
                     <Typography variant="subtitle1" gutterBottom>Adjustments and deductions</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      Add extra items here if they were not already included elsewhere. These can change your draft refund or tax to pay.
+                    </Typography>
                     <Stack spacing={2}>
-                      <TextField label="Donation amount (NZD)" type="number" value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} fullWidth />
-                      <TextField label="PIE income (NZD)" type="number" value={pieIncome} onChange={(e) => setPieIncome(e.target.value)} fullWidth />
-                      <TextField label="PIE tax credits (NZD)" type="number" value={pieTaxCredits} onChange={(e) => setPieTaxCredits(e.target.value)} fullWidth />
-                      <TextField label="Student loan repayments (NZD)" type="number" value={studentLoanRepayments} onChange={(e) => setStudentLoanRepayments(e.target.value)} fullWidth />
+                      <TextField label="Donation amount (NZD)" type="number" value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} helperText="Total eligible donations for the year. Use your donation receipts and include only claimable gifts." fullWidth />
+                      <TextField label="PIE income (NZD)" type="number" value={pieIncome} onChange={(e) => setPieIncome(e.target.value)} helperText="Income from portfolio investment entities, usually shown on an annual tax certificate from your provider." fullWidth />
+                      <TextField label="PIE tax credits (NZD)" type="number" value={pieTaxCredits} onChange={(e) => setPieTaxCredits(e.target.value)} helperText="Tax already paid within your PIE investment. Enter the credit amount from your annual statement." fullWidth />
+                      <TextField label="Student loan repayments (NZD)" type="number" value={studentLoanRepayments} onChange={(e) => setStudentLoanRepayments(e.target.value)} helperText="Add repayments already made through PAYE or separately if you need them reflected in this draft." fullWidth />
                       <Button variant="contained" onClick={handleSaveAdjustments} disabled={saveAdjustmentsMutation.isPending}>
                         {saveAdjustmentsMutation.isPending ? 'Saving…' : 'Save adjustments'}
                       </Button>
@@ -777,6 +800,9 @@ export default function WorkspaceDetail() {
                   <Card variant="outlined">
                     <CardContent>
                       <Typography variant="subtitle1" gutterBottom>Draft export package</Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Download these files if you want a portable copy of your draft figures, summary, and supporting explanation.
+                      </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {exportQuery.data.pdf.title} · {formatDate(exportQuery.data.pdf.generatedAt)}
                       </Typography>

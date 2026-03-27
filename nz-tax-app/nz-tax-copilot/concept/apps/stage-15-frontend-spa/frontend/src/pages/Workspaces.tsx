@@ -57,9 +57,9 @@ function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: ()
               spacing={1}
             >
               <Box>
-                <Typography variant="h6">Workspace {workspace.id.slice(0, 8)}</Typography>
+                <Typography variant="h6">Tax workspace {workspace.id.slice(0, 8)}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Tax year: {workspace.taxYearStart} to {workspace.taxYearEnd}
+                  Covers income from {workspace.taxYearStart} to {workspace.taxYearEnd}
                 </Typography>
               </Box>
               <Chip
@@ -74,11 +74,11 @@ function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: ()
                 Created: {formatDate(workspace.createdAt)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Updated: {formatDate(workspace.updatedAt)}
+                Last updated: {formatDate(workspace.updatedAt)}
               </Typography>
             </Stack>
             <Typography variant="body2" color="primary" fontWeight={600}>
-              Open workspace →
+              Open and continue this return draft →
             </Typography>
           </Stack>
         </CardContent>
@@ -132,7 +132,7 @@ export default function Workspaces() {
                   My Tax Workspaces
                 </Typography>
                 <Typography variant="body1" sx={{ opacity: 0.86 }}>
-                  Signed in as {getUserEmail()} · Create and manage draft IR3 workspaces by tax year.
+                  Signed in as {getUserEmail()} · Start a workspace for one NZ tax year, then work through your income, documents, and IR3 draft step by step.
                 </Typography>
               </Box>
               <Button variant="outlined" color="inherit" onClick={() => logout()} sx={{ borderColor: 'rgba(255,255,255,0.35)' }}>
@@ -142,15 +142,23 @@ export default function Workspaces() {
           </CardContent>
         </Card>
 
+        <Alert severity="info">
+          A workspace is your private draft area for one tax year. Pick the year you are filing for, then add the figures from your payslips, bank summaries, dividend statements, and other records.
+        </Alert>
+
         <Card>
           <CardContent>
             <Stack spacing={2}>
               <Typography variant="h6">Create a workspace</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Choose the NZ tax year first. In New Zealand, the tax year usually runs from 1 April to 31 March.
+              </Typography>
               <TextField
                 select
                 label="Tax year"
                 value={selectedTaxYear}
                 onChange={(event) => setSelectedTaxYear(event.target.value)}
+                helperText="Example: 2024–2025 means income earned between 1 April 2024 and 31 March 2025."
                 fullWidth
               >
                 {taxYearOptions.map((option) => (
@@ -206,7 +214,7 @@ export default function Workspaces() {
               ))}
             </Stack>
           ) : (
-            <Alert severity="info">No workspaces yet. Create your first tax workspace above.</Alert>
+            <Alert severity="info">No workspaces yet. Create your first tax workspace above to start gathering the information for your return.</Alert>
           )}
         </Box>
       </Stack>
