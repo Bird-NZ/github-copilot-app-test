@@ -278,10 +278,6 @@ export default function WorkspaceDetail() {
     }
   }
 
-  if (!isLoading && !isAuthenticated) {
-    return <Navigate to="/" replace />
-  }
-
   const handleSaveAdjustments = () => {
     saveAdjustmentsMutation.mutate({
       donationAmount: Number(donationAmount || 0),
@@ -311,6 +307,10 @@ export default function WorkspaceDetail() {
       overallPercent: percent(doneUnits, totalUnits),
     }
   }, [status, payeRows.length, interestRows.length, dividendRows.length, otherIncomeRows.length, cryptoRows.length, summaryItems.length])
+
+  if (!isLoading && !isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
 
   return (
     <Container maxWidth="lg">
@@ -532,6 +532,9 @@ export default function WorkspaceDetail() {
             {tab === 2 ? (
               <Stack spacing={2}>
                 <Typography variant="h6">Crypto CSV import</Typography>
+                <Alert severity="info">
+                  Paste rows with these columns: date, asset, type, amount, price_nzd, fee_nzd, exchange. A sample row is prefilled so you can match the format before importing.
+                </Alert>
                 <TextField label="Paste CSV" value={csvText} onChange={(event) => setCsvText(event.target.value)} multiline minRows={6} fullWidth />
                 <Button variant="contained" disabled={!csvText.trim() || importCryptoMutation.isPending} onClick={() => importCryptoMutation.mutate(csvText)}>
                   {importCryptoMutation.isPending ? 'Importing…' : 'Import crypto CSV'}
