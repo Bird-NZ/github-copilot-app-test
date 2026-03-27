@@ -34,6 +34,8 @@ curl -s -X POST "$BASE/workspaces/$WS/crypto/import-csv" -H 'content-type: appli
 curl -s "$BASE/workspaces/$WS/ir3/map" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "map" in d'
 curl -s "$BASE/workspaces/$WS/ir3/calc" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "calc" in d and "map" in d'
 curl -s "$BASE/workspaces/$WS/export/draft" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "csv" in d and "pdf" in d and "json" in d and d["json"]["workspace"]["id"] and d["pdf"]["mimeType"]=="application/pdf" and d["pdf"]["bytesBase64"]'
-curl -s "$BASE/workspaces/$WS/audit" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) >= 1'
+curl -s "$BASE/workspaces/$WS/audit" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) >= 4 and d["events"][0]["label"] and d["events"][0]["category"] and d["summary"]["totalEvents"] >= 4 and "crypto" in d["availableCategories"]'
+curl -s "$BASE/workspaces/$WS/audit?category=crypto" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) == 1 and d["events"][0]["action"]=="crypto.import_csv" and d["events"][0]["details"]=="1 transaction imported"'
+curl -s "$BASE/workspaces/$WS/audit?q=PAYE" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) == 1 and d["events"][0]["label"]=="PAYE added"'
 
 echo "SMOKE_OK"

@@ -298,7 +298,12 @@ app.get('/workspaces/:id/review', requireSession, (req, res) => {
 app.get('/workspaces/:id/audit', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
-  return res.json({ events: listEvents(workspace.id) });
+  const audit = listEvents(workspace.id, {
+    category: req.query.category,
+    q: req.query.q,
+    limit: req.query.limit,
+  });
+  return res.json(audit);
 });
 
 const port = process.env.PORT || 8787;
