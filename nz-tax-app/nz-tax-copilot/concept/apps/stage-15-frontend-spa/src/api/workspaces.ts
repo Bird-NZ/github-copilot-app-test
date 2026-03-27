@@ -1,4 +1,5 @@
 import apiClient from './apiClient';
+import type { WorkspaceReview } from '../types/api';
 
 export interface Workspace {
   id: string;
@@ -28,6 +29,11 @@ export const workspaceApi = {
   async getWorkspace(workspaceId: string): Promise<Workspace> {
     const response = await apiClient.get(`/api/v1/workspaces/${workspaceId}`);
     return response.data;
+  },
+
+  async getReview(workspaceId: string): Promise<WorkspaceReview> {
+    const response = await apiClient.get(`/workspaces/${workspaceId}/review`);
+    return response.data.review;
   },
 
   async createWorkspace(taxYear: number): Promise<Workspace> {
