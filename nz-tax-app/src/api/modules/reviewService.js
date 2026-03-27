@@ -2,6 +2,43 @@ function money(value) {
   return Number((Number(value || 0)).toFixed(2));
 }
 
+function moneyText(value) {
+  return `NZ$${money(value).toFixed(2)}`;
+}
+
+function buildAdjustmentSummary(adjustments = {}) {
+  return [
+    {
+      key: 'donationAmount',
+      label: 'Donation claims entered',
+      value: moneyText(adjustments.donationAmount),
+      description: 'Charitable donations that may support a donation tax credit claim.',
+      source: 'Taken from donation adjustments entered in this workspace.',
+    },
+    {
+      key: 'pieIncome',
+      label: 'PIE income added manually',
+      value: moneyText(adjustments.pieIncome),
+      description: 'Portfolio Investment Entity income added outside the normal income-entry flow.',
+      source: 'Taken from manual PIE adjustments in this workspace.',
+    },
+    {
+      key: 'pieTaxCredits',
+      label: 'PIE tax credits entered',
+      value: moneyText(adjustments.pieTaxCredits),
+      description: 'Tax credits already attached to that PIE income.',
+      source: 'Taken from manual PIE tax credit adjustments in this workspace.',
+    },
+    {
+      key: 'studentLoanRepayments',
+      label: 'Student loan repayments entered',
+      value: moneyText(adjustments.studentLoanRepayments),
+      description: 'Student loan deductions or repayments currently reflected in the review context.',
+      source: 'Taken from student loan adjustments entered in this workspace.',
+    },
+  ];
+}
+
 function buildCryptoGuidance(transactions = [], docs = [], questionnaireAnswers = {}) {
   const counts = {
     buy: 0,
@@ -125,6 +162,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
       pieIncome: money(adjustments.pieIncome),
       pieTaxCredits: money(adjustments.pieTaxCredits),
       studentLoanRepayments: money(adjustments.studentLoanRepayments),
+      items: buildAdjustmentSummary(adjustments),
     },
   };
 }

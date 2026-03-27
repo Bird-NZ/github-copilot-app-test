@@ -62,6 +62,17 @@ function buildPdfBuffer(map, calc, explanation = null) {
       doc.fontSize(14).text('Plain-English summary');
       doc.fontSize(11).text(explanation.headline);
       (explanation.bullets || []).forEach((bullet) => doc.text(`• ${bullet}`));
+
+      if (explanation.summaryCards?.length) {
+        doc.moveDown(0.5);
+        explanation.summaryCards.forEach((card) => {
+          doc.font('Helvetica-Bold').text(`${card.label}: ${card.value}`);
+          doc.font('Helvetica').text(`${card.description}`);
+          doc.fillColor('#666').text(`Where this came from: ${card.source}${card.ir3Ref ? ` (${card.ir3Ref})` : ''}`);
+          doc.fillColor('#000');
+          doc.moveDown(0.35);
+        });
+      }
     }
 
     if (map.summary) {
