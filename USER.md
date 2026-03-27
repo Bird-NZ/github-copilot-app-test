@@ -16,6 +16,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Messaging reliability preference:** In direct chat, always acknowledge quickly and never go silent during tool work; provide clear progress and a final explicit reply.
 - **Reply policy split:** HAL should always reply in direct chat with Mat (no NO_REPLY silent suppression). Keep silent/no-reply behavior only for Bender in group-chat contexts where that mode is desired.
 - **Build-progress expectation:** During active implementation, provide milestone-by-milestone progress updates (what changed, what is next, and status Done/In Progress/Blocked) rather than long silent tool runs.
+- **Delegation-update expectation:** When ClawDev or any coding agent is working, HAL must provide proactive handoff + in-progress + completion updates; completion-only updates are not acceptable.
 - **Stage-completion expectation:** Whenever a stage in the holistic build process is completed, send an immediate explicit stage-complete alert (with evidence and next stage), without waiting for Mat to ask.
 - **Hard update gate:** Never run a new command batch after a milestone transition until Mat has received the update message for that transition.
 - **Execution mantra:** For active build work, keep going continuously without waiting for nudges; only pause when blocked by required user input, missing credentials/permissions, or hard platform/tool limits that cannot be resolved autonomously.
