@@ -94,11 +94,19 @@
           "prompt": "Write any lasting notes to memory/YYYY-MM-DD.md or MEMORY.md as appropriate; reply with NO_REPLY if nothing durable needs saving.",
           "systemPrompt": "Session nearing compaction. Store durable memories now."
         }
+      },
+      "subagents": {
+        "runTimeoutSeconds": 1800
       }
     },
     "list": [
       {
-        "id": "main"
+        "id": "main",
+        "subagents": {
+          "allowAgents": [
+            "*"
+          ]
+        }
       },
       {
         "id": "bender",

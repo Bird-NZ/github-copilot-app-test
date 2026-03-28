@@ -39,7 +39,7 @@
       "name": "7am daily weather brief",
       "enabled": true,
       "createdAtMs": 1770582853515,
-      "updatedAtMs": 1774634421344,
+      "updatedAtMs": 1774720811608,
       "schedule": {
         "kind": "cron",
         "expr": "0 7 * * *",
@@ -58,10 +58,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774720800000,
-        "lastRunAtMs": 1774634401244,
+        "nextRunAtMs": 1774807200000,
+        "lastRunAtMs": 1774720802386,
         "lastStatus": "ok",
-        "lastDurationMs": 20100,
+        "lastDurationMs": 9222,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -79,7 +79,7 @@
       "name": "daily github backup push",
       "enabled": true,
       "createdAtMs": 1770848698317,
-      "updatedAtMs": 1774607417672,
+      "updatedAtMs": 1774693825830,
       "schedule": {
         "kind": "cron",
         "expr": "30 23 * * *",
@@ -98,14 +98,13 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774693800000,
-        "lastRunAtMs": 1774607400047,
+        "nextRunAtMs": 1774780200000,
+        "lastRunAtMs": 1774693800074,
         "lastStatus": "ok",
-        "lastDurationMs": 17625,
+        "lastDurationMs": 25756,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
-        "lastDeliveryStatus": "unknown",
-        "runningAtMs": 1774693800040
+        "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
         "after": 1,
@@ -120,7 +119,7 @@
       "name": "Monitor @onchaindomainer (light every 3h)",
       "enabled": true,
       "createdAtMs": 1771033467347,
-      "updatedAtMs": 1774683405769,
+      "updatedAtMs": 1774726612387,
       "schedule": {
         "kind": "every",
         "everyMs": 10800000,
@@ -140,10 +139,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774694192763,
-        "lastRunAtMs": 1774683392763,
+        "nextRunAtMs": 1774737395663,
+        "lastRunAtMs": 1774726595663,
         "lastStatus": "ok",
-        "lastDurationMs": 13006,
+        "lastDurationMs": 16724,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "not-delivered",
@@ -287,7 +286,7 @@
       "name": "Reviewer hybrid audit (6h light + trigger deep)",
       "enabled": true,
       "createdAtMs": 1771129529499,
-      "updatedAtMs": 1774683693468,
+      "updatedAtMs": 1774726897774,
       "schedule": {
         "kind": "every",
         "everyMs": 21600000,
@@ -307,10 +306,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774705288304,
-        "lastRunAtMs": 1774683688304,
+        "nextRunAtMs": 1774748490394,
+        "lastRunAtMs": 1774726890394,
         "lastStatus": "ok",
-        "lastDurationMs": 5164,
+        "lastDurationMs": 7380,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "not-delivered",
@@ -514,7 +513,7 @@
       "name": "Daily Reviewer RSI Cycle",
       "enabled": true,
       "createdAtMs": 1771640437799,
-      "updatedAtMs": 1774641615956,
+      "updatedAtMs": 1774728014777,
       "schedule": {
         "kind": "cron",
         "expr": "0 9 * * *",
@@ -533,10 +532,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774728000000,
-        "lastRunAtMs": 1774641601365,
+        "nextRunAtMs": 1774814400000,
+        "lastRunAtMs": 1774728001425,
         "lastStatus": "ok",
-        "lastDurationMs": 14591,
+        "lastDurationMs": 13352,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -635,7 +634,7 @@
       "name": "8am daily AI research brief",
       "enabled": true,
       "createdAtMs": 1773384015419,
-      "updatedAtMs": 1774638077719,
+      "updatedAtMs": 1774724491132,
       "schedule": {
         "kind": "cron",
         "expr": "0 8 * * *",
@@ -655,12 +654,12 @@
         "bestEffort": true
       },
       "state": {
-        "consecutiveErrors": 5,
-        "nextRunAtMs": 1774724400000,
-        "lastRunAtMs": 1774638001288,
+        "consecutiveErrors": 6,
+        "nextRunAtMs": 1774810800000,
+        "lastRunAtMs": 1774724401335,
         "lastRunStatus": "error",
         "lastStatus": "error",
-        "lastDurationMs": 76431,
+        "lastDurationMs": 89797,
         "lastDeliveryStatus": "unknown",
         "lastError": "Ollama API error 500: {\"error\":\"model requires more system memory (16.8 GiB) than is available (3.5 GiB)\"}"
       },
@@ -799,7 +798,7 @@
       "name": "healthcheck:security-audit",
       "enabled": true,
       "createdAtMs": 1773991806959,
-      "updatedAtMs": 1774683345882,
+      "updatedAtMs": 1774726544686,
       "schedule": {
         "kind": "every",
         "everyMs": 21600000,
@@ -820,11 +819,11 @@
       },
       "state": {
         "consecutiveErrors": 0,
-        "nextRunAtMs": 1774704887085,
-        "lastRunAtMs": 1774683287085,
+        "nextRunAtMs": 1774748089344,
+        "lastRunAtMs": 1774726489344,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 58797,
+        "lastDurationMs": 55342,
         "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
