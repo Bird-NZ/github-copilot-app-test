@@ -124,3 +124,11 @@ Append-only ledger for active build work.
   - Next action: Add adjustments + review warnings to workspace UI and validate frontend build.
   - Status: In Progress
   - Next update due by: 22:04 NZDT
+
+## 2026-03-29
+
+- 08:10 NZDT
+  - What changed: Resumed Tranche 2 / Slice 1B handoff, verified backend adjustments/review endpoints already wired, confirmed workspace UI includes adjustments + review-warning surfaces, and re-ran frontend build successfully.
+  - Next action: Commit Slice 1B closeout docs update and start the next Tranche 2 slice.
+  - Status: Done
+  - Next update due by: n/a
