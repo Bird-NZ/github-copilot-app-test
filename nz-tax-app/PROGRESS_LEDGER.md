@@ -156,3 +156,15 @@ Append-only ledger for active build work.
   - Next action: Update BUILD_STATE closeout and commit Slice 2B.
   - Status: Done
   - Next update due by: n/a
+
+- 10:48 NZDT
+  - What changed: Inspected Slice 2B persistence/review/UI flow and chose Slice 2C: let one document support multiple review areas while keeping old single-link records readable.
+  - Next action: Widen the stored evidence-link shape, review builder, API contract, and Documents-tab control together.
+  - Status: In Progress
+  - Next update due by: 10:58 NZDT
+
+- 10:55 NZDT
+  - What changed: Tranche 2 / Slice 2C is complete. Documents now support one-to-many manual evidence links, review evidence emits multiple supported areas per document, the Documents tab uses a multi-select override, backend smoke passed, and the frontend build passed.
+  - Next action: Update BUILD_STATE closeout and commit Slice 2C.
+  - Status: Done
+  - Next update due by: n/a

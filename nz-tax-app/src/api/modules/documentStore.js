@@ -13,6 +13,27 @@ function listFor(workspaceId) {
   return readData().documentsByWorkspace[workspaceId] || [];
 }
 
+function normalizeStoredEvidenceLinks(document = {}) {
+  if (Array.isArray(document.evidenceLinks)) {
+    return document.evidenceLinks;
+  }
+
+  if (document.evidenceLink) {
+    return [document.evidenceLink];
+  }
+
+  return [];
+}
+
+function withNormalizedEvidenceLinks(document) {
+  const evidenceLinks = normalizeStoredEvidenceLinks(document);
+  return {
+    ...document,
+    evidenceLinks,
+    evidenceLink: evidenceLinks.length === 1 ? evidenceLinks[0] : null,
+  };
+}
+
 export function addDocument({ workspaceId, filename, originalName, mimeType, size, docType }) {
   const item = {
     id: uuid(),
@@ -24,6 +45,7 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
     docType: docType || 'other',
     status: 'received',
     uploadedAt: new Date().toISOString(),
+    evidenceLinks: [],
     evidenceLink: null,
   };
 
@@ -39,16 +61,22 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
 
 export function updateDocumentEvidenceLink(workspaceId, documentId, evidenceLink) {
   let updated = null;
+  const normalizedLinks = Array.isArray(evidenceLink)
+    ? evidenceLink.filter(Boolean)
+    : evidenceLink
+      ? [evidenceLink]
+      : [];
 
   updateData(state => {
     const docs = state.documentsByWorkspace[workspaceId] || [];
     const index = docs.findIndex(doc => doc.id === documentId);
     if (index === -1) return state;
 
-    docs[index] = {
+    docs[index] = withNormalizedEvidenceLinks({
       ...docs[index],
-      evidenceLink,
-    };
+      evidenceLinks: normalizedLinks,
+      evidenceLink: normalizedLinks.length === 1 ? normalizedLinks[0] : null,
+    });
     updated = docs[index];
     state.documentsByWorkspace[workspaceId] = docs;
     return state;
@@ -58,7 +86,7 @@ export function updateDocumentEvidenceLink(workspaceId, documentId, evidenceLink
 }
 
 export function documents(workspaceId) {
-  return listFor(workspaceId);
+  return listFor(workspaceId).map(withNormalizedEvidenceLinks);
 }
 
 export function checklist(workspaceId) {

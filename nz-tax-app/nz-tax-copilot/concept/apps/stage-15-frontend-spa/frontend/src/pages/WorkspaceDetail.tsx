@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem, type WorkspaceDocument, type EvidenceLinkOption, type DocumentEvidenceLink } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem, type WorkspaceDocument, type EvidenceLinkOption, type DocumentEvidenceLink, type DocumentEvidenceLinksPayload } from '../api/workspaceFlows'
 import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
@@ -60,26 +60,47 @@ function getEvidenceLinkOptionValue(option: EvidenceLinkOption) {
   return option.key
 }
 
-function getSelectedEvidenceLinkValue(document: WorkspaceDocument, options: EvidenceLinkOption[]) {
-  if (document.evidenceLink?.mode === 'none') return 'none'
-  if (document.evidenceLink?.mode === 'manual') {
-    const match = options.find((option) => {
-      if (!option.value || option.value.mode !== 'manual') return false
-      return option.value.supports === document.evidenceLink?.supports
-        && option.value.section === document.evidenceLink?.section
-        && JSON.stringify(option.value.ir3Refs || []) === JSON.stringify(document.evidenceLink?.ir3Refs || [])
-        && (option.value.summaryKey || null) === (document.evidenceLink?.summaryKey || null)
-    })
-    return match?.key || 'auto'
-  }
-  return 'auto'
+function isSameEvidenceLink(left: DocumentEvidenceLink | undefined, right: DocumentEvidenceLink | undefined) {
+  if (!left || !right || left.mode !== 'manual' || right.mode !== 'manual') return false
+  return left.supports === right.supports
+    && left.section === right.section
+    && JSON.stringify(left.ir3Refs || []) === JSON.stringify(right.ir3Refs || [])
+    && (left.summaryKey || null) === (right.summaryKey || null)
 }
 
-function resolveEvidenceLinkPayload(value: string, options: EvidenceLinkOption[]): DocumentEvidenceLink {
-  if (value === 'auto') return null
-  if (value === 'none') return { mode: 'none' }
-  const option = options.find((item) => item.key === value)
-  return option?.value || null
+function getSelectedEvidenceLinkValues(document: WorkspaceDocument, options: EvidenceLinkOption[]) {
+  if (document.evidenceLink?.mode === 'none') return ['none']
+  const manualLinks = document.evidenceLinks || (document.evidenceLink?.mode === 'manual' ? [document.evidenceLink] : [])
+  const selected = manualLinks
+    .map((link) => options.find((option) => option.value?.mode === 'manual' && isSameEvidenceLink(option.value, link))?.key)
+    .filter(Boolean) as string[]
+  return selected.length > 0 ? selected : ['auto']
+}
+
+function normalizeEvidenceLinkSelection(value: string | string[]) {
+  const values = Array.isArray(value) ? value : [value]
+  const unique = Array.from(new Set(values.filter(Boolean)))
+  if (unique.includes('none')) return ['none']
+  const manual = unique.filter((item) => item !== 'auto')
+  return manual.length > 0 ? manual : ['auto']
+}
+
+function describeEvidenceLinkSelection(values: string[], options: EvidenceLinkOption[]) {
+  if (values.includes('none')) return 'Do not link this document'
+  const manual = values.filter((value) => value !== 'auto')
+  if (manual.length === 0) return 'Use automatic link'
+  return manual
+    .map((value) => options.find((option) => option.key === value)?.label || value)
+    .join(', ')
+}
+
+function resolveEvidenceLinkPayload(values: string[], options: EvidenceLinkOption[]): DocumentEvidenceLinksPayload {
+  if (values.includes('none')) return { mode: 'none' }
+  const manualLinks = values
+    .filter((value) => value !== 'auto')
+    .map((value) => options.find((item) => item.key === value)?.value)
+    .filter((value): value is Exclude<NonNullable<DocumentEvidenceLink>, { mode: 'none' }> => Boolean(value && value.mode === 'manual'))
+  return manualLinks.length > 0 ? manualLinks : null
 }
 
 export default function WorkspaceDetail() {
@@ -236,8 +257,8 @@ export default function WorkspaceDetail() {
   })
 
   const updateDocumentEvidenceLinkMutation = useMutation({
-    mutationFn: (payload: { documentId: string; evidenceLink: DocumentEvidenceLink }) =>
-      workspaceFlowsApi.updateDocumentEvidenceLink(workspaceId || '', payload.documentId, payload.evidenceLink),
+    mutationFn: (payload: { documentId: string; evidenceLinks: DocumentEvidenceLinksPayload }) =>
+      workspaceFlowsApi.updateDocumentEvidenceLink(workspaceId || '', payload.documentId, payload.evidenceLinks),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['workspace-docs', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
@@ -711,14 +732,21 @@ export default function WorkspaceDetail() {
                                 select
                                 size="small"
                                 label="Evidence link"
-                                value={getSelectedEvidenceLinkValue(doc, evidenceLinkOptions)}
-                                onChange={(event) => updateDocumentEvidenceLinkMutation.mutate({
-                                  documentId: doc.id,
-                                  evidenceLink: resolveEvidenceLinkPayload(event.target.value, evidenceLinkOptions),
-                                })}
+                                value={getSelectedEvidenceLinkValues(doc, evidenceLinkOptions)}
+                                onChange={(event) => {
+                                  const selectedValues = normalizeEvidenceLinkSelection(event.target.value as unknown as string[])
+                                  updateDocumentEvidenceLinkMutation.mutate({
+                                    documentId: doc.id,
+                                    evidenceLinks: resolveEvidenceLinkPayload(selectedValues, evidenceLinkOptions),
+                                  })
+                                }}
                                 disabled={updateDocumentEvidenceLinkMutation.isPending}
-                                helperText="Override the automatic evidence mapping for this document, or remove it from review evidence."
+                                helperText="Pick one or more review areas for this document, keep the automatic mapping, or remove it from review evidence."
                                 fullWidth
+                                SelectProps={{
+                                  multiple: true,
+                                  renderValue: (selected) => describeEvidenceLinkSelection(selected as unknown as string[], evidenceLinkOptions),
+                                }}
                               >
                                 {evidenceLinkOptions.map((option) => (
                                   <MenuItem key={option.key} value={getEvidenceLinkOptionValue(option)}>{option.label}</MenuItem>

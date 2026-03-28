@@ -234,7 +234,8 @@ app.patch('/workspaces/:id/documents/:documentId/evidence-link', requireSession,
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
 
-  const updated = updateDocumentEvidenceLink(workspace.id, req.params.documentId, req.body?.evidenceLink ?? null);
+  const evidenceLinksPayload = req.body?.evidenceLinks ?? req.body?.evidenceLink ?? null;
+  const updated = updateDocumentEvidenceLink(workspace.id, req.params.documentId, evidenceLinksPayload);
   if (!updated) return res.status(404).json({ error: 'DOCUMENT_NOT_FOUND' });
 
   logEvent(workspace.id, {

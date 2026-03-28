@@ -47,13 +47,17 @@ export type CryptoTransaction = {
   source?: string
 }
 
-export type DocumentEvidenceLink = {
-  mode: 'manual' | 'none'
+export type ManualDocumentEvidenceLink = {
+  mode: 'manual'
   supports?: string
   section?: string
   ir3Refs?: string[]
   summaryKey?: string | null
-} | null
+}
+
+export type DocumentEvidenceLink = ManualDocumentEvidenceLink | { mode: 'none' } | null
+
+export type DocumentEvidenceLinksPayload = ManualDocumentEvidenceLink[] | { mode: 'none' } | null
 
 export type WorkspaceDocument = {
   id: string
@@ -66,6 +70,7 @@ export type WorkspaceDocument = {
   status: string
   uploadedAt: string
   evidenceLink?: DocumentEvidenceLink
+  evidenceLinks?: ManualDocumentEvidenceLink[]
 }
 
 export type EvidenceLinkOption = {
@@ -254,8 +259,8 @@ export const workspaceFlowsApi = {
     }
   },
 
-  async updateDocumentEvidenceLink(workspaceId: string, documentId: string, evidenceLink: DocumentEvidenceLink): Promise<WorkspaceDocument> {
-    const response = await apiClient.patch(`/workspaces/${workspaceId}/documents/${documentId}/evidence-link`, { evidenceLink })
+  async updateDocumentEvidenceLink(workspaceId: string, documentId: string, evidenceLinks: DocumentEvidenceLinksPayload): Promise<WorkspaceDocument> {
+    const response = await apiClient.patch(`/workspaces/${workspaceId}/documents/${documentId}/evidence-link`, { evidenceLinks })
     return response.data?.document
   },
 

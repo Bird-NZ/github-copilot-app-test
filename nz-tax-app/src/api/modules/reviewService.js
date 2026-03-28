@@ -113,27 +113,45 @@ function normalizeEvidenceLink(link) {
   };
 }
 
+function normalizeEvidenceLinks(links) {
+  if (Array.isArray(links)) {
+    return links
+      .map(normalizeEvidenceLink)
+      .filter(Boolean);
+  }
+
+  const single = normalizeEvidenceLink(links);
+  return single ? [single] : [];
+}
+
+function getDocumentEvidenceLinks(doc = {}) {
+  const manualLinks = normalizeEvidenceLinks(doc.evidenceLinks);
+  if (manualLinks.length > 0) return manualLinks;
+  return normalizeEvidenceLinks(doc.evidenceLink);
+}
+
 function buildEvidence(docs = []) {
   return docs
-    .map((doc) => {
-      const manualLink = normalizeEvidenceLink(doc.evidenceLink);
-      if (manualLink?.mode === 'none') return null;
+    .flatMap((doc) => {
+      const manualLinks = getDocumentEvidenceLinks(doc);
+      if (manualLinks.some((link) => link.mode === 'none')) return [];
 
-      const config = manualLink?.mode === 'manual' ? manualLink : DOC_EVIDENCE_MAP[doc.docType];
-      if (!config?.supports || !config?.section) return null;
+      const configs = manualLinks.length > 0 ? manualLinks : [DOC_EVIDENCE_MAP[doc.docType]].filter(Boolean);
 
-      return {
-        documentId: doc.id,
-        document: doc.originalName || doc.filename,
-        documentType: doc.docType,
-        supports: config.supports,
-        section: config.section,
-        ir3Refs: config.ir3Refs || [],
-        summaryKey: config.summaryKey ?? null,
-        uploadedAt: doc.uploadedAt,
-        status: doc.status,
-        linkMode: manualLink?.mode === 'manual' ? 'manual' : 'auto',
-      };
+      return configs
+        .filter((config) => config?.supports && config?.section)
+        .map((config) => ({
+          documentId: doc.id,
+          document: doc.originalName || doc.filename,
+          documentType: doc.docType,
+          supports: config.supports,
+          section: config.section,
+          ir3Refs: config.ir3Refs || [],
+          summaryKey: config.summaryKey ?? null,
+          uploadedAt: doc.uploadedAt,
+          status: doc.status,
+          linkMode: manualLinks.length > 0 ? 'manual' : 'auto',
+        }));
     })
     .filter(Boolean);
 }
