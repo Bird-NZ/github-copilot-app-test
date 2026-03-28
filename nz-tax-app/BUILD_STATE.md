@@ -6,30 +6,27 @@
 - Stage 10 / Closeout complete for this slice (local completion documented)
 
 ## Current objective
-Begin the next smallest shippable Tranche 2 slice after evidence-backed review foundations.
+Begin the next smallest shippable Tranche 2 slice after user-editable evidence-link overrides.
 
 ## Last completed milestone
-- Extended review evidence payloads so linked documents now include:
-  - `documentId`
-  - `documentType`
-  - review `section`
-  - related `ir3Refs`
-  - `uploadedAt`
-  - `summaryKey`
-- Surfaced evidence-backed review UI in workspace detail:
-  - uploaded documents now show when they support a review area
-  - IR3 Summary now includes a Supporting evidence card
+- Added per-document manual evidence-link controls in the Documents tab:
+  - keep automatic mapping
+  - manually link a document to a review area
+  - explicitly remove a document from review evidence
+- Persisted evidence-link overrides on document records and exposed evidence-link options from the API
+- Updated review/export payloads so evidence items now show whether they were linked automatically or manually
+- Surfaced manual-vs-auto link state in both Documents and IR3 Summary
 - Local validation passed:
-  - backend tests (`npm test`) succeed
+  - backend smoke test (`bash tests/smoke.sh`) succeeds
   - frontend build (`npm run build`) succeeds
 
 ## Next tasks
-1. Add user-editable evidence linking if review needs manual overrides or multiple document-to-figure mappings
-2. Expand evidence beyond doc-type heuristics into figure-level or warning-level links
-3. Add targeted frontend tests for evidence/review rendering when this area is touched again
+1. Allow one document to support multiple review areas if evidence needs one-to-many mapping
+2. Expand manual evidence controls from review areas into field-level or warning-level links
+3. Add targeted frontend tests for evidence-link rendering and override persistence
 
 ## Known blockers
-- No active blocker for Slice 2A closeout
+- No active blocker for Slice 2B closeout
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

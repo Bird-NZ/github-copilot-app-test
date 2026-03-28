@@ -39,21 +39,100 @@ const DOC_EVIDENCE_MAP = {
   },
 };
 
+export const REVIEW_EVIDENCE_OPTIONS = [
+  { key: 'auto', label: 'Use automatic link', value: null },
+  { key: 'none', label: 'Do not link this document', value: { mode: 'none' } },
+  {
+    key: 'paye_income',
+    label: 'PAYE income',
+    value: {
+      mode: 'manual',
+      supports: 'PAYE income',
+      section: 'Income',
+      ir3Refs: ['11B', '11C'],
+      summaryKey: null,
+    },
+  },
+  {
+    key: 'interest_dividend_income',
+    label: 'Interest and dividend income',
+    value: {
+      mode: 'manual',
+      supports: 'Interest and dividend income',
+      section: 'Income',
+      ir3Refs: ['14', '14R', '18'],
+      summaryKey: null,
+    },
+  },
+  {
+    key: 'donation_claims',
+    label: 'Donation claims',
+    value: {
+      mode: 'manual',
+      supports: 'Donation claims',
+      section: 'Adjustments and deductions',
+      ir3Refs: ['41'],
+      summaryKey: 'donationAmount',
+    },
+  },
+  {
+    key: 'student_loan_treatment',
+    label: 'Student loan treatment',
+    value: {
+      mode: 'manual',
+      supports: 'Student loan treatment',
+      section: 'Adjustments and deductions',
+      ir3Refs: ['M', 'student_loan'],
+      summaryKey: 'studentLoanRepayments',
+    },
+  },
+  {
+    key: 'crypto_transaction_history',
+    label: 'Crypto transaction history',
+    value: {
+      mode: 'manual',
+      supports: 'Crypto transaction history',
+      section: 'Crypto',
+      ir3Refs: ['crypto'],
+      summaryKey: null,
+    },
+  },
+];
+
+function normalizeEvidenceLink(link) {
+  if (!link || typeof link !== 'object') return null;
+  if (link.mode === 'none') return { mode: 'none' };
+  if (link.mode !== 'manual') return null;
+
+  return {
+    mode: 'manual',
+    supports: String(link.supports || '').trim(),
+    section: String(link.section || '').trim(),
+    ir3Refs: Array.isArray(link.ir3Refs) ? link.ir3Refs.map((ref) => String(ref)) : [],
+    summaryKey: link.summaryKey ? String(link.summaryKey) : null,
+  };
+}
+
 function buildEvidence(docs = []) {
   return docs
     .map((doc) => {
-      const config = DOC_EVIDENCE_MAP[doc.docType];
-      if (!config) return null;
+      const manualLink = normalizeEvidenceLink(doc.evidenceLink);
+      if (manualLink?.mode === 'none') return null;
+
+      const config = manualLink?.mode === 'manual' ? manualLink : DOC_EVIDENCE_MAP[doc.docType];
+      if (!config?.supports || !config?.section) return null;
+
       return {
         documentId: doc.id,
         document: doc.originalName || doc.filename,
         documentType: doc.docType,
         supports: config.supports,
         section: config.section,
-        ir3Refs: config.ir3Refs,
-        summaryKey: config.summaryKey,
+        ir3Refs: config.ir3Refs || [],
+        summaryKey: config.summaryKey ?? null,
         uploadedAt: doc.uploadedAt,
         status: doc.status,
+        linkMode: manualLink?.mode === 'manual' ? 'manual' : 'auto',
       };
     })
     .filter(Boolean);

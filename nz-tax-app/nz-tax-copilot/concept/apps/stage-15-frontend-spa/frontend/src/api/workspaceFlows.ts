@@ -47,6 +47,14 @@ export type CryptoTransaction = {
   source?: string
 }
 
+export type DocumentEvidenceLink = {
+  mode: 'manual' | 'none'
+  supports?: string
+  section?: string
+  ir3Refs?: string[]
+  summaryKey?: string | null
+} | null
+
 export type WorkspaceDocument = {
   id: string
   workspaceId: string
@@ -57,6 +65,18 @@ export type WorkspaceDocument = {
   docType: string
   status: string
   uploadedAt: string
+  evidenceLink?: DocumentEvidenceLink
+}
+
+export type EvidenceLinkOption = {
+  key: string
+  label: string
+  value: DocumentEvidenceLink
+}
+
+export type DocumentsResult = {
+  items: WorkspaceDocument[]
+  evidenceLinkOptions: EvidenceLinkOption[]
 }
 
 export type ChecklistItem = {
@@ -104,6 +124,7 @@ export type ReviewEvidenceItem = {
   summaryKey: string | null
   uploadedAt: string
   status: string
+  linkMode?: 'auto' | 'manual'
 }
 
 export type ReviewPayload = {
@@ -225,9 +246,17 @@ export const workspaceFlowsApi = {
     return response.data?.document
   },
 
-  async listDocuments(workspaceId: string): Promise<WorkspaceDocument[]> {
+  async listDocuments(workspaceId: string): Promise<DocumentsResult> {
     const response = await apiClient.get(`/workspaces/${workspaceId}/documents`)
-    return response.data?.items || []
+    return {
+      items: response.data?.items || [],
+      evidenceLinkOptions: response.data?.evidenceLinkOptions || [],
+    }
+  },
+
+  async updateDocumentEvidenceLink(workspaceId: string, documentId: string, evidenceLink: DocumentEvidenceLink): Promise<WorkspaceDocument> {
+    const response = await apiClient.patch(`/workspaces/${workspaceId}/documents/${documentId}/evidence-link`, { evidenceLink })
+    return response.data?.document
   },
 
   async getChecklist(workspaceId: string): Promise<ChecklistItem[]> {

@@ -3,7 +3,7 @@ import multer from 'multer';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
 import { createWorkspace, getWorkspace, listWorkspaces, setWorkspaceQuestionnaireAnswers, updateWorkspace } from './modules/workspaceStore.js';
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
-import { addDocument, checklist, documents } from './modules/documentStore.js';
+import { addDocument, checklist, documents, updateDocumentEvidenceLink } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
 import { importTransactions, listTransactions, parseCsv } from './modules/cryptoStore.js';
 import { explainIr3Values, getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
@@ -11,7 +11,7 @@ import { mapToIr3 } from './modules/mappingEngine.js';
 import { calculateDraft } from './modules/calcEngine.js';
 import { buildCsv, buildPdfDocument } from './modules/exportService.js';
 import { listEvents, logEvent } from './modules/auditStore.js';
-import { buildReview } from './modules/reviewService.js';
+import { buildReview, REVIEW_EVIDENCE_OPTIONS } from './modules/reviewService.js';
 
 const app = express();
 
@@ -224,7 +224,29 @@ app.post('/workspaces/:id/documents', requireSession, upload.single('file'), (re
 app.get('/workspaces/:id/documents', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
-  return res.json({ items: documents(workspace.id) });
+  return res.json({
+    items: documents(workspace.id),
+    evidenceLinkOptions: REVIEW_EVIDENCE_OPTIONS,
+  });
+});
+
+app.patch('/workspaces/:id/documents/:documentId/evidence-link', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const updated = updateDocumentEvidenceLink(workspace.id, req.params.documentId, req.body?.evidenceLink ?? null);
+  if (!updated) return res.status(404).json({ error: 'DOCUMENT_NOT_FOUND' });
+
+  logEvent(workspace.id, {
+    action: 'document.evidence_link.save',
+    actor: req.session.userId,
+    meta: {
+      documentId: updated.id,
+      evidenceLink: updated.evidenceLink,
+    },
+  });
+
+  return res.json({ document: updated });
 });
 
 app.get('/workspaces/:id/checklist', requireSession, (req, res) => {

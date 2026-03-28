@@ -144,3 +144,15 @@ Append-only ledger for active build work.
   - Next action: Update BUILD_STATE/ledger closeout and commit the slice.
   - Status: Done
   - Next update due by: n/a
+
+- 10:31 NZDT
+  - What changed: Inspected Slice 2A review/documents implementation and chose the tightest Slice 2B scope: per-document manual evidence-link overrides persisted on document records, instead of broader evidence-rule editing.
+  - Next action: Wire backend persistence/API support and a small Documents-tab override control, then validate end to end.
+  - Status: In Progress
+  - Next update due by: 10:41 NZDT
+
+- 10:37 NZDT
+  - What changed: Tranche 2 / Slice 2B is complete. Documents now expose manual evidence-link controls (auto/manual/none), review payloads mark manual vs auto links, Documents and IR3 Summary surface that state, backend smoke covers the override flow, and the frontend build passed.
+  - Next action: Update BUILD_STATE closeout and commit Slice 2B.
+  - Status: Done
+  - Next update due by: n/a

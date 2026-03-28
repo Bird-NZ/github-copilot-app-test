@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem, type WorkspaceDocument, type EvidenceLinkOption, type DocumentEvidenceLink } from '../api/workspaceFlows'
 import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
@@ -52,6 +52,34 @@ function formatFieldValue(value: unknown) {
 
 function findEvidenceForDocument(docId: string, evidence: ReviewEvidenceItem[]) {
   return evidence.filter((item) => item.documentId === docId)
+}
+
+function getEvidenceLinkOptionValue(option: EvidenceLinkOption) {
+  if (!option.value) return 'auto'
+  if (option.value.mode === 'none') return 'none'
+  return option.key
+}
+
+function getSelectedEvidenceLinkValue(document: WorkspaceDocument, options: EvidenceLinkOption[]) {
+  if (document.evidenceLink?.mode === 'none') return 'none'
+  if (document.evidenceLink?.mode === 'manual') {
+    const match = options.find((option) => {
+      if (!option.value || option.value.mode !== 'manual') return false
+      return option.value.supports === document.evidenceLink?.supports
+        && option.value.section === document.evidenceLink?.section
+        && JSON.stringify(option.value.ir3Refs || []) === JSON.stringify(document.evidenceLink?.ir3Refs || [])
+        && (option.value.summaryKey || null) === (document.evidenceLink?.summaryKey || null)
+    })
+    return match?.key || 'auto'
+  }
+  return 'auto'
+}
+
+function resolveEvidenceLinkPayload(value: string, options: EvidenceLinkOption[]): DocumentEvidenceLink {
+  if (value === 'auto') return null
+  if (value === 'none') return { mode: 'none' }
+  const option = options.find((item) => item.key === value)
+  return option?.value || null
 }
 
 export default function WorkspaceDetail() {
@@ -207,6 +235,18 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const updateDocumentEvidenceLinkMutation = useMutation({
+    mutationFn: (payload: { documentId: string; evidenceLink: DocumentEvidenceLink }) =>
+      workspaceFlowsApi.updateDocumentEvidenceLink(workspaceId || '', payload.documentId, payload.evidenceLink),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-docs', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const answers = questionnaireQuery.data?.answers || {}
   const visibleQuestions = questionnaireQuery.data?.visible || []
   const status = questionnaireQuery.data?.status
@@ -216,7 +256,9 @@ export default function WorkspaceDetail() {
   const dividendRows = incomeBuckets?.dividends || []
   const otherIncomeRows = incomeBuckets?.other || []
   const cryptoRows = cryptoQuery.data || []
-  const docs = docsQuery.data || []
+  const docsResult = docsQuery.data || { items: [], evidenceLinkOptions: [] }
+  const docs: WorkspaceDocument[] = docsResult.items || []
+  const evidenceLinkOptions: EvidenceLinkOption[] = docsResult.evidenceLinkOptions || []
   const checklist = checklistQuery.data || []
   const audit: AuditResult = auditQuery.data || {
     events: [],
@@ -656,15 +698,32 @@ export default function WorkspaceDetail() {
                                     <Chip
                                       key={`${doc.id}-${item.supports}-${item.section}`}
                                       size="small"
-                                      color="success"
+                                      color={item.linkMode === 'manual' ? 'primary' : 'success'}
                                       variant="outlined"
-                                      label={`Supports ${item.supports}`}
+                                      label={`${item.linkMode === 'manual' ? 'Manually linked' : 'Supports'} ${item.supports}`}
                                     />
                                   ))}
                                 </Stack>
                               ) : (
                                 <Typography variant="body2" color="text.secondary">Not yet linked to a review evidence area.</Typography>
                               )}
+                              <TextField
+                                select
+                                size="small"
+                                label="Evidence link"
+                                value={getSelectedEvidenceLinkValue(doc, evidenceLinkOptions)}
+                                onChange={(event) => updateDocumentEvidenceLinkMutation.mutate({
+                                  documentId: doc.id,
+                                  evidenceLink: resolveEvidenceLinkPayload(event.target.value, evidenceLinkOptions),
+                                })}
+                                disabled={updateDocumentEvidenceLinkMutation.isPending}
+                                helperText="Override the automatic evidence mapping for this document, or remove it from review evidence."
+                                fullWidth
+                              >
+                                {evidenceLinkOptions.map((option) => (
+                                  <MenuItem key={option.key} value={getEvidenceLinkOptionValue(option)}>{option.label}</MenuItem>
+                                ))}
+                              </TextField>
                             </Stack>
                           </CardContent>
                         </Card>
@@ -863,7 +922,10 @@ export default function WorkspaceDetail() {
                                     <Typography variant="body1">{item.supports}</Typography>
                                     <Typography variant="body2" color="text.secondary">{item.document}</Typography>
                                   </Box>
-                                  <Chip size="small" label={item.section} variant="outlined" />
+                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                    <Chip size="small" label={item.section} variant="outlined" />
+                                    <Chip size="small" color={item.linkMode === 'manual' ? 'primary' : 'default'} variant="outlined" label={item.linkMode === 'manual' ? 'Manual link' : 'Auto link'} />
+                                  </Stack>
                                 </Stack>
                                 <Typography variant="body2" color="text.secondary">
                                   Linked from {titleCase(item.documentType)} · Added {formatDate(item.uploadedAt)}

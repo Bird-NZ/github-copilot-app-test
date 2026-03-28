@@ -23,7 +23,8 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
     size,
     docType: docType || 'other',
     status: 'received',
-    uploadedAt: new Date().toISOString()
+    uploadedAt: new Date().toISOString(),
+    evidenceLink: null,
   };
 
   updateData(state => {
@@ -34,6 +35,26 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
   });
 
   return item;
+}
+
+export function updateDocumentEvidenceLink(workspaceId, documentId, evidenceLink) {
+  let updated = null;
+
+  updateData(state => {
+    const docs = state.documentsByWorkspace[workspaceId] || [];
+    const index = docs.findIndex(doc => doc.id === documentId);
+    if (index === -1) return state;
+
+    docs[index] = {
+      ...docs[index],
+      evidenceLink,
+    };
+    updated = docs[index];
+    state.documentsByWorkspace[workspaceId] = docs;
+    return state;
+  });
+
+  return updated;
 }
 
 export function documents(workspaceId) {
