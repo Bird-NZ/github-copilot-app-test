@@ -132,12 +132,19 @@ export type ReviewEvidenceItem = {
   linkMode?: 'auto' | 'manual'
 }
 
+export type ReviewWarning = {
+  code: string
+  severity: string
+  message: string
+  evidence?: ReviewEvidenceItem[]
+}
+
 export type ReviewPayload = {
   readiness: {
     score: number
     status: 'strong' | 'review_needed' | 'needs_attention'
   }
-  warnings: Array<{ code: string; severity: string; message: string }>
+  warnings: ReviewWarning[]
   assumptions: string[]
   evidence: ReviewEvidenceItem[]
   summary: {

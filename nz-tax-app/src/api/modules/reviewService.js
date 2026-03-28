@@ -156,6 +156,40 @@ function buildEvidence(docs = []) {
     .filter(Boolean);
 }
 
+function pickEvidenceForWarning(code, evidence = [], docs = []) {
+  const filters = {
+    MISSING_STUDENT_LOAN_DOC: (item) => item.supports === 'Student loan treatment' || item.documentType === 'student_loan_statement',
+    MISSING_DONATION_RECEIPTS: (item) => item.supports === 'Donation claims' || item.documentType === 'donation_receipts',
+    CRYPTO_ACTIVITY_MISSING: (item) => item.supports === 'Crypto transaction history' || item.documentType === 'crypto_csv',
+    CRYPTO_EVIDENCE_MISSING: (item) => item.supports === 'Crypto transaction history' || item.documentType === 'crypto_csv',
+    NO_INCOME: (item) => item.section === 'Income' || item.documentType === 'paye_summary' || item.documentType === 'interest_dividend_slips',
+  };
+
+  const filter = filters[code];
+  if (filter) {
+    return evidence.filter(filter);
+  }
+
+  if (code === 'PROVISIONAL_TAX_RISK') {
+    return docs
+      .filter((doc) => doc.docType === 'paye_summary' || doc.docType === 'interest_dividend_slips' || doc.docType === 'other')
+      .map((doc) => ({
+        documentId: doc.id,
+        document: doc.originalName || doc.filename,
+        documentType: doc.docType,
+        supports: 'Income records relevant to the tax calculation',
+        section: 'Income',
+        ir3Refs: [],
+        summaryKey: null,
+        uploadedAt: doc.uploadedAt,
+        status: doc.status,
+        linkMode: 'auto',
+      }));
+  }
+
+  return [];
+}
+
 function buildAdjustmentSummary(adjustments = {}) {
   return [
     {
@@ -288,14 +322,19 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     warnings.push({ code: 'CRYPTO_EVIDENCE_MISSING', severity: 'medium', message: 'Crypto transactions exist, but no crypto CSV/export has been uploaded as supporting evidence yet.' });
   }
 
-  const score = Math.max(0, 100 - warnings.length * 20 - assumptions.length * 8);
+  const warningsWithEvidence = warnings.map((warning) => ({
+    ...warning,
+    evidence: pickEvidenceForWarning(warning.code, evidence, docs),
+  }));
+
+  const score = Math.max(0, 100 - warningsWithEvidence.length * 20 - assumptions.length * 8);
 
   return {
     readiness: {
       score,
       status: score >= 85 ? 'strong' : score >= 60 ? 'review_needed' : 'needs_attention',
     },
-    warnings,
+    warnings: warningsWithEvidence,
     assumptions,
     evidence,
     crypto,

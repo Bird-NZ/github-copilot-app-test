@@ -168,3 +168,15 @@ Append-only ledger for active build work.
   - Next action: Update BUILD_STATE closeout and commit Slice 2C.
   - Status: Done
   - Next update due by: n/a
+
+- 11:09 NZDT
+  - What changed: Inspected Slice 2C review/document flow and chose the tightest follow-on: warning-level evidence attachment inside the review payload, instead of adding another manual linking surface. This keeps scope below review-area precision while avoiding new persistence.
+  - Next action: Wire warning evidence in the review builder, show it in warning cards, validate locally, and close out Slice 2D.
+  - Status: In Progress
+  - Next update due by: 11:20 NZDT
+
+- 11:18 NZDT
+  - What changed: Tranche 2 / Slice 2D is complete. Review warnings now carry warning-level supporting evidence derived from existing document/evidence links, workspace warning cards render that support inline, backend smoke passed, and the frontend build passed.
+  - Next action: Update BUILD_STATE closeout and commit Slice 2D.
+  - Status: Done
+  - Next update due by: n/a

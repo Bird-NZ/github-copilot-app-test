@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem, type WorkspaceDocument, type EvidenceLinkOption, type DocumentEvidenceLink, type DocumentEvidenceLinksPayload } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem, type WorkspaceDocument, type EvidenceLinkOption, type DocumentEvidenceLink, type DocumentEvidenceLinksPayload, type ReviewWarning } from '../api/workspaceFlows'
 import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
@@ -101,6 +101,11 @@ function resolveEvidenceLinkPayload(values: string[], options: EvidenceLinkOptio
     .map((value) => options.find((item) => item.key === value)?.value)
     .filter((value): value is Exclude<NonNullable<DocumentEvidenceLink>, { mode: 'none' }> => Boolean(value && value.mode === 'manual'))
   return manualLinks.length > 0 ? manualLinks : null
+}
+
+function getWarningEvidenceLabel(warning: ReviewWarning, item: ReviewEvidenceItem) {
+  if (item.supports && item.supports !== warning.message) return item.supports
+  return item.document
 }
 
 export default function WorkspaceDetail() {
@@ -499,7 +504,21 @@ export default function WorkspaceDetail() {
                 <Stack spacing={1}>
                   {reviewWarnings.slice(0, 3).map((warning, index) => (
                     <Alert key={`${warning.code}-${index}`} severity={warning.severity === 'high' ? 'error' : 'warning'}>
-                      {warning.message}
+                      <Stack spacing={1}>
+                        <Typography variant="body2">{warning.message}</Typography>
+                        {warning.evidence && warning.evidence.length > 0 ? (
+                          <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                            {warning.evidence.map((item) => (
+                              <Chip
+                                key={`${warning.code}-${item.documentId}-${item.supports}`}
+                                size="small"
+                                variant="outlined"
+                                label={`Evidence: ${getWarningEvidenceLabel(warning, item)}`}
+                              />
+                            ))}
+                          </Stack>
+                        ) : null}
+                      </Stack>
                     </Alert>
                   ))}
                 </Stack>
@@ -917,7 +936,23 @@ export default function WorkspaceDetail() {
                       {(review.warnings || []).length > 0 ? (
                         <Stack spacing={1} sx={{ mb: 2 }}>
                           {review.warnings.map((warning) => (
-                            <Alert key={warning.code} severity={warning.severity === 'high' ? 'error' : 'warning'}>{warning.message}</Alert>
+                            <Alert key={warning.code} severity={warning.severity === 'high' ? 'error' : 'warning'}>
+                              <Stack spacing={1}>
+                                <Typography variant="body2">{warning.message}</Typography>
+                                {warning.evidence && warning.evidence.length > 0 ? (
+                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                    {warning.evidence.map((item) => (
+                                      <Chip
+                                        key={`${warning.code}-${item.documentId}-${item.supports}`}
+                                        size="small"
+                                        variant="outlined"
+                                        label={`Evidence: ${getWarningEvidenceLabel(warning, item)}`}
+                                      />
+                                    ))}
+                                  </Stack>
+                                ) : null}
+                              </Stack>
+                            </Alert>
                           ))}
                         </Stack>
                       ) : null}
