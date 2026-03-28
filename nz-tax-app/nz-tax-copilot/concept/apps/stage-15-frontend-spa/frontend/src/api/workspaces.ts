@@ -14,6 +14,20 @@ export interface Workspace {
     hasIncomeEntries?: boolean
     hasCryptoTransactions?: boolean
     hasDocuments?: boolean
+    questionnaireAnsweredVisible?: number
+    questionnaireTotalVisible?: number
+    incomeEntryCount?: number
+    documentCount?: number
+  }
+  reviewSummary?: {
+    readiness?: {
+      score?: number
+      status?: 'strong' | 'review_needed' | 'needs_attention'
+    }
+    warningCount?: number
+    highSeverityWarningCount?: number
+    warnings?: Array<{ code: string; severity: string; message: string }>
+    assumptionCount?: number
   }
 }
 

@@ -156,6 +156,8 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspace-income', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       await queryClient.invalidateQueries({ queryKey: ['workspace'] })
       setGross('')
       setPayeWithheld('')
@@ -170,6 +172,8 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspace-crypto', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       await queryClient.invalidateQueries({ queryKey: ['workspace'] })
     },
   })
@@ -181,6 +185,7 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       await queryClient.invalidateQueries({ queryKey: ['workspace'] })
     },
   })
@@ -190,6 +195,9 @@ export default function WorkspaceDetail() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['workspace-docs', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-checklist', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       await queryClient.invalidateQueries({ queryKey: ['workspace'] })
       setDocFile(null)
     },

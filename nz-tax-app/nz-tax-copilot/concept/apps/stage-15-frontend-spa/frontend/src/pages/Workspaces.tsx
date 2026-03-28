@@ -45,6 +45,9 @@ function formatDate(value?: string) {
 }
 
 function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: () => void }) {
+  const warningCount = workspace.reviewSummary?.warningCount || 0
+  const highSeverityWarningCount = workspace.reviewSummary?.highSeverityWarningCount || 0
+
   return (
     <Card variant="outlined" sx={{ overflow: 'hidden' }}>
       <CardActionArea onClick={onOpen}>
@@ -77,6 +80,46 @@ function WorkspaceCard({ workspace, onOpen }: { workspace: Workspace; onOpen: ()
                 Last updated: {formatDate(workspace.updatedAt)}
               </Typography>
             </Stack>
+
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} useFlexGap flexWrap="wrap">
+              <Chip
+                size="small"
+                variant="outlined"
+                label={`Questionnaire ${workspace.metadata?.questionnaireAnsweredVisible || 0}/${workspace.metadata?.questionnaireTotalVisible || 0}`}
+              />
+              <Chip
+                size="small"
+                variant="outlined"
+                label={`${workspace.metadata?.incomeEntryCount || 0} income entr${(workspace.metadata?.incomeEntryCount || 0) === 1 ? 'y' : 'ies'}`}
+              />
+              <Chip
+                size="small"
+                variant="outlined"
+                label={`${workspace.metadata?.documentCount || 0} document${(workspace.metadata?.documentCount || 0) === 1 ? '' : 's'}`}
+              />
+              {warningCount > 0 ? (
+                <Chip
+                  size="small"
+                  color={highSeverityWarningCount > 0 ? 'error' : 'warning'}
+                  label={highSeverityWarningCount > 0
+                    ? `${highSeverityWarningCount} high warning${highSeverityWarningCount === 1 ? '' : 's'}`
+                    : `${warningCount} warning${warningCount === 1 ? '' : 's'}`}
+                />
+              ) : (
+                <Chip
+                  size="small"
+                  color={workspace.reviewSummary?.readiness?.status === 'strong' ? 'success' : 'default'}
+                  label={workspace.reviewSummary?.readiness?.status === 'strong' ? 'Review looks strong' : 'No review warnings'}
+                />
+              )}
+            </Stack>
+
+            {workspace.reviewSummary?.warnings?.length ? (
+              <Alert severity={highSeverityWarningCount > 0 ? 'error' : 'warning'}>
+                {workspace.reviewSummary.warnings[0]?.message}
+              </Alert>
+            ) : null}
+
             <Typography variant="body2" color="primary" fontWeight={600}>
               Open and continue this return draft →
             </Typography>

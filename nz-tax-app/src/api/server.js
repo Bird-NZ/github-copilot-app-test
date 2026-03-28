@@ -14,6 +14,40 @@ import { listEvents, logEvent } from './modules/auditStore.js';
 import { buildReview } from './modules/reviewService.js';
 
 const app = express();
+
+function buildWorkspaceSummary(workspace) {
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const docs = documents(workspace.id);
+  const answers = workspace.questionnaireAnswers || {};
+  const visible = visibleQuestions(answers);
+  const status = completionStatus(answers);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const calc = calculateDraft(map);
+  const review = buildReview(workspace, map, calc, docs, cryptoTx);
+  const incomeCount = Object.values(income || {}).reduce((sum, rows) => sum + (Array.isArray(rows) ? rows.length : 0), 0);
+
+  return {
+    ...workspace,
+    metadata: {
+      completedQuestionnaire: status.complete,
+      hasIncomeEntries: incomeCount > 0,
+      hasCryptoTransactions: cryptoTx.length > 0,
+      hasDocuments: docs.length > 0,
+      questionnaireAnsweredVisible: status.answeredVisible,
+      questionnaireTotalVisible: status.totalVisible,
+      incomeEntryCount: incomeCount,
+      documentCount: docs.length,
+    },
+    reviewSummary: {
+      readiness: review.readiness,
+      warningCount: review.warnings.length,
+      highSeverityWarningCount: review.warnings.filter(w => w.severity === 'high').length,
+      warnings: review.warnings.slice(0, 3),
+      assumptionCount: review.assumptions.length,
+    },
+  };
+}
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
@@ -108,14 +142,14 @@ app.post('/workspaces', requireSession, (req, res) => {
 });
 
 app.get('/workspaces', requireSession, (req, res) => {
-  const items = listWorkspaces(req.session.userId);
+  const items = listWorkspaces(req.session.userId).map(buildWorkspaceSummary);
   res.json({ items });
 });
 
 app.get('/workspaces/:id', requireSession, (req, res) => {
   const item = getWorkspace(req.params.id, req.session.userId);
   if (!item) return res.status(404).json({ error: 'NOT_FOUND' });
-  res.json({ workspace: item });
+  res.json({ workspace: buildWorkspaceSummary(item) });
 });
 
 app.get('/questionnaire/schema', requireSession, (_req, res) => {
@@ -136,6 +170,28 @@ app.get('/workspaces/:id/questionnaire', requireSession, (req, res) => {
   const visible = visibleQuestions(answers);
   const status = completionStatus(answers);
   return res.json({ answers, visible, status });
+});
+
+app.get('/workspaces/:id/adjustments', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+  return res.json({ adjustments: workspace.adjustments || {} });
+});
+
+app.put('/workspaces/:id/adjustments', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const adjustments = {
+    donationAmount: Number(req.body?.donationAmount || 0),
+    pieIncome: Number(req.body?.pieIncome || 0),
+    pieTaxCredits: Number(req.body?.pieTaxCredits || 0),
+    studentLoanRepayments: Number(req.body?.studentLoanRepayments || 0),
+  };
+
+  const updated = updateWorkspace(workspace.id, req.session.userId, { adjustments });
+  logEvent(workspace.id, { action: 'adjustments.save', actor: req.session.userId, meta: adjustments });
+  return res.json({ adjustments: updated.adjustments });
 });
 
 app.put('/workspaces/:id/questionnaire', requireSession, (req, res) => {
