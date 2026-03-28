@@ -222,7 +222,7 @@
         "enabled": true,
         "voice": "en-NZ-MitchellNeural",
         "lang": "en-NZ",
-        "outputFormat": "audio-24khz-48kbitrate-mono-mp3",
+        "outputFormat": "ogg-24khz-16bit-mono-opus",
         "rate": "+50%"
       }
     }
