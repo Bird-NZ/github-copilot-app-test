@@ -6,6 +6,59 @@ function moneyText(value) {
   return `NZ$${money(value).toFixed(2)}`;
 }
 
+const DOC_EVIDENCE_MAP = {
+  donation_receipts: {
+    supports: 'Donation claims',
+    section: 'Adjustments and deductions',
+    ir3Refs: ['41'],
+    summaryKey: 'donationAmount',
+  },
+  student_loan_statement: {
+    supports: 'Student loan treatment',
+    section: 'Adjustments and deductions',
+    ir3Refs: ['M', 'student_loan'],
+    summaryKey: 'studentLoanRepayments',
+  },
+  interest_dividend_slips: {
+    supports: 'Interest and dividend income',
+    section: 'Income',
+    ir3Refs: ['14', '14R', '18'],
+    summaryKey: null,
+  },
+  paye_summary: {
+    supports: 'PAYE income',
+    section: 'Income',
+    ir3Refs: ['11B', '11C'],
+    summaryKey: null,
+  },
+  crypto_csv: {
+    supports: 'Crypto transaction history',
+    section: 'Crypto',
+    ir3Refs: ['crypto'],
+    summaryKey: null,
+  },
+};
+
+function buildEvidence(docs = []) {
+  return docs
+    .map((doc) => {
+      const config = DOC_EVIDENCE_MAP[doc.docType];
+      if (!config) return null;
+      return {
+        documentId: doc.id,
+        document: doc.originalName || doc.filename,
+        documentType: doc.docType,
+        supports: config.supports,
+        section: config.section,
+        ir3Refs: config.ir3Refs,
+        summaryKey: config.summaryKey,
+        uploadedAt: doc.uploadedAt,
+        status: doc.status,
+      };
+    })
+    .filter(Boolean);
+}
+
 function buildAdjustmentSummary(adjustments = {}) {
   return [
     {
@@ -103,7 +156,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
   const questionnaireAnswers = workspace?.questionnaireAnswers || {};
   const warnings = [];
   const assumptions = [];
-  const evidence = [];
+  const evidence = buildEvidence(docs);
   const crypto = buildCryptoGuidance(cryptoTransactions, docs, questionnaireAnswers);
 
   if (!map['11B'] && !map['28']) {
@@ -136,14 +189,6 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
 
   if (crypto.status.hasAnyCryptoActivity && !crypto.status.hasCryptoCsv) {
     warnings.push({ code: 'CRYPTO_EVIDENCE_MISSING', severity: 'medium', message: 'Crypto transactions exist, but no crypto CSV/export has been uploaded as supporting evidence yet.' });
-  }
-
-  for (const doc of docs) {
-    if (doc.docType === 'donation_receipts') evidence.push({ supports: 'donation claims', document: doc.originalName || doc.filename });
-    if (doc.docType === 'student_loan_statement') evidence.push({ supports: 'student loan treatment', document: doc.originalName || doc.filename });
-    if (doc.docType === 'interest_dividend_slips') evidence.push({ supports: 'interest/dividend income', document: doc.originalName || doc.filename });
-    if (doc.docType === 'paye_summary') evidence.push({ supports: 'PAYE income', document: doc.originalName || doc.filename });
-    if (doc.docType === 'crypto_csv') evidence.push({ supports: 'crypto transaction history', document: doc.originalName || doc.filename });
   }
 
   const score = Math.max(0, 100 - warnings.length * 20 - assumptions.length * 8);

@@ -1,34 +1,35 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 2 / Slice 1B complete (workspace UI adjustments + review warnings)
-- Stage 7 / Test complete for this slice (frontend build passed)
+- Tranche 2 / Slice 2A complete (evidence-backed review foundations)
+- Stage 7 / Test complete for this slice (backend tests + frontend build passed)
 - Stage 10 / Closeout complete for this slice (local completion documented)
 
 ## Current objective
-Begin the next smallest shippable Tranche 2 slice after adjustments/review-warning UI completion.
+Begin the next smallest shippable Tranche 2 slice after evidence-backed review foundations.
 
 ## Last completed milestone
-- Confirmed backend/API contracts already existed for:
-  - `GET /workspaces/:id/adjustments`
-  - `PUT /workspaces/:id/adjustments`
-  - `GET /workspaces/:id/review`
-  - workspace `reviewSummary` in list/detail payloads
-- Confirmed workspace UI contains:
-  - Adjustments inputs (donations, PIE income, PIE tax credits, student loan repayments)
-  - Save adjustments action wired to API
-  - Review warnings surfaced in workspace dashboard and IR3 Summary tab
-  - Review readiness status and assumptions block
+- Extended review evidence payloads so linked documents now include:
+  - `documentId`
+  - `documentType`
+  - review `section`
+  - related `ir3Refs`
+  - `uploadedAt`
+  - `summaryKey`
+- Surfaced evidence-backed review UI in workspace detail:
+  - uploaded documents now show when they support a review area
+  - IR3 Summary now includes a Supporting evidence card
 - Local validation passed:
+  - backend tests (`npm test`) succeed
   - frontend build (`npm run build`) succeeds
 
 ## Next tasks
-1. Start Tranche 2 / next slice (evidence/readiness follow-up items from backlog)
-2. Add targeted frontend tests for adjustments/review rendering if this area is touched again
-3. Re-run backend + frontend validation on the next slice that changes contracts or UI behavior
+1. Add user-editable evidence linking if review needs manual overrides or multiple document-to-figure mappings
+2. Expand evidence beyond doc-type heuristics into figure-level or warning-level links
+3. Add targeted frontend tests for evidence/review rendering when this area is touched again
 
 ## Known blockers
-- No active blocker for Slice 1B closeout
+- No active blocker for Slice 2A closeout
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

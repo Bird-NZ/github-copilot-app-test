@@ -132,3 +132,15 @@ Append-only ledger for active build work.
   - Next action: Commit Slice 1B closeout docs update and start the next Tranche 2 slice.
   - Status: Done
   - Next update due by: n/a
+
+- 10:01 NZDT
+  - What changed: Inspected current document upload, audit trail, review payload, export payload, and workspace detail UI. Chose the smallest shippable T2-3 slice: enrich existing review evidence metadata and surface it in review/documents UI instead of adding manual linking or new persistence.
+  - Next action: Implement evidence metadata wiring in review service and frontend, then validate with backend tests and frontend build.
+  - Status: In Progress
+  - Next update due by: 10:11 NZDT
+
+- 10:08 NZDT
+  - What changed: Tranche 2 / Slice 2A is complete. Review evidence now carries document/section/IR3 linkage metadata, uploaded documents show when they support review areas, IR3 Summary includes a supporting-evidence panel, backend smoke/failure tests passed, and frontend build passed.
+  - Next action: Update BUILD_STATE/ledger closeout and commit the slice.
+  - Status: Done
+  - Next update due by: n/a

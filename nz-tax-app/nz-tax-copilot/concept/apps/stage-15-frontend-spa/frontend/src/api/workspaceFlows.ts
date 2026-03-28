@@ -94,6 +94,18 @@ export type AuditResult = {
   }
 }
 
+export type ReviewEvidenceItem = {
+  documentId: string
+  document: string
+  documentType: string
+  supports: string
+  section: string
+  ir3Refs: string[]
+  summaryKey: string | null
+  uploadedAt: string
+  status: string
+}
+
 export type ReviewPayload = {
   readiness: {
     score: number
@@ -101,7 +113,7 @@ export type ReviewPayload = {
   }
   warnings: Array<{ code: string; severity: string; message: string }>
   assumptions: string[]
-  evidence: Array<{ supports: string; document: string }>
+  evidence: ReviewEvidenceItem[]
   summary: {
     donationAmount: number
     pieIncome: number

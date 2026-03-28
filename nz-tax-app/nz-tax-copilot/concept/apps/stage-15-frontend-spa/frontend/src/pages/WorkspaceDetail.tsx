@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { workspaceApi } from '../api/workspaces'
-import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult } from '../api/workspaceFlows'
+import { workspaceFlowsApi, type QuestionnaireAnswers, type IncomeBucket, type WorkspaceAdjustments, type ReviewPayload, type AuditResult, type ReviewEvidenceItem } from '../api/workspaceFlows'
 import { useAuth } from '../auth/useAuth'
 
 function formatDate(value?: string) {
@@ -48,6 +48,10 @@ function titleCase(value?: string | null) {
 function formatFieldValue(value: unknown) {
   if (typeof value === 'number') return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   return String(value)
+}
+
+function findEvidenceForDocument(docId: string, evidence: ReviewEvidenceItem[]) {
+  return evidence.filter((item) => item.documentId === docId)
 }
 
 export default function WorkspaceDetail() {
@@ -235,6 +239,7 @@ export default function WorkspaceDetail() {
   }, [explanation])
   const review: ReviewPayload | undefined = reviewQuery.data || exportQuery.data?.review
   const reviewWarnings = review?.warnings || []
+  const reviewEvidence = review?.evidence || []
   const highSeverityWarningCount = reviewWarnings.filter((warning) => warning.severity === 'high').length
 
   const adjustments = adjustmentsQuery.data || {
@@ -632,16 +637,39 @@ export default function WorkspaceDetail() {
                 <Typography variant="subtitle1">Uploaded documents</Typography>
                 {docs.length > 0 ? (
                   <Stack spacing={1}>
-                    {docs.map((doc) => (
-                      <Card key={doc.id} variant="outlined">
-                        <CardContent>
-                          <Typography variant="body1">{doc.originalName}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {doc.docType} · {Math.round((doc.size || 0) / 1024)} KB · {doc.status}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    ))}
+                    {docs.map((doc) => {
+                      const linkedEvidence = findEvidenceForDocument(doc.id, reviewEvidence)
+
+                      return (
+                        <Card key={doc.id} variant="outlined">
+                          <CardContent>
+                            <Stack spacing={1.25}>
+                              <Box>
+                                <Typography variant="body1">{doc.originalName}</Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  {doc.docType} · {Math.round((doc.size || 0) / 1024)} KB · {doc.status}
+                                </Typography>
+                              </Box>
+                              {linkedEvidence.length > 0 ? (
+                                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                  {linkedEvidence.map((item) => (
+                                    <Chip
+                                      key={`${doc.id}-${item.supports}-${item.section}`}
+                                      size="small"
+                                      color="success"
+                                      variant="outlined"
+                                      label={`Supports ${item.supports}`}
+                                    />
+                                  ))}
+                                </Stack>
+                              ) : (
+                                <Typography variant="body2" color="text.secondary">Not yet linked to a review evidence area.</Typography>
+                              )}
+                            </Stack>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
                   </Stack>
                 ) : (
                   <Alert severity="info">No documents uploaded yet.</Alert>
@@ -814,6 +842,44 @@ export default function WorkspaceDetail() {
                           ))}
                         </Stack>
                       ) : null}
+                    </CardContent>
+                  </Card>
+                ) : null}
+
+                {reviewEvidence.length > 0 ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle1" gutterBottom>Supporting evidence</Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        These uploaded documents are currently linked to parts of your review so you can see what supports each area of the draft.
+                      </Typography>
+                      <Stack spacing={1.5}>
+                        {reviewEvidence.map((item) => (
+                          <Card key={`${item.documentId}-${item.supports}-${item.section}`} variant="outlined">
+                            <CardContent>
+                              <Stack spacing={1.25}>
+                                <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" spacing={1}>
+                                  <Box>
+                                    <Typography variant="body1">{item.supports}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{item.document}</Typography>
+                                  </Box>
+                                  <Chip size="small" label={item.section} variant="outlined" />
+                                </Stack>
+                                <Typography variant="body2" color="text.secondary">
+                                  Linked from {titleCase(item.documentType)} · Added {formatDate(item.uploadedAt)}
+                                </Typography>
+                                {item.ir3Refs.length > 0 ? (
+                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                    {item.ir3Refs.map((ref) => (
+                                      <Chip key={`${item.documentId}-${ref}`} size="small" label={`IR3 ${ref}`} />
+                                    ))}
+                                  </Stack>
+                                ) : null}
+                              </Stack>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </Stack>
                     </CardContent>
                   </Card>
                 ) : null}
