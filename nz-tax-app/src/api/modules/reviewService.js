@@ -156,7 +156,50 @@ function buildEvidence(docs = []) {
     .filter(Boolean);
 }
 
-function pickEvidenceForWarning(code, evidence = [], docs = []) {
+function normalizeWarningEvidenceOverride(override) {
+  if (!override || typeof override !== 'object') return null;
+  if (override.mode === 'none') return { mode: 'none', documentIds: [] };
+  if (override.mode !== 'manual') return null;
+  const documentIds = Array.isArray(override.documentIds)
+    ? Array.from(new Set(override.documentIds.map((id) => String(id)).filter(Boolean)))
+    : [];
+  return { mode: 'manual', documentIds };
+}
+
+function buildManualWarningEvidenceItem(doc, warningCode, existingEvidence = []) {
+  const matchingEvidence = existingEvidence.filter((item) => item.documentId === doc.id);
+  if (matchingEvidence.length > 0) {
+    return matchingEvidence.map((item) => ({ ...item, linkMode: 'manual' }));
+  }
+
+  return [{
+    documentId: doc.id,
+    document: doc.originalName || doc.filename,
+    documentType: doc.docType,
+    supports: `Manual evidence for ${warningCode}`,
+    section: 'Review warning',
+    ir3Refs: [],
+    summaryKey: null,
+    uploadedAt: doc.uploadedAt,
+    status: doc.status,
+    linkMode: 'manual',
+  }];
+}
+
+function pickEvidenceForWarning(code, evidence = [], docs = [], override = null) {
+  const normalizedOverride = normalizeWarningEvidenceOverride(override);
+  if (normalizedOverride?.mode === 'none') {
+    return [];
+  }
+
+  if (normalizedOverride?.mode === 'manual') {
+    return normalizedOverride.documentIds.flatMap((documentId) => {
+      const doc = docs.find((item) => item.id === documentId);
+      if (!doc) return [];
+      return buildManualWarningEvidenceItem(doc, code, evidence);
+    });
+  }
+
   const filters = {
     MISSING_STUDENT_LOAN_DOC: (item) => item.supports === 'Student loan treatment' || item.documentType === 'student_loan_statement',
     MISSING_DONATION_RECEIPTS: (item) => item.supports === 'Donation claims' || item.documentType === 'donation_receipts',
@@ -285,6 +328,7 @@ function buildCryptoGuidance(transactions = [], docs = [], questionnaireAnswers 
 export function buildReview(workspace, map, calc, docs = [], cryptoTransactions = []) {
   const adjustments = workspace?.adjustments || {};
   const questionnaireAnswers = workspace?.questionnaireAnswers || {};
+  const warningEvidenceOverrides = workspace?.warningEvidenceOverrides || {};
   const warnings = [];
   const assumptions = [];
   const evidence = buildEvidence(docs);
@@ -324,7 +368,8 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
 
   const warningsWithEvidence = warnings.map((warning) => ({
     ...warning,
-    evidence: pickEvidenceForWarning(warning.code, evidence, docs),
+    evidence: pickEvidenceForWarning(warning.code, evidence, docs, warningEvidenceOverrides[warning.code]),
+    evidenceOverride: normalizeWarningEvidenceOverride(warningEvidenceOverrides[warning.code]),
   }));
 
   const score = Math.max(0, 100 - warningsWithEvidence.length * 20 - assumptions.length * 8);

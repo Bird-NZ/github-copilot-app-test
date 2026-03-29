@@ -132,11 +132,17 @@ export type ReviewEvidenceItem = {
   linkMode?: 'auto' | 'manual'
 }
 
+export type WarningEvidenceOverride = {
+  mode: 'manual' | 'none'
+  documentIds: string[]
+}
+
 export type ReviewWarning = {
   code: string
   severity: string
   message: string
   evidence?: ReviewEvidenceItem[]
+  evidenceOverride?: WarningEvidenceOverride | null
 }
 
 export type ReviewPayload = {
@@ -231,6 +237,18 @@ export const workspaceFlowsApi = {
 
   async getReview(workspaceId: string): Promise<ReviewPayload> {
     const response = await apiClient.get(`/workspaces/${workspaceId}/review`)
+    return response.data?.review
+  },
+
+  async saveWarningEvidenceOverride(
+    workspaceId: string,
+    warningCode: string,
+    payload: { mode: 'auto' | 'manual' | 'none'; documentIds?: string[] }
+  ): Promise<ReviewPayload> {
+    const response = await apiClient.patch(
+      `/workspaces/${workspaceId}/review/warnings/${encodeURIComponent(warningCode)}/evidence`,
+      payload,
+    )
     return response.data?.review
   },
 

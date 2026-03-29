@@ -363,6 +363,59 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   return res.json({ csv, pdf, json, explanation, review });
 });
 
+app.patch('/workspaces/:id/review/warnings/:warningCode/evidence', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const warningCode = String(req.params.warningCode || '').trim();
+  if (!warningCode) return res.status(400).json({ error: 'WARNING_CODE_REQUIRED' });
+
+  const mode = req.body?.mode;
+  const documentIds = Array.isArray(req.body?.documentIds)
+    ? Array.from(new Set(req.body.documentIds.map((id) => String(id)).filter(Boolean)))
+    : [];
+
+  let nextOverride = null;
+  if (mode === 'none') {
+    nextOverride = { mode: 'none', documentIds: [] };
+  } else if (mode === 'manual') {
+    nextOverride = { mode: 'manual', documentIds };
+  } else if (mode !== 'auto' && mode != null) {
+    return res.status(400).json({ error: 'INVALID_WARNING_EVIDENCE_MODE' });
+  }
+
+  const updatedOverrides = {
+    ...(workspace.warningEvidenceOverrides || {}),
+  };
+
+  if (nextOverride) {
+    updatedOverrides[warningCode] = nextOverride;
+  } else {
+    delete updatedOverrides[warningCode];
+  }
+
+  const updatedWorkspace = updateWorkspace(workspace.id, req.session.userId, {
+    warningEvidenceOverrides: updatedOverrides,
+  });
+
+  logEvent(workspace.id, {
+    action: 'review.warning_evidence.save',
+    actor: req.session.userId,
+    meta: {
+      warningCode,
+      mode: nextOverride?.mode || 'auto',
+      documentIds,
+    },
+  });
+
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {} });
+  const calc = calculateDraft(map);
+  const review = buildReview(updatedWorkspace, map, calc, documents(workspace.id), cryptoTx);
+  return res.json({ review });
+});
+
 app.get('/workspaces/:id/review', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });

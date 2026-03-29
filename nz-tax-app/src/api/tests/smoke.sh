@@ -16,7 +16,7 @@ curl -s "$BASE/auth/session" | python3 -c 'import sys,json; d=json.load(sys.stdi
 # questionnaire
 curl -s "$BASE/questionnaire/schema" >/dev/null
 curl -s -X POST "$BASE/questionnaire/evaluate" -H 'content-type: application/json' -d '{"answers":{"has_crypto":true}}' | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d["status"]["totalVisible"] >= 1'
-curl -s -X PUT "$BASE/workspaces/$WS/questionnaire" -H 'content-type: application/json' -d '{"answers":{"has_crypto":true}}' | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d["answers"]["has_crypto"] is True'
+curl -s -X PUT "$BASE/workspaces/$WS/questionnaire" -H 'content-type: application/json' -d '{"answers":{"has_crypto":true,"has_student_loan":true}}' | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d["answers"]["has_crypto"] is True and d["answers"]["has_student_loan"] is True'
 
 # doc upload + checklist
 DOC_ID=$(curl -s -X POST "$BASE/workspaces/$WS/documents" -F "docType=crypto_csv" -F "file=@/etc/hosts" | python3 -c 'import sys,json; print(json.load(sys.stdin)["document"]["id"])')
@@ -26,6 +26,7 @@ curl -s -X PATCH "$BASE/workspaces/$WS/documents/$DOC_ID/evidence-link" -H 'cont
 
 # income + crypto
 curl -s -X POST "$BASE/workspaces/$WS/income/paye" -H 'content-type: application/json' -d '{"gross":100000,"payeWithheld":30000}' >/dev/null
+curl -s -X PATCH "$BASE/workspaces/$WS/review/warnings/MISSING_STUDENT_LOAN_DOC/evidence" -H 'content-type: application/json' -d '{"mode":"manual","documentIds":["'"$DOC_ID"'"]}' >/dev/null
 python3 - <<'PY' > /tmp/nztax_smoke_crypto.json
 import json
 csv = 'date,asset,type,amount,price_nzd,fee_nzd,exchange\n2025-06-01,BTC,buy,0.01,100000,15,Binance'
@@ -37,7 +38,7 @@ curl -s -X POST "$BASE/workspaces/$WS/crypto/import-csv" -H 'content-type: appli
 curl -s "$BASE/workspaces/$WS/ir3/map" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "map" in d'
 curl -s "$BASE/workspaces/$WS/ir3/calc" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "calc" in d and "map" in d'
 curl -s "$BASE/workspaces/$WS/export/draft" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert "csv" in d and "pdf" in d and "json" in d and d["json"]["workspace"]["id"] and d["pdf"]["mimeType"]=="application/pdf" and d["pdf"]["bytesBase64"] and d["review"]["crypto"]["intro"] and any(item["activity"].startswith("Selling crypto") for item in d["review"]["crypto"]["taxableActivities"])'
-curl -s "$BASE/workspaces/$WS/review" | python3 -c 'import sys,json; d=json.load(sys.stdin); review=d["review"]; supports={(item["supports"], tuple(item["ir3Refs"])) for item in review["evidence"] if item["documentType"] == "crypto_csv"}; crypto_warning=next((warning for warning in review["warnings"] if warning["code"]=="CRYPTO_EVIDENCE_MISSING"), None); assert review["crypto"]["status"]["hasCryptoCsv"] is True and review["crypto"]["transactionCounts"]["buy"] == 1 and "NZD value" in " ".join(review["crypto"]["whatToProvide"]) and ("PAYE income", ("11B", "11C")) in supports and ("Crypto transaction history", ("crypto",)) in supports and crypto_warning is None'
+curl -s "$BASE/workspaces/$WS/review" | python3 -c 'import sys,json; d=json.load(sys.stdin); review=d["review"]; supports={(item["supports"], tuple(item["ir3Refs"])) for item in review["evidence"] if item["documentType"] == "crypto_csv"}; crypto_warning=next((warning for warning in review["warnings"] if warning["code"]=="CRYPTO_EVIDENCE_MISSING"), None); student_warning=next((warning for warning in review["warnings"] if warning["code"]=="MISSING_STUDENT_LOAN_DOC"), None); assert review["crypto"]["status"]["hasCryptoCsv"] is True and review["crypto"]["transactionCounts"]["buy"] == 1 and "NZD value" in " ".join(review["crypto"]["whatToProvide"]) and ("PAYE income", ("11B", "11C")) in supports and ("Crypto transaction history", ("crypto",)) in supports and crypto_warning is None and student_warning and student_warning["evidenceOverride"]["mode"]=="manual" and student_warning["evidence"][0]["documentId"]'
 curl -s "$BASE/workspaces/$WS/audit" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) >= 5 and d["events"][0]["label"] and d["events"][0]["category"] and d["summary"]["totalEvents"] >= 5 and "crypto" in d["availableCategories"]'
 curl -s "$BASE/workspaces/$WS/audit?category=crypto" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert len(d["events"]) == 1 and d["events"][0]["action"]=="crypto.import_csv" and d["events"][0]["details"]=="1 transaction imported"'
 curl -s "$BASE/workspaces/$WS/audit?q=PAYE" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert any(event["label"]=="PAYE added" for event in d["events"])'

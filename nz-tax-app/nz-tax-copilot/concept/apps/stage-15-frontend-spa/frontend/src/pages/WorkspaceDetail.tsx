@@ -225,6 +225,20 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const saveWarningEvidenceOverrideMutation = useMutation({
+    mutationFn: (payload: { warningCode: string; mode: 'auto' | 'manual' | 'none'; documentIds?: string[] }) =>
+      workspaceFlowsApi.saveWarningEvidenceOverride(workspaceId || '', payload.warningCode, {
+        mode: payload.mode,
+        documentIds: payload.documentIds,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const answers = questionnaireQuery.data?.answers || {}
   const visibleQuestions = questionnaireQuery.data?.visible || []
   const status = questionnaireQuery.data?.status
@@ -473,6 +487,7 @@ export default function WorkspaceDetail() {
                                 key={`${warning.code}-${item.documentId}-${item.supports}`}
                                 size="small"
                                 variant="outlined"
+                                color={item.linkMode === 'manual' ? 'primary' : 'default'}
                                 label={`Evidence: ${getWarningEvidenceLabel(warning, item)}`}
                               />
                             ))}
@@ -912,25 +927,93 @@ export default function WorkspaceDetail() {
                       </Alert>
                       {(review.warnings || []).length > 0 ? (
                         <Stack spacing={1} sx={{ mb: 2 }}>
-                          {review.warnings.map((warning) => (
-                            <Alert key={warning.code} severity={warning.severity === 'high' ? 'error' : 'warning'}>
-                              <Stack spacing={1}>
-                                <Typography variant="body2">{warning.message}</Typography>
-                                {warning.evidence && warning.evidence.length > 0 ? (
-                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                                    {warning.evidence.map((item) => (
-                                      <Chip
-                                        key={`${warning.code}-${item.documentId}-${item.supports}`}
-                                        size="small"
-                                        variant="outlined"
-                                        label={`Evidence: ${getWarningEvidenceLabel(warning, item)}`}
-                                      />
-                                    ))}
-                                  </Stack>
-                                ) : null}
-                              </Stack>
-                            </Alert>
-                          ))}
+                          {review.warnings.map((warning) => {
+                            const overrideMode = warning.evidenceOverride?.mode === 'none'
+                              ? 'none'
+                              : warning.evidenceOverride?.mode === 'manual'
+                                ? 'manual'
+                                : 'auto'
+                            const selectedDocumentIds = warning.evidenceOverride?.documentIds || []
+
+                            return (
+                              <Alert key={warning.code} severity={warning.severity === 'high' ? 'error' : 'warning'}>
+                                <Stack spacing={1.25}>
+                                  <Typography variant="body2">{warning.message}</Typography>
+                                  {warning.evidence && warning.evidence.length > 0 ? (
+                                    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                      {warning.evidence.map((item) => (
+                                        <Chip
+                                          key={`${warning.code}-${item.documentId}-${item.supports}`}
+                                          size="small"
+                                          variant="outlined"
+                                          color={item.linkMode === 'manual' ? 'primary' : 'default'}
+                                          label={`Evidence: ${getWarningEvidenceLabel(warning, item)}`}
+                                        />
+                                      ))}
+                                    </Stack>
+                                  ) : (
+                                    <Typography variant="caption" color="text.secondary">No evidence currently attached to this warning.</Typography>
+                                  )}
+                                  <TextField
+                                    select
+                                    size="small"
+                                    label="Warning evidence mode"
+                                    value={overrideMode}
+                                    onChange={(event) => {
+                                      const mode = event.target.value as 'auto' | 'manual' | 'none'
+                                      saveWarningEvidenceOverrideMutation.mutate({
+                                        warningCode: warning.code,
+                                        mode,
+                                        documentIds: mode === 'manual' ? selectedDocumentIds : [],
+                                      })
+                                    }}
+                                    disabled={saveWarningEvidenceOverrideMutation.isPending}
+                                    helperText="Keep automatic evidence, hide it for this warning, or pick documents manually by warning code."
+                                    fullWidth
+                                  >
+                                    <MenuItem value="auto">Automatic</MenuItem>
+                                    <MenuItem value="manual">Manual document selection</MenuItem>
+                                    <MenuItem value="none">No evidence for this warning</MenuItem>
+                                  </TextField>
+                                  {overrideMode === 'manual' ? (
+                                    <TextField
+                                      select
+                                      size="small"
+                                      label="Documents for this warning"
+                                      value={selectedDocumentIds}
+                                      onChange={(event) => {
+                                        const documentIds = Array.isArray(event.target.value)
+                                          ? event.target.value as string[]
+                                          : [String(event.target.value)]
+                                        saveWarningEvidenceOverrideMutation.mutate({
+                                          warningCode: warning.code,
+                                          mode: 'manual',
+                                          documentIds,
+                                        })
+                                      }}
+                                      disabled={saveWarningEvidenceOverrideMutation.isPending}
+                                      helperText="These selected documents will be shown as manual evidence for this warning code."
+                                      fullWidth
+                                      SelectProps={{
+                                        multiple: true,
+                                        renderValue: (selected) => {
+                                          const ids = selected as string[]
+                                          if (ids.length === 0) return 'No documents selected yet'
+                                          return ids
+                                            .map((id) => docs.find((doc) => doc.id === id)?.originalName || id)
+                                            .join(', ')
+                                        },
+                                      }}
+                                    >
+                                      {docs.map((doc) => (
+                                        <MenuItem key={`${warning.code}-${doc.id}`} value={doc.id}>{doc.originalName}</MenuItem>
+                                      ))}
+                                    </TextField>
+                                  ) : null}
+                                </Stack>
+                              </Alert>
+                            )
+                          })}
                         </Stack>
                       ) : null}
                       {(review.assumptions || []).length > 0 ? (
