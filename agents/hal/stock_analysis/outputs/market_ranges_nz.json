@@ -1,8 +1,8 @@
 {
   "market": "NZ",
   "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
-  "refreshedAt": "2026-03-21T22:11:01.786729+00:00",
-  "validUntil": "2026-03-28T22:11:01.786729+00:00",
+  "refreshedAt": "2026-03-28T22:11:06.606956+00:00",
+  "validUntil": "2026-04-04T22:11:06.606956+00:00",
   "symbolsConfigured": [
     "AIR.NZ",
     "SPK.NZ",
@@ -29,8 +29,8 @@
     "ROIC": 0.044470002,
     "FCF Margin": 0.09528418061051075,
     "Net Debt / EBITDA": 3.1659568285659434,
-    "Forward P/E": 19.390496,
-    "FCF Yield": 0.028903027135901038
+    "Forward P/E": 19.242567,
+    "FCF Yield": 0.02874515550555702
   },
   "ranges": {
     "Revenue Growth": {
@@ -134,28 +134,28 @@
     "Forward P/E": {
       "direction": "lower",
       "poor": {
-        "gt": 25.2076448
+        "gt": 25.015337100000004
       },
       "average": {
-        "gte": 13.573347199999999,
-        "lte": 25.2076448
+        "gte": 13.4697969,
+        "lte": 25.015337100000004
       },
       "good": {
-        "lt": 13.573347199999999
+        "lt": 13.4697969
       },
       "sampleSize": 12
     },
     "FCF Yield": {
       "direction": "higher",
       "poor": {
-        "lt": 0.020232118995130725
+        "lt": 0.020121608853889913
       },
       "average": {
-        "gte": 0.020232118995130725,
-        "lte": 0.03757393527667135
+        "gte": 0.020121608853889913,
+        "lte": 0.037368702157224126
       },
       "good": {
-        "gt": 0.03757393527667135
+        "gt": 0.037368702157224126
       },
       "sampleSize": 12
     }

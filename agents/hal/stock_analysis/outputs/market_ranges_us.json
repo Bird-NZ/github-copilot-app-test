@@ -1,8 +1,8 @@
 {
   "market": "US",
   "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
-  "refreshedAt": "2026-03-21T22:10:44.056664+00:00",
-  "validUntil": "2026-03-28T22:10:44.056664+00:00",
+  "refreshedAt": "2026-03-28T22:10:49.610627+00:00",
+  "validUntil": "2026-04-04T22:10:49.610627+00:00",
   "symbolsConfigured": [
     "MSFT",
     "AAPL",
@@ -34,8 +34,8 @@
     "ROIC": 0.34710498,
     "FCF Margin": 0.11659870164587598,
     "Net Debt / EBITDA": 0.43492017445482867,
-    "Forward P/E": 19.672853500000002,
-    "FCF Yield": 0.018899508648935123
+    "Forward P/E": 19.2930555,
+    "FCF Yield": 0.020229154226691606
   },
   "ranges": {
     "Revenue Growth": {
@@ -139,28 +139,28 @@
     "Forward P/E": {
       "direction": "lower",
       "poor": {
-        "gt": 25.574709550000005
+        "gt": 25.08097215
       },
       "average": {
-        "gte": 13.770997450000001,
-        "lte": 25.574709550000005
+        "gte": 13.50513885,
+        "lte": 25.08097215
       },
       "good": {
-        "lt": 13.770997450000001
+        "lt": 13.50513885
       },
       "sampleSize": 20
     },
     "FCF Yield": {
       "direction": "higher",
       "poor": {
-        "lt": 0.013229656054254586
+        "lt": 0.014160407958684123
       },
       "average": {
-        "gte": 0.013229656054254586,
-        "lte": 0.02456936124361566
+        "gte": 0.014160407958684123,
+        "lte": 0.02629790049469909
       },
       "good": {
-        "gt": 0.02456936124361566
+        "gt": 0.02629790049469909
       },
       "sampleSize": 19
     }

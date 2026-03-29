@@ -1,8 +1,8 @@
 {
   "market": "AU",
   "method": "Median baseline from local market universe via yfinance info fields; ranges 0.7x/1.3x around baseline",
-  "refreshedAt": "2026-03-21T22:10:51.161452+00:00",
-  "validUntil": "2026-03-28T22:10:51.161452+00:00",
+  "refreshedAt": "2026-03-28T22:10:58.406690+00:00",
+  "validUntil": "2026-04-04T22:10:58.406690+00:00",
   "symbolsConfigured": [
     "CBA.AX",
     "BHP.AX",
@@ -29,8 +29,8 @@
     "ROIC": 0.12762,
     "FCF Margin": 0.1327606039044149,
     "Net Debt / EBITDA": 2.2435825622632537,
-    "Forward P/E": 18.035597,
-    "FCF Yield": 0.04286127256109527
+    "Forward P/E": 17.762648,
+    "FCF Yield": 0.04237853725857395
   },
   "ranges": {
     "Revenue Growth": {
@@ -134,28 +134,28 @@
     "Forward P/E": {
       "direction": "lower",
       "poor": {
-        "gt": 23.4462761
+        "gt": 23.0914424
       },
       "average": {
-        "gte": 12.624917899999998,
-        "lte": 23.4462761
+        "gte": 12.433853599999999,
+        "lte": 23.0914424
       },
       "good": {
-        "lt": 12.624917899999998
+        "lt": 12.433853599999999
       },
       "sampleSize": 15
     },
     "FCF Yield": {
       "direction": "higher",
       "poor": {
-        "lt": 0.03000289079276669
+        "lt": 0.02966497608100176
       },
       "average": {
-        "gte": 0.03000289079276669,
-        "lte": 0.05571965432942386
+        "gte": 0.02966497608100176,
+        "lte": 0.05509209843614613
       },
       "good": {
-        "gt": 0.05571965432942386
+        "gt": 0.05509209843614613
       },
       "sampleSize": 10
     }
