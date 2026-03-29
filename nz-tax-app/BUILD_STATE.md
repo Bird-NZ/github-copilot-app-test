@@ -2,11 +2,11 @@
 
 ## Current stage
 - Tranche 2 / Slice 2G complete (evidence trail in audit tab readability)
-- Stage 7 / Test complete for this slice (frontend vitest + backend smoke + frontend build passed)
-- Stage 8 / Queue review in progress (select next smallest Tranche 2 slice or record exact blocker)
+- Tranche 2 / Slice 3 started (manual override for warning-level evidence)
+- Queue currently blocked on a product-model decision for Slice 3 persistence semantics
 
 ## Current objective
-Select and start the next clearly-defined Tranche 2 slice after evidence-flow test coverage and audit-trail readability improvements.
+Resolve the warning-override persistence model, then continue the ordered queue from manual warning-level evidence onward.
 
 ## Last completed milestone
 - Audit events now surface readable labels/details for document evidence-link saves instead of raw action codes in the workspace audit tab
@@ -49,4 +49,6 @@ Only stop and wait for Mat if one of these is true:
 ## Last validated commands
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/src/api && bash tests/smoke.sh`
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm test`
+- `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
+tend && npm test`
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`

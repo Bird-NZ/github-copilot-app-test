@@ -42,12 +42,13 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   3. determine next queue slice from remaining Tranche 2 backlog or record blocker
 - review notes:
   - Slice 2F is complete and committed
-  - audit trail readability slice is complete and validated locally
-- commit: in progress
+  - audit trail readability slice is complete and committed
+  - next ordered slice is manual override for warning-level evidence, but persistence semantics are not specified tightly enough to ship without choosing the data model
+- commit: `cbbb932` (`Improve audit evidence trail readability`)
 - what's next:
-  1. commit audit trail slice
-  2. determine next smallest Tranche 2 slice
-  3. record exact blocker if no next slice is explicitly defined
+  1. decide whether warning overrides persist per warning code, per warning instance, or per document-derived evidence set
+  2. implement backend storage + API once that model is fixed
+  3. add matching frontend controls/tests and continue the queue
 - last updated: 2026-03-30
 
 ## Update rule

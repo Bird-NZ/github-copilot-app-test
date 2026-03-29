@@ -196,3 +196,8 @@ Append-only ledger for active build work.
   - Next action: Commit the audit-trail slice, then determine whether a next queue slice is explicitly defined or whether the queue is blocked on missing slice definition/spec.
   - Status: In Progress
   - Next update due by: 09:26 NZDT
+- 09:24 NZDT
+  - What changed: Audit-trail slice was committed. I then re-anchored on the canonical queue and started the next ordered slice (manual override for warning-level evidence), but hit a real product-model blocker: persistence semantics for warning overrides are unspecified and materially change the backend/API/UI design.
+  - Next action: Wait for the warning-override persistence decision, then resume Slice 3 from that branch point.
+  - Status: Blocked
+  - Next update due by: on decision / unblock
