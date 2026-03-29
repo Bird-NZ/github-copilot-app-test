@@ -186,3 +186,8 @@ Append-only ledger for active build work.
   - Next action: Update BUILD_STATE/queue closeout and commit Slice 2E.
   - Status: Done
   - Next update due by: n/a
+- 09:19 NZDT
+  - What changed: Slice 2F landed locally. Evidence-link selection/rendering logic was extracted into a dedicated frontend helper module and covered with targeted vitest cases for auto/manual/none flows, multi-link overrides, payload generation, and evidence labels.
+  - Next action: Commit Slice 2F, then checkpoint the audit-trail readability slice separately.
+  - Status: In Progress
+  - Next update due by: 09:24 NZDT

@@ -17,8 +17,8 @@ Begin the next smallest shippable Tranche 2 slice after warning-level evidence a
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 
 ## Next tasks
-1. Decide whether warning-level evidence should become manually overridable per warning, not just inferred
-2. Add targeted frontend tests for warning evidence rendering and evidence-link persistence
+1. Improve evidence trail readability in the audit tab for document evidence-link saves and adjustment saves
+2. Decide whether warning-level evidence should become manually overridable per warning, not just inferred
 3. Evaluate whether the next precision step should be field-level IR3 evidence mapping for selected refs
 
 ## Known blockers
@@ -72,6 +72,10 @@ This slice is done when all of the following are true:
 1. IR3 Summary surfaces supporting evidence at the field level where `ir3Refs` exist
 2. Existing review/document evidence-link data remains backward-compatible
 3. PAYE evidence includes `IR3 11A` coverage
+4. Backend smoke test and frontend build pass locally
+5. Live frontend rollout is verified
+6. Completion is documented and committed
+es `IR3 11A` coverage
 4. Backend smoke test and frontend build pass locally
 5. Live frontend rollout is verified
 6. Completion is documented and committed
