@@ -78,6 +78,7 @@ export default function WorkspaceDetail() {
   const [donationAmount, setDonationAmount] = useState('0')
   const [pieIncome, setPieIncome] = useState('0')
   const [pieTaxCredits, setPieTaxCredits] = useState('0')
+  const [extraTaxDeducted, setExtraTaxDeducted] = useState('0')
   const [studentLoanRepayments, setStudentLoanRepayments] = useState('0')
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
   const [auditCategory, setAuditCategory] = useState<string>('all')
@@ -303,6 +304,7 @@ export default function WorkspaceDetail() {
     donationAmount: 0,
     pieIncome: 0,
     pieTaxCredits: 0,
+    extraTaxDeducted: 0,
     studentLoanRepayments: 0,
   }
 
@@ -310,8 +312,9 @@ export default function WorkspaceDetail() {
     setDonationAmount(String(adjustments.donationAmount ?? 0))
     setPieIncome(String(adjustments.pieIncome ?? 0))
     setPieTaxCredits(String(adjustments.pieTaxCredits ?? 0))
+    setExtraTaxDeducted(String(adjustments.extraTaxDeducted ?? 0))
     setStudentLoanRepayments(String(adjustments.studentLoanRepayments ?? 0))
-  }, [adjustments.donationAmount, adjustments.pieIncome, adjustments.pieTaxCredits, adjustments.studentLoanRepayments])
+  }, [adjustments.donationAmount, adjustments.pieIncome, adjustments.pieTaxCredits, adjustments.extraTaxDeducted, adjustments.studentLoanRepayments])
 
   const downloadTextFile = (filename: string, content: string, mimeType: string) => {
     const blob = new Blob([content], { type: mimeType })
@@ -362,6 +365,7 @@ export default function WorkspaceDetail() {
       donationAmount: Number(donationAmount || 0),
       pieIncome: Number(pieIncome || 0),
       pieTaxCredits: Number(pieTaxCredits || 0),
+      extraTaxDeducted: Number(extraTaxDeducted || 0),
       studentLoanRepayments: Number(studentLoanRepayments || 0),
     })
   }
@@ -952,6 +956,7 @@ export default function WorkspaceDetail() {
                       <TextField label="Extra manual donation amount (NZD)" type="number" value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} helperText="Add any claimable donation amount not already captured in uploaded donation receipt totals." fullWidth />
                       <TextField label="PIE income (NZD)" type="number" value={pieIncome} onChange={(e) => setPieIncome(e.target.value)} helperText="Income from portfolio investment entities, usually shown on an annual tax certificate from your provider." fullWidth />
                       <TextField label="PIE tax credits (NZD)" type="number" value={pieTaxCredits} onChange={(e) => setPieTaxCredits(e.target.value)} helperText="Tax already paid within your PIE investment. Enter the credit amount from your annual statement." fullWidth />
+                      <TextField label="Other tax already deducted (NZD)" type="number" value={extraTaxDeducted} onChange={(e) => setExtraTaxDeducted(e.target.value)} helperText="Use this when tax was already withheld outside PAYE and outside PIE, for example from another taxable payment." fullWidth />
                       <TextField label="Student loan repayments (NZD)" type="number" value={studentLoanRepayments} onChange={(e) => setStudentLoanRepayments(e.target.value)} helperText="Add repayments already made through PAYE or separately if you need them reflected in this draft." fullWidth />
                       <Button variant="contained" onClick={handleSaveAdjustments} disabled={saveAdjustmentsMutation.isPending}>
                         {saveAdjustmentsMutation.isPending ? 'Saving…' : 'Save adjustments'}
@@ -1056,6 +1061,26 @@ export default function WorkspaceDetail() {
                               </Alert>
                             )
                           })}
+                        </Stack>
+                      ) : null}
+                      {review.summary?.studentLoanStatus?.hasStudentLoan ? (
+                        <Stack spacing={1.25} sx={{ mb: (review.assumptions || []).length > 0 ? 2 : 0 }}>
+                          <Typography variant="subtitle2">Student loan treatment</Typography>
+                          <Alert severity={review.summary.studentLoanStatus.status === 'ready' ? 'success' : review.summary.studentLoanStatus.status === 'partial' ? 'warning' : 'error'}>
+                            <Stack spacing={0.75}>
+                              <Typography variant="body2">
+                                {review.summary.studentLoanStatus.status === 'ready'
+                                  ? 'Student loan evidence and repayment amount are both present.'
+                                  : review.summary.studentLoanStatus.status === 'partial'
+                                    ? 'Student loan treatment is partly captured, but one piece is still missing.'
+                                    : 'Student loan treatment still needs both supporting evidence and/or a repayment amount before the draft is reliable.'}
+                              </Typography>
+                              <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                <Chip size="small" variant="outlined" label={review.summary.studentLoanStatus.hasStatement ? 'Statement uploaded' : 'Statement missing'} color={review.summary.studentLoanStatus.hasStatement ? 'success' : 'default'} />
+                                <Chip size="small" variant="outlined" label={review.summary.studentLoanStatus.repaymentsEntered > 0 ? `Repayments entered: ${formatFieldValue(review.summary.studentLoanStatus.repaymentsEntered)}` : 'Repayments not entered yet'} color={review.summary.studentLoanStatus.repaymentsEntered > 0 ? 'success' : 'default'} />
+                              </Stack>
+                            </Stack>
+                          </Alert>
                         </Stack>
                       ) : null}
                       {(review.assumptions || []).length > 0 ? (

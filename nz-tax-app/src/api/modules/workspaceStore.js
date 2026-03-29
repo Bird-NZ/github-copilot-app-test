@@ -15,6 +15,7 @@ export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd
       donationAmount: 0,
       pieIncome: 0,
       pieTaxCredits: 0,
+      extraTaxDeducted: 0,
       studentLoanRepayments: 0,
     },
     warningEvidenceOverrides: {},

@@ -203,6 +203,8 @@ function pickEvidenceForWarning(code, evidence = [], docs = [], override = null)
   const filters = {
     MISSING_STUDENT_LOAN_DOC: (item) => item.supports === 'Student loan treatment' || item.documentType === 'student_loan_statement',
     MISSING_DONATION_RECEIPTS: (item) => item.supports === 'Donation claims' || item.documentType === 'donation_receipts',
+    PIE_CREDITS_WITHOUT_INCOME: (item) => item.supports === 'PIE income added manually' || item.supports === 'PIE tax credits entered',
+    PIE_CREDITS_HIGH_FOR_INCOME: (item) => item.supports === 'PIE income added manually' || item.supports === 'PIE tax credits entered',
     CRYPTO_ACTIVITY_MISSING: (item) => item.supports === 'Crypto transaction history' || item.documentType === 'crypto_csv',
     CRYPTO_EVIDENCE_MISSING: (item) => item.supports === 'Crypto transaction history' || item.documentType === 'crypto_csv',
     NO_INCOME: (item) => item.section === 'Income' || item.documentType === 'paye_summary' || item.documentType === 'interest_dividend_slips',
@@ -255,6 +257,13 @@ function buildAdjustmentSummary(adjustments = {}, mappedSummary = {}) {
       value: moneyText(adjustments.pieTaxCredits),
       description: 'Tax credits already attached to that PIE income.',
       source: 'Taken from manual PIE tax credit adjustments in this workspace.',
+    },
+    {
+      key: 'extraTaxDeducted',
+      label: 'Other tax already deducted',
+      value: moneyText(adjustments.extraTaxDeducted),
+      description: 'Extra tax already withheld outside PAYE or PIE credits.',
+      source: 'Taken from manual tax-already-deducted adjustments in this workspace.',
     },
     {
       key: 'studentLoanRepayments',
@@ -350,6 +359,14 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     assumptions.push('PIE income has been entered without PIE tax credits, so the current draft assumes no PIE tax credit can be claimed.');
   }
 
+  if ((adjustments.pieTaxCredits || 0) > 0 && !(adjustments.pieIncome || 0)) {
+    warnings.push({ code: 'PIE_CREDITS_WITHOUT_INCOME', severity: 'medium', message: 'PIE tax credits were entered without any PIE income, so the draft may be overstating tax already covered.' });
+  }
+
+  if ((adjustments.pieIncome || 0) > 0 && (adjustments.pieTaxCredits || 0) > money(adjustments.pieIncome) * 0.28) {
+    warnings.push({ code: 'PIE_CREDITS_HIGH_FOR_INCOME', severity: 'medium', message: 'PIE tax credits look high relative to the PIE income entered, so check the annual PIE tax certificate amounts.' });
+  }
+
   if (!(adjustments.studentLoanRepayments || 0) && questionnaireAnswers.has_student_loan === true) {
     assumptions.push('Student loan treatment is still provisional because no repayment/deduction amount has been entered yet.');
   }
@@ -387,7 +404,20 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
       donationAmount: money(map?.summary?.donationAmount || 0),
       pieIncome: money(adjustments.pieIncome),
       pieTaxCredits: money(adjustments.pieTaxCredits),
+      extraTaxDeducted: money(adjustments.extraTaxDeducted),
       studentLoanRepayments: money(adjustments.studentLoanRepayments),
+      studentLoanStatus: {
+        hasStudentLoan: questionnaireAnswers.has_student_loan === true,
+        hasStatement: docs.some((doc) => doc.docType === 'student_loan_statement'),
+        repaymentsEntered: money(adjustments.studentLoanRepayments),
+        status: questionnaireAnswers.has_student_loan !== true
+          ? 'not_applicable'
+          : docs.some((doc) => doc.docType === 'student_loan_statement') && money(adjustments.studentLoanRepayments) > 0
+            ? 'ready'
+            : docs.some((doc) => doc.docType === 'student_loan_statement') || money(adjustments.studentLoanRepayments) > 0
+              ? 'partial'
+              : 'needs_attention',
+      },
       items: buildAdjustmentSummary(adjustments, map?.summary || {}),
     },
   };

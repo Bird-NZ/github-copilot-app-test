@@ -1,19 +1,20 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 2 / Slice 4 complete (donation receipts totals + calc wiring)
-- Tranche 2 / Slice 5 started (PIE income + tax credit refinement)
+- Tranche 2 / Slice 5 complete (PIE income + tax credit refinement)
+- Tranche 2 / Slice 6 complete (student loan treatment visibility)
+- Tranche 2 / Slice 7 complete (tax already deducted refinement)
+- Tranche 2 / Slice 8 next (provisional tax threshold / residual-tax polish)
 - Queue currently active
 
 ## Current objective
-Continue the ordered queue from PIE income + tax credit refinement onward.
+Continue the ordered queue from provisional-tax threshold / residual-tax polish onward.
 
 ## Last completed milestone
-- Audit events now surface readable labels/details for document evidence-link saves instead of raw action codes in the workspace audit tab
-- Adjustment saves now summarise non-zero donation / PIE / student-loan values, making the audit trail more useful for evidence-review follow-up
-- Existing audit filtering/search remains intact because the change stays inside label/detail enrichment
+- Manual “other tax already deducted” adjustments now save as first-class workspace adjustments
+- IR3 field `36A` now combines PIE credits with other tax already deducted so the draft reflects more of the tax already covered
+- Review summaries, export explanations, and audit details now surface that extra tax-already-deducted amount
 - Local validation passed:
-  - frontend tests (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm test`) succeed
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 

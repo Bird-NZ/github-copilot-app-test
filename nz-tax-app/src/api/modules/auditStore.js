@@ -77,6 +77,7 @@ function buildDetails(action, meta = {}) {
       ['Donations', meta.donationAmount],
       ['PIE income', meta.pieIncome],
       ['PIE credits', meta.pieTaxCredits],
+      ['Other tax deducted', meta.extraTaxDeducted],
       ['Student loan', meta.studentLoanRepayments],
     ]
       .filter(([, value]) => Number(value || 0) > 0)

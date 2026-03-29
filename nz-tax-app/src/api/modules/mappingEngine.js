@@ -20,6 +20,7 @@ export function mapToIr3({ income, cryptoTx, adjustments = {}, docs = [] }) {
 
   const pieIncome = Number(adjustments.pieIncome || 0);
   const pieTaxCredits = Number(adjustments.pieTaxCredits || 0);
+  const extraTaxDeducted = Number(adjustments.extraTaxDeducted || 0);
   const donationReceiptAmount = sumDonationReceiptAmounts(docs);
   const donationAdjustmentAmount = Number(adjustments.donationAmount || 0);
   const donationAmount = donationReceiptAmount + donationAdjustmentAmount;
@@ -32,7 +33,7 @@ export function mapToIr3({ income, cryptoTx, adjustments = {}, docs = [] }) {
     '11B': Number(payeGross.toFixed(2)),
     '11E': Number(payeWithheld.toFixed(2)),
     '28': totalOtherIncome,
-    '36A': Number(pieTaxCredits.toFixed(2)),
+    '36A': Number((pieTaxCredits + extraTaxDeducted).toFixed(2)),
     '36B': Number(pieIncome.toFixed(2)),
     summary: {
       payeGross: Number(payeGross.toFixed(2)),
@@ -47,6 +48,7 @@ export function mapToIr3({ income, cryptoTx, adjustments = {}, docs = [] }) {
       donationAdjustmentAmount: Number(donationAdjustmentAmount.toFixed(2)),
       pieIncome: Number(pieIncome.toFixed(2)),
       pieTaxCredits: Number(pieTaxCredits.toFixed(2)),
+      extraTaxDeducted: Number(extraTaxDeducted.toFixed(2)),
       studentLoanRepayments: Number(studentLoanRepayments.toFixed(2)),
     },
   };

@@ -42,8 +42,8 @@ function buildSummaryCards(map = {}, calc = {}) {
       label: 'Tax already covered for you',
       value: money(summary.taxCreditsAndDeductions),
       ir3Ref: '11E, 36A',
-      description: 'This includes PAYE already withheld, PIE tax credits, and any donation tax credit currently entered.',
-      source: 'Taken from PAYE withheld figures, PIE tax credit adjustments, and donation claims entered in the workspace.',
+      description: 'This includes PAYE already withheld, PIE tax credits, other tax already deducted, and any donation tax credit currently entered.',
+      source: 'Taken from PAYE withheld figures, manual tax-already-deducted adjustments, PIE tax credit adjustments, and donation claims entered in the workspace.',
     },
     {
       key: payable > 0 ? 'amountToPay' : refund > 0 ? 'refund' : 'settled',
@@ -84,9 +84,9 @@ export function explainIr3Values(map = {}, calc = {}) {
         : 'Estimated tax position is close to settled.',
     bullets: [
       `Income currently being taxed in this draft is ${money(summary.taxableIncome)}.`,
-      `So far, the draft includes ${money(mappedSummary.payeGross)} from salary or wages and ${money(mappedSummary.totalOtherIncome)} from other taxable income sources.`,
+      `So far, the draft includes ${money(mappedSummary.payeGross)} from salary or wages, ${money(mappedSummary.totalOtherIncome)} from other taxable income sources, and ${money(mappedSummary.pieIncome)} of PIE income.`,
       `Estimated tax before credits is ${money(summary.incomeTax)}.`,
-      `Tax already covered through PAYE, PIE credits, and donation claims is ${money(summary.taxCreditsAndDeductions)}.`,
+      `Tax already covered through PAYE, ${money(mappedSummary.pieTaxCredits)} of PIE credits, ${money(mappedSummary.extraTaxDeducted)} of other tax already deducted, and donation claims is ${money(summary.taxCreditsAndDeductions)}.`,
       payable > 0
         ? `Based on the current draft, you may still need to pay about ${money(payable)}.`
         : refund > 0

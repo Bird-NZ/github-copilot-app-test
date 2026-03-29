@@ -213,3 +213,15 @@ Append-only ledger for active build work.
   - Next action: Start Slice 5 (PIE income + tax credit refinement), inspect the current PIE treatment gaps, and continue the queue.
   - Status: Done
   - Next update due by: on Slice 5 milestone or blocker
+
+- 11:35 NZDT
+  - What changed: Slice 5 and Slice 6 landed locally in one continuous pass. PIE adjustment saves now sanitize to stable non-negative currency values, review warnings flag PIE credits without income or suspiciously high PIE credits, IR3 explanation text now calls out PIE income/credits explicitly, and the review panel now shows a dedicated student-loan treatment status block with statement/repayment visibility.
+  - Next action: Update BUILD_STATE for the new queue position, commit Slice 5 + Slice 6 checkpoints, and continue into Slice 7 (tax already deducted refinement).
+  - Status: Done
+  - Next update due by: on Slice 7 milestone or blocker
+
+- 11:44 NZDT
+  - What changed: Slice 7 is complete. Manual “other tax already deducted” adjustments now save through the API, feed into IR3 field 36A alongside PIE credits, appear in review/export summaries, and show up in the audit trail. Backend smoke and frontend production build both passed after the wiring change.
+  - Next action: Move the queue to the next deductions/calc refinement slice (provisional-tax threshold / related residual-tax polish) and continue unless a blocker appears.
+  - Status: Done
+  - Next update due by: on next slice milestone or blocker

@@ -182,11 +182,18 @@ app.put('/workspaces/:id/adjustments', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
 
+  const sanitizeAmount = (value) => {
+    const amount = Number(value || 0);
+    if (!Number.isFinite(amount)) return 0;
+    return Math.max(0, Number(amount.toFixed(2)));
+  };
+
   const adjustments = {
-    donationAmount: Number(req.body?.donationAmount || 0),
-    pieIncome: Number(req.body?.pieIncome || 0),
-    pieTaxCredits: Number(req.body?.pieTaxCredits || 0),
-    studentLoanRepayments: Number(req.body?.studentLoanRepayments || 0),
+    donationAmount: sanitizeAmount(req.body?.donationAmount),
+    pieIncome: sanitizeAmount(req.body?.pieIncome),
+    pieTaxCredits: sanitizeAmount(req.body?.pieTaxCredits),
+    extraTaxDeducted: sanitizeAmount(req.body?.extraTaxDeducted),
+    studentLoanRepayments: sanitizeAmount(req.body?.studentLoanRepayments),
   };
 
   const updated = updateWorkspace(workspace.id, req.session.userId, { adjustments });

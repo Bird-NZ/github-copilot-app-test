@@ -34,8 +34,10 @@ Only stop for:
 9. Export pack with assumptions / warnings / supporting-doc checklist
 
 ## Current starting point
-Latest completed slice:
-- Tranche 2 / Slice 2E — field-level IR3 evidence mapping
+Latest completed slices:
+- Tranche 2 / Slice 5 — PIE income + tax credit refinement
+- Tranche 2 / Slice 6 — student loan treatment visibility
+- Tranche 2 / Slice 7 — tax already deducted refinement
 
 ## Immediate next slice
-- Tranche 2 / Slice 2F — targeted frontend tests for evidence flows
+- Tranche 2 / Slice 8 — provisional tax threshold / residual-tax polish

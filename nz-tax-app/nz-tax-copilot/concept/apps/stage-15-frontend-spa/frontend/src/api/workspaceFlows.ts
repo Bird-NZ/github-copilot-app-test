@@ -158,7 +158,14 @@ export type ReviewPayload = {
     donationAmount: number
     pieIncome: number
     pieTaxCredits: number
+    extraTaxDeducted: number
     studentLoanRepayments: number
+    studentLoanStatus: {
+      hasStudentLoan: boolean
+      hasStatement: boolean
+      repaymentsEntered: number
+      status: 'not_applicable' | 'ready' | 'partial' | 'needs_attention'
+    }
   }
 }
 
@@ -166,6 +173,7 @@ export type WorkspaceAdjustments = {
   donationAmount: number
   pieIncome: number
   pieTaxCredits: number
+  extraTaxDeducted: number
   studentLoanRepayments: number
 }
 
