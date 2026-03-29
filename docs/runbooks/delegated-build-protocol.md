@@ -30,6 +30,12 @@ Minimum stages:
 - complete
 - blocked (only if truly blocked)
 
+For overnight / continuous delivery requests, track queue state separately from slice state:
+- queue active
+- queue complete
+- queue blocked
+- queue paused-by-user
+
 ## Update contract
 When HAL initiates ClawDev, HAL should request detailed progress updates every 10 minutes including:
 - current step
@@ -80,6 +86,15 @@ If ClawDev/ACP/subagent execution fails:
 ## Stage transition rule
 Do not start the next major command batch after a milestone transition until Mat has received the corresponding update.
 After the update is sent, continue automatically.
+
+## Queue continuity rule
+If Mat asked for continuous delivery (for example: all night, keep going, run the queue, continue until blocked), the build must be managed as a queue rather than a single slice.
+After any slice reaches `complete`, HAL must explicitly name the next slice and do one of only three things:
+1. start it immediately
+2. mark the queue complete because no slices remain
+3. mark the queue blocked and state the real blocker
+
+Clean completion of one slice is never, by itself, permission to stop a continuous run.
 
 ## Example handoff update
 - agent: ClawDev
