@@ -201,3 +201,15 @@ Append-only ledger for active build work.
   - Next action: Wait for the warning-override persistence decision, then resume Slice 3 from that branch point.
   - Status: Blocked
   - Next update due by: on decision / unblock
+
+- 09:55 NZDT
+  - What changed: Slice 3 is complete after Mat resolved the blocker: warning-level evidence overrides now persist per warning code. Backend storage/API now save warning evidence mode + selected document IDs keyed by warning code, review payloads echo override state, the frontend review warnings support automatic/manual/none per warning, and local validation passed (backend smoke + failure tests, frontend build).
+  - Next action: Start Slice 4 (donation receipts totals + calc wiring), inspect the smallest stable totals model, and continue the queue.
+  - Status: Done
+  - Next update due by: on Slice 4 milestone or blocker
+
+- 10:18 NZDT
+  - What changed: Slice 4 is complete. Donation-receipt documents now store an optional claimed amount, that total flows into IR3 mapping/calc/review, the frontend upload/doc editors surface the amount, manual donation adjustments were reframed as additive extras, and local validation passed (backend smoke + failure tests, frontend build).
+  - Next action: Start Slice 5 (PIE income + tax credit refinement), inspect the current PIE treatment gaps, and continue the queue.
+  - Status: Done
+  - Next update due by: on Slice 5 milestone or blocker

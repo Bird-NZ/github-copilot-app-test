@@ -74,6 +74,7 @@ export default function WorkspaceDetail() {
   const [csvText, setCsvText] = useState('date,asset,type,amount,price_nzd,fee_nzd,exchange\n2025-06-01,BTC,buy,0.01,100000,15,Binance')
   const [docType, setDocType] = useState('paye_summary')
   const [docFile, setDocFile] = useState<File | null>(null)
+  const [donationReceiptAmount, setDonationReceiptAmount] = useState('0')
   const [donationAmount, setDonationAmount] = useState('0')
   const [pieIncome, setPieIncome] = useState('0')
   const [pieTaxCredits, setPieTaxCredits] = useState('0')
@@ -201,7 +202,7 @@ export default function WorkspaceDetail() {
   })
 
   const uploadDocumentMutation = useMutation({
-    mutationFn: (payload: { file: File; docType: string }) => workspaceFlowsApi.uploadDocument(workspaceId || '', payload.file, payload.docType),
+    mutationFn: (payload: { file: File; docType: string; donationAmount?: number }) => workspaceFlowsApi.uploadDocument(workspaceId || '', payload.file, payload.docType, payload.donationAmount),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['workspace-docs', workspaceId] })
       await queryClient.invalidateQueries({ queryKey: ['workspace-checklist', workspaceId] })
@@ -210,6 +211,20 @@ export default function WorkspaceDetail() {
       await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       await queryClient.invalidateQueries({ queryKey: ['workspace'] })
       setDocFile(null)
+      setDonationReceiptAmount('0')
+    },
+  })
+
+  const updateDocumentDonationAmountMutation = useMutation({
+    mutationFn: (payload: { documentId: string; donationAmount: number }) =>
+      workspaceFlowsApi.updateDocumentDonationAmount(workspaceId || '', payload.documentId, payload.donationAmount),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-docs', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-calc', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
     },
   })
 
@@ -665,10 +680,20 @@ export default function WorkspaceDetail() {
                     onChange={(event) => setDocFile(event.target.files?.[0] || null)}
                   />
                 </Button>
+                {docType === 'donation_receipts' ? (
+                  <TextField
+                    label="Donation total on this receipt upload (NZD)"
+                    type="number"
+                    value={donationReceiptAmount}
+                    onChange={(e) => setDonationReceiptAmount(e.target.value)}
+                    helperText="Optional for now, but adding the amount lets the draft total donation receipts automatically."
+                    fullWidth
+                  />
+                ) : null}
                 <Button
                   variant="contained"
                   disabled={!docFile || uploadDocumentMutation.isPending}
-                  onClick={() => docFile && uploadDocumentMutation.mutate({ file: docFile, docType })}
+                  onClick={() => docFile && uploadDocumentMutation.mutate({ file: docFile, docType, donationAmount: docType === 'donation_receipts' ? Number(donationReceiptAmount || 0) : undefined })}
                 >
                   {uploadDocumentMutation.isPending ? 'Uploading…' : 'Upload document'}
                 </Button>
@@ -707,6 +732,23 @@ export default function WorkspaceDetail() {
                                   {doc.docType} · {Math.round((doc.size || 0) / 1024)} KB · {doc.status}
                                 </Typography>
                               </Box>
+                              {doc.docType === 'donation_receipts' ? (
+                                <TextField
+                                  size="small"
+                                  label="Donation total on this receipt upload (NZD)"
+                                  type="number"
+                                  value={String(doc.donationAmount ?? 0)}
+                                  onChange={(event) => {
+                                    updateDocumentDonationAmountMutation.mutate({
+                                      documentId: doc.id,
+                                      donationAmount: Number(event.target.value || 0),
+                                    })
+                                  }}
+                                  disabled={updateDocumentDonationAmountMutation.isPending}
+                                  helperText="Used in the donation receipts total that feeds the draft calculation."
+                                  fullWidth
+                                />
+                              ) : null}
                               {linkedEvidence.length > 0 ? (
                                 <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                                   {linkedEvidence.map((item) => (
@@ -907,7 +949,7 @@ export default function WorkspaceDetail() {
                       Add extra items here if they were not already included elsewhere. These can change your draft refund or tax to pay.
                     </Typography>
                     <Stack spacing={2}>
-                      <TextField label="Donation amount (NZD)" type="number" value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} helperText="Total eligible donations for the year. Use your donation receipts and include only claimable gifts." fullWidth />
+                      <TextField label="Extra manual donation amount (NZD)" type="number" value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} helperText="Add any claimable donation amount not already captured in uploaded donation receipt totals." fullWidth />
                       <TextField label="PIE income (NZD)" type="number" value={pieIncome} onChange={(e) => setPieIncome(e.target.value)} helperText="Income from portfolio investment entities, usually shown on an annual tax certificate from your provider." fullWidth />
                       <TextField label="PIE tax credits (NZD)" type="number" value={pieTaxCredits} onChange={(e) => setPieTaxCredits(e.target.value)} helperText="Tax already paid within your PIE investment. Enter the credit amount from your annual statement." fullWidth />
                       <TextField label="Student loan repayments (NZD)" type="number" value={studentLoanRepayments} onChange={(e) => setStudentLoanRepayments(e.target.value)} helperText="Add repayments already made through PAYE or separately if you need them reflected in this draft." fullWidth />

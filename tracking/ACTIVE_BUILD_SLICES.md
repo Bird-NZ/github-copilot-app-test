@@ -22,33 +22,36 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] targeted frontend evidence-flow tests added and passing
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
-  - [ ] audit tab evidence trail readability improved and validated
-  - [ ] next post-audit slice selected or exact blocker recorded
+  - [x] audit tab evidence trail readability improved and validated
+  - [x] warning-level evidence overrides persisted per warning code
+  - [x] donation receipts totals + calc wiring implemented and validated
+  - [ ] PIE income + tax credit refinement implemented and validated
 - files touched:
-  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/package.json`
-  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/package-lock.json`
-  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/vite.config.ts`
-  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
-  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/workspaceEvidence.ts`
-  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/workspaceEvidence.test.ts`
+  - `nz-tax-app/src/api/modules/documentStore.js`
+  - `nz-tax-app/src/api/modules/mappingEngine.js`
+  - `nz-tax-app/src/api/modules/reviewService.js`
   - `nz-tax-app/src/api/modules/auditStore.js`
+  - `nz-tax-app/src/api/server.js`
+  - `nz-tax-app/src/api/tests/smoke.sh`
+  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
+  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
 - tests run:
-  - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm test`
-  - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
+  - `cd nz-tax-app/src/api && bash tests/failure.sh`
+  - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. checkpoint Slice 2F commit cleanly
-  2. checkpoint audit-trail slice cleanly
-  3. determine next queue slice from remaining Tranche 2 backlog or record blocker
+  1. inspect current PIE income/tax-credit handling gaps
+  2. implement the smallest refinement that improves calc/review trustworthiness
+  3. validate and checkpoint Slice 5
 - review notes:
-  - Slice 2F is complete and committed
-  - audit trail readability slice is complete and committed
-  - next ordered slice is manual override for warning-level evidence, but persistence semantics are not specified tightly enough to ship without choosing the data model
-- commit: `cbbb932` (`Improve audit evidence trail readability`)
+  - Slice 3 is complete and committed as per-warning-code persistence
+  - Slice 4 is complete locally and ready to checkpoint
+  - the next ordered slice is PIE income + tax credit refinement
+- commit: `07cf980` (`Add per-warning evidence overrides`)
 - what's next:
-  1. decide whether warning overrides persist per warning code, per warning instance, or per document-derived evidence set
-  2. implement backend storage + API once that model is fixed
-  3. add matching frontend controls/tests and continue the queue
+  1. checkpoint Slice 4 commit cleanly
+  2. inspect PIE treatment in calc/review/export copy
+  3. continue the queue unless a real blocker appears
 - last updated: 2026-03-30
 
 ## Update rule

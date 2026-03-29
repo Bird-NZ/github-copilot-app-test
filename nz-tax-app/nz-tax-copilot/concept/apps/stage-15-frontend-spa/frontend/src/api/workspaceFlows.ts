@@ -69,6 +69,7 @@ export type WorkspaceDocument = {
   docType: string
   status: string
   uploadedAt: string
+  donationAmount?: number
   evidenceLink?: DocumentEvidenceLink
   evidenceLinks?: ManualDocumentEvidenceLink[]
 }
@@ -266,10 +267,13 @@ export const workspaceFlowsApi = {
     return response.data?.income
   },
 
-  async uploadDocument(workspaceId: string, file: File, docType: string): Promise<WorkspaceDocument> {
+  async uploadDocument(workspaceId: string, file: File, docType: string, donationAmount?: number): Promise<WorkspaceDocument> {
     const form = new FormData()
     form.append('file', file)
     form.append('docType', docType)
+    if (docType === 'donation_receipts' && typeof donationAmount === 'number' && !Number.isNaN(donationAmount)) {
+      form.append('donationAmount', String(donationAmount))
+    }
     const response = await apiClient.post(`/workspaces/${workspaceId}/documents`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
@@ -282,6 +286,11 @@ export const workspaceFlowsApi = {
       items: response.data?.items || [],
       evidenceLinkOptions: response.data?.evidenceLinkOptions || [],
     }
+  },
+
+  async updateDocumentDonationAmount(workspaceId: string, documentId: string, donationAmount: number): Promise<WorkspaceDocument> {
+    const response = await apiClient.patch(`/workspaces/${workspaceId}/documents/${documentId}/donation-amount`, { donationAmount })
+    return response.data?.document
   },
 
   async updateDocumentEvidenceLink(workspaceId: string, documentId: string, evidenceLinks: DocumentEvidenceLinksPayload): Promise<WorkspaceDocument> {

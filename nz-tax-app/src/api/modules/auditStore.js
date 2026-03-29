@@ -4,6 +4,7 @@ const ACTION_LABELS = {
   'workspace.create': 'Workspace created',
   'questionnaire.save': 'Questionnaire updated',
   'document.upload': 'Document uploaded',
+  'document.donation_amount.save': 'Donation amount updated',
   'crypto.import_csv': 'Crypto CSV imported',
 };
 
@@ -53,7 +54,15 @@ function describeEvidenceLink(meta = {}) {
 
 function buildDetails(action, meta = {}) {
   if (action === 'document.upload' && meta.docType) {
-    return `Type: ${titleCase(meta.docType)}`;
+    const parts = [`Type: ${titleCase(meta.docType)}`]
+    if (meta.docType === 'donation_receipts' && Number(meta.donationAmount || 0) > 0) {
+      parts.push(`Donation total: ${Number(meta.donationAmount).toFixed(2)}`)
+    }
+    return parts.join(' — ')
+  }
+
+  if (action === 'document.donation_amount.save') {
+    return `Document: ${meta.documentId || 'unknown'} — Donation total: ${Number(meta.donationAmount || 0).toFixed(2)}`
   }
 
   if (action === 'document.evidence_link.save') {

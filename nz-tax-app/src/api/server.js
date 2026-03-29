@@ -3,7 +3,7 @@ import multer from 'multer';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
 import { createWorkspace, getWorkspace, listWorkspaces, setWorkspaceQuestionnaireAnswers, updateWorkspace } from './modules/workspaceStore.js';
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
-import { addDocument, checklist, documents, updateDocumentEvidenceLink } from './modules/documentStore.js';
+import { addDocument, checklist, documents, updateDocumentDonationAmount, updateDocumentEvidenceLink } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
 import { importTransactions, listTransactions, parseCsv } from './modules/cryptoStore.js';
 import { explainIr3Values, getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
@@ -22,7 +22,7 @@ function buildWorkspaceSummary(workspace) {
   const answers = workspace.questionnaireAnswers || {};
   const visible = visibleQuestions(answers);
   const status = completionStatus(answers);
-  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
   const review = buildReview(workspace, map, calc, docs, cryptoTx);
   const incomeCount = Object.values(income || {}).reduce((sum, rows) => sum + (Array.isArray(rows) ? rows.length : 0), 0);
@@ -215,9 +215,10 @@ app.post('/workspaces/:id/documents', requireSession, upload.single('file'), (re
     originalName: req.file.originalname,
     mimeType: req.file.mimetype,
     size: req.file.size,
-    docType: req.body?.docType || 'other'
+    docType: req.body?.docType || 'other',
+    donationAmount: req.body?.donationAmount,
   });
-  logEvent(workspace.id, { action: 'document.upload', actor: req.session.userId, meta: { docType: doc.docType } });
+  logEvent(workspace.id, { action: 'document.upload', actor: req.session.userId, meta: { docType: doc.docType, donationAmount: doc.donationAmount } });
   return res.status(201).json({ document: doc });
 });
 
@@ -228,6 +229,25 @@ app.get('/workspaces/:id/documents', requireSession, (req, res) => {
     items: documents(workspace.id),
     evidenceLinkOptions: REVIEW_EVIDENCE_OPTIONS,
   });
+});
+
+app.patch('/workspaces/:id/documents/:documentId/donation-amount', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const updated = updateDocumentDonationAmount(workspace.id, req.params.documentId, req.body?.donationAmount);
+  if (!updated) return res.status(404).json({ error: 'DOCUMENT_NOT_FOUND' });
+
+  logEvent(workspace.id, {
+    action: 'document.donation_amount.save',
+    actor: req.session.userId,
+    meta: {
+      documentId: updated.id,
+      donationAmount: updated.donationAmount,
+    },
+  });
+
+  return res.json({ document: updated });
 });
 
 app.patch('/workspaces/:id/documents/:documentId/evidence-link', requireSession, (req, res) => {
@@ -320,7 +340,8 @@ app.get('/workspaces/:id/ir3/map', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
   return res.json({ map });
 });
 
@@ -329,7 +350,8 @@ app.get('/workspaces/:id/ir3/calc', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
   return res.json({ map, calc, explanation });
@@ -340,10 +362,11 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
-  const review = buildReview(workspace, map, calc, documents(workspace.id), cryptoTx);
+  const review = buildReview(workspace, map, calc, docs, cryptoTx);
   const csv = buildCsv(map, calc, explanation);
   const pdf = await buildPdfDocument(map, calc, explanation);
   const json = {
@@ -410,9 +433,10 @@ app.patch('/workspaces/:id/review/warnings/:warningCode/evidence', requireSessio
 
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {} });
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
-  const review = buildReview(updatedWorkspace, map, calc, documents(workspace.id), cryptoTx);
+  const review = buildReview(updatedWorkspace, map, calc, docs, cryptoTx);
   return res.json({ review });
 });
 
@@ -421,9 +445,10 @@ app.get('/workspaces/:id/review', requireSession, (req, res) => {
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
   const income = listIncome(workspace.id);
   const cryptoTx = listTransactions(workspace.id);
-  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {} });
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
-  const review = buildReview(workspace, map, calc, documents(workspace.id), cryptoTx);
+  const review = buildReview(workspace, map, calc, docs, cryptoTx);
   return res.json({ review });
 });
 

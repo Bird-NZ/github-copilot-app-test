@@ -34,7 +34,12 @@ function withNormalizedEvidenceLinks(document) {
   };
 }
 
-export function addDocument({ workspaceId, filename, originalName, mimeType, size, docType }) {
+function normalizeDonationAmount(value) {
+  const amount = Number(value || 0);
+  return Number.isFinite(amount) && amount > 0 ? Number(amount.toFixed(2)) : 0;
+}
+
+export function addDocument({ workspaceId, filename, originalName, mimeType, size, docType, donationAmount }) {
   const item = {
     id: uuid(),
     workspaceId,
@@ -45,6 +50,7 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
     docType: docType || 'other',
     status: 'received',
     uploadedAt: new Date().toISOString(),
+    donationAmount: docType === 'donation_receipts' ? normalizeDonationAmount(donationAmount) : 0,
     evidenceLinks: [],
     evidenceLink: null,
   };
@@ -57,6 +63,26 @@ export function addDocument({ workspaceId, filename, originalName, mimeType, siz
   });
 
   return item;
+}
+
+export function updateDocumentDonationAmount(workspaceId, documentId, donationAmount) {
+  let updated = null;
+
+  updateData(state => {
+    const docs = state.documentsByWorkspace[workspaceId] || [];
+    const index = docs.findIndex(doc => doc.id === documentId);
+    if (index === -1) return state;
+
+    docs[index] = withNormalizedEvidenceLinks({
+      ...docs[index],
+      donationAmount: docs[index].docType === 'donation_receipts' ? normalizeDonationAmount(donationAmount) : 0,
+    });
+    updated = docs[index];
+    state.documentsByWorkspace[workspaceId] = docs;
+    return state;
+  });
+
+  return updated;
 }
 
 export function updateDocumentEvidenceLink(workspaceId, documentId, evidenceLink) {

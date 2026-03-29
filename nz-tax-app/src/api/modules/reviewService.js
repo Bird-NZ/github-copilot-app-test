@@ -233,14 +233,14 @@ function pickEvidenceForWarning(code, evidence = [], docs = [], override = null)
   return [];
 }
 
-function buildAdjustmentSummary(adjustments = {}) {
+function buildAdjustmentSummary(adjustments = {}, mappedSummary = {}) {
   return [
     {
       key: 'donationAmount',
-      label: 'Donation claims entered',
-      value: moneyText(adjustments.donationAmount),
+      label: 'Donation claims total',
+      value: moneyText(mappedSummary.donationAmount),
       description: 'Charitable donations that may support a donation tax credit claim.',
-      source: 'Taken from donation adjustments entered in this workspace.',
+      source: `Built from donation receipt totals (${moneyText(mappedSummary.donationReceiptAmount)}) plus manual donation adjustments (${moneyText(mappedSummary.donationAdjustmentAmount)}).`,
     },
     {
       key: 'pieIncome',
@@ -384,11 +384,11 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     evidence,
     crypto,
     summary: {
-      donationAmount: money(adjustments.donationAmount),
+      donationAmount: money(map?.summary?.donationAmount || 0),
       pieIncome: money(adjustments.pieIncome),
       pieTaxCredits: money(adjustments.pieTaxCredits),
       studentLoanRepayments: money(adjustments.studentLoanRepayments),
-      items: buildAdjustmentSummary(adjustments),
+      items: buildAdjustmentSummary(adjustments, map?.summary || {}),
     },
   };
 }

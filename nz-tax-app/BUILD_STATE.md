@@ -1,12 +1,12 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 2 / Slice 2G complete (evidence trail in audit tab readability)
-- Tranche 2 / Slice 3 started (manual override for warning-level evidence)
-- Queue currently blocked on a product-model decision for Slice 3 persistence semantics
+- Tranche 2 / Slice 4 complete (donation receipts totals + calc wiring)
+- Tranche 2 / Slice 5 started (PIE income + tax credit refinement)
+- Queue currently active
 
 ## Current objective
-Resolve the warning-override persistence model, then continue the ordered queue from manual warning-level evidence onward.
+Continue the ordered queue from PIE income + tax credit refinement onward.
 
 ## Last completed milestone
 - Audit events now surface readable labels/details for document evidence-link saves instead of raw action codes in the workspace audit tab
