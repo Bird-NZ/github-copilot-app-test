@@ -108,6 +108,10 @@ function getWarningEvidenceLabel(warning: ReviewWarning, item: ReviewEvidenceIte
   return item.document
 }
 
+function getIr3FieldEvidenceLabel(item: ReviewEvidenceItem) {
+  return item.supports || item.document
+}
+
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
@@ -308,6 +312,14 @@ export default function WorkspaceDetail() {
   const review: ReviewPayload | undefined = reviewQuery.data || exportQuery.data?.review
   const reviewWarnings = review?.warnings || []
   const reviewEvidence = review?.evidence || []
+  const reviewEvidenceByIr3Ref = useMemo(() => {
+    return reviewEvidence.reduce((acc, item) => {
+      for (const ref of item.ir3Refs || []) {
+        acc[ref] = [...(acc[ref] || []), item]
+      }
+      return acc
+    }, {} as Record<string, ReviewEvidenceItem[]>)
+  }, [reviewEvidence])
   const highSeverityWarningCount = reviewWarnings.filter((warning) => warning.severity === 'high').length
 
   const adjustments = adjustmentsQuery.data || {
@@ -880,6 +892,7 @@ export default function WorkspaceDetail() {
                     {summaryItems.map(([ref, value]) => {
                       const fieldNote = fieldNotesByRef[ref] as { ref?: string; label?: string; note?: string; source?: string } | undefined
                       const friendlyLabel = fieldNote?.label || titleCase(ref)
+                      const fieldEvidence = reviewEvidenceByIr3Ref[ref] || []
 
                       return (
                         <Card key={ref} variant="outlined">
@@ -894,6 +907,22 @@ export default function WorkspaceDetail() {
                               </Stack>
                               {fieldNote?.note ? (
                                 <Typography variant="body2" color="text.secondary">{fieldNote.note}</Typography>
+                              ) : null}
+                              {fieldEvidence.length > 0 ? (
+                                <Stack spacing={0.75}>
+                                  <Typography variant="caption" color="text.secondary">Supporting evidence mapped to this field</Typography>
+                                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                    {fieldEvidence.map((item) => (
+                                      <Chip
+                                        key={`${ref}-${item.documentId}-${item.supports}`}
+                                        size="small"
+                                        variant="outlined"
+                                        color={item.linkMode === 'manual' ? 'primary' : 'default'}
+                                        label={`${item.linkMode === 'manual' ? 'Manual' : 'Auto'} · ${getIr3FieldEvidenceLabel(item)}`}
+                                      />
+                                    ))}
+                                  </Stack>
+                                </Stack>
                               ) : null}
                               {fieldNote?.source ? (
                                 <Typography variant="caption" color="text.secondary">Where this came from: {fieldNote.source}</Typography>

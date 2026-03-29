@@ -180,3 +180,9 @@ Append-only ledger for active build work.
   - Next action: Update BUILD_STATE closeout and commit Slice 2D.
   - Status: Done
   - Next update due by: n/a
+
+- 22:31 NZDT
+  - What changed: Tranche 2 / Slice 2E is complete. IR3 Summary cards now show field-level supporting evidence derived from existing review/document links, PAYE summaries also map to IR3 11A, backend smoke passed, frontend build passed, the live Azure frontend was updated, and the deployed bundle was verified.
+  - Next action: Update BUILD_STATE/queue closeout and commit Slice 2E.
+  - Status: Done
+  - Next update due by: n/a

@@ -49,7 +49,7 @@ export const REVIEW_EVIDENCE_OPTIONS = [
       mode: 'manual',
       supports: 'PAYE income',
       section: 'Income',
-      ir3Refs: ['11B', '11C'],
+      ir3Refs: ['11A', '11B', '11C'],
       summaryKey: null,
     },
   },
