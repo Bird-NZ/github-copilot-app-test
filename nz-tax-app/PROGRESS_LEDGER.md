@@ -191,3 +191,8 @@ Append-only ledger for active build work.
   - Next action: Commit Slice 2F, then checkpoint the audit-trail readability slice separately.
   - Status: In Progress
   - Next update due by: 09:24 NZDT
+- 09:21 NZDT
+  - What changed: Follow-on audit slice landed locally. Audit entries for evidence-link saves and adjustment saves now read like human-facing history rather than raw event codes, and validation re-passed cleanly.
+  - Next action: Commit the audit-trail slice, then determine whether a next queue slice is explicitly defined or whether the queue is blocked on missing slice definition/spec.
+  - Status: In Progress
+  - Next update due by: 09:26 NZDT

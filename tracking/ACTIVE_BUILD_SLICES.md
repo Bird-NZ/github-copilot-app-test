@@ -41,13 +41,13 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   2. checkpoint audit-trail slice cleanly
   3. determine next queue slice from remaining Tranche 2 backlog or record blocker
 - review notes:
-  - Slice 2F is complete and validated locally
-  - audit trail readability slice is implemented locally and awaiting checkpoint
-- commit: pending
+  - Slice 2F is complete and committed
+  - audit trail readability slice is complete and validated locally
+- commit: in progress
 - what's next:
-  1. commit Slice 2F
-  2. commit audit trail slice
-  3. continue to next smallest Tranche 2 slice
+  1. commit audit trail slice
+  2. determine next smallest Tranche 2 slice
+  3. record exact blocker if no next slice is explicitly defined
 - last updated: 2026-03-30
 
 ## Update rule

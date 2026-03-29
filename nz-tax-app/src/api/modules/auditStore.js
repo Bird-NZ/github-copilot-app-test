@@ -35,9 +35,44 @@ function buildLabel(action) {
   return titleCase(action);
 }
 
+function describeEvidenceLink(meta = {}) {
+  const evidenceLink = meta.evidenceLink;
+  if (!evidenceLink) return 'Automatic link'
+  if (evidenceLink.mode === 'none') return 'No evidence link'
+  if (Array.isArray(evidenceLink)) {
+    const labels = evidenceLink
+      .map((item) => item?.supports || item?.section || null)
+      .filter(Boolean)
+    return labels.length > 0 ? `Manual links: ${labels.join(', ')}` : 'Manual evidence links saved'
+  }
+  if (evidenceLink.mode === 'manual') {
+    return `Manual link: ${evidenceLink.supports || evidenceLink.section || 'custom evidence'}`
+  }
+  return 'Evidence link updated'
+}
+
 function buildDetails(action, meta = {}) {
   if (action === 'document.upload' && meta.docType) {
     return `Type: ${titleCase(meta.docType)}`;
+  }
+
+  if (action === 'document.evidence_link.save') {
+    const parts = [];
+    if (meta.documentId) parts.push(`Document: ${meta.documentId}`)
+    parts.push(describeEvidenceLink(meta))
+    return parts.filter(Boolean).join(' — ')
+  }
+
+  if (action === 'adjustments.save') {
+    const parts = [
+      ['Donations', meta.donationAmount],
+      ['PIE income', meta.pieIncome],
+      ['PIE credits', meta.pieTaxCredits],
+      ['Student loan', meta.studentLoanRepayments],
+    ]
+      .filter(([, value]) => Number(value || 0) > 0)
+      .map(([label, value]) => `${label}: ${Number(value).toFixed(2)}`)
+    return parts.length > 0 ? parts.join(' · ') : 'Adjustment values updated'
   }
 
   if (action === 'questionnaire.save') {
