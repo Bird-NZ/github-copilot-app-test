@@ -13,47 +13,44 @@ Update this file when a meaningful build slice starts, changes stage, completes,
 
 ## Current slices
 
-### NZ Tax App / Tranche 2 / evidence confidence queue
+### NZ Tax App / Tranche 3 / filing readiness queue
 - lane: active software build
 - agent: ClawDev
-- stage: complete
-- goal: finish the evidence-confidence follow-on slices after IR3 field evidence mapping
+- stage: implementing
+- goal: turn the post–Tranche 2 draft into an explicit filing-readiness workflow with visible blockers, next actions, and reviewer-friendly handoff state
 - acceptance criteria:
-  - [x] targeted frontend evidence-flow tests added and passing
+  - [x] submission-readiness model added to review payload
+  - [x] workspace surfaces submission-readiness state clearly
+  - [x] export path carries submission blocker data
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
-  - [x] audit tab evidence trail readability improved and validated
-  - [x] warning-level evidence overrides persisted per warning code
-  - [x] donation receipts totals + calc wiring implemented and validated
-  - [x] PIE income + tax credit refinement implemented and validated
-  - [x] student loan treatment visibility implemented and validated
-  - [x] tax already deducted refinement implemented and validated
-  - [x] provisional tax threshold / residual-tax polish implemented and validated
-  - [x] submission-ready export pack upgrade implemented and validated
+  - [ ] blocker-to-surface routing added
+  - [ ] applicable-document precision tightened across all review states
+  - [ ] reviewer-friendly filing summary completed in export pack
 - files touched:
-  - `nz-tax-app/src/api/modules/calcEngine.js`
-  - `nz-tax-app/src/api/modules/exportService.js`
-  - `nz-tax-app/src/api/modules/ir3Service.js`
+  - `nz-tax-app/docs/backlog/TRANCHE3_FILING_READINESS.md`
   - `nz-tax-app/src/api/modules/reviewService.js`
-  - `nz-tax-app/src/api/server.js`
+  - `nz-tax-app/src/api/modules/exportService.js`
   - `nz-tax-app/src/api/tests/smoke.sh`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
   - `nz-tax-app/BUILD_STATE.md`
+  - `nz-tax-app/PROGRESS_LEDGER.md`
   - `tracking/ACTIVE_BUILD_SLICES.md`
 - tests run:
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. keep the queue marked complete unless a new slice is defined
-  2. start the next tranche only after the next explicit queue decision
+  1. checkpoint Slice 1
+  2. continue into Slice 2 blocker-to-surface routing
+  3. stop only if a real product/runtime blocker appears
 - review notes:
-  - Slice 8 and Slice 9 both landed locally and validated cleanly
-  - The currently defined overnight queue is exhausted
+  - Tranche 3 was selected because review/submission confidence is the tightest next leverage after Tranche 2
+  - Slice 1 is complete and validated; queue remains active
 - commit: pending
 - what's next:
-  1. commit the completed queue checkpoint
-  2. only open a new active slice when the next tranche is defined
+  1. checkpoint commit for Slice 1
+  2. start Slice 2 blocker-to-surface routing
 - last updated: 2026-03-30
 
 ## Update rule

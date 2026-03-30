@@ -1,43 +1,37 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 2 / Slice 5 complete (PIE income + tax credit refinement)
-- Tranche 2 / Slice 6 complete (student loan treatment visibility)
-- Tranche 2 / Slice 7 complete (tax already deducted refinement)
-- Tranche 2 / Slice 8 complete (provisional tax threshold / residual-tax polish)
-- Tranche 2 / Slice 9 complete (submission-ready export pack upgrade)
-- Queue currently complete
+- Tranche 3 / Slice 1 complete (explicit submission-readiness gate)
+- Tranche 3 queue is now active
 
 ## Current objective
-Close out the Tranche 2 queue state cleanly and prepare the next tranche definition if Mat wants further refinement.
+Move the app from a strong draft/export state into explicit filing-readiness flow so users can see whether the draft is ready for final human review and exactly what still blocks submission preparation.
 
 ## Last completed milestones
-- Slice 8 now uses the official provisional-tax baseline in the simplified model: modeled residual income tax above NZ$5,000 surfaces provisional-tax relevance, and the default estimate basis is the standard option uplift of 5%
-- Review summaries, IR3 explanations, PDF export, and workspace UI now explain the residual-tax/provisional-tax relationship explicitly
-- Slice 9 upgraded the export pack so CSV/PDF/JSON now carry review warnings/assumptions and a supporting-document checklist
+- Defined Tranche 3 as a filing-readiness queue focused on review/submission confidence instead of adding another broad product area
+- Review payload now includes `submissionReadiness` with questionnaire completeness, applicable-document coverage, explicit blockers, and next actions
+- Workspace UI now surfaces submission readiness both at the top level and inside IR3 Summary
+- Export CSV/PDF/JSON now carry submission blocker data as part of the review/export pack
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 
 ## Recently completed slices
 
-### Slice 8 — provisional tax threshold / residual-tax polish
-- Added explicit provisional-tax status metadata to the calc summary
-- Refined review warnings and plain-English explanation text to use the > NZ$5,000 residual income tax threshold and standard-option 5% uplift basis
-- Added dedicated provisional-tax visibility in the workspace review UI and PDF export
-
-### Slice 9 — submission-ready export pack upgrade
-- Extended draft export CSV with review warnings, assumptions, and checklist rows
-- Extended PDF sections to include review readiness and supporting-document checklist content
-- Extended JSON export payload to include the supporting-document checklist
+### Tranche 3 / Slice 1 — explicit submission-readiness gate
+- Added a new submission-readiness model to the review payload
+- Derived explicit blockers from incomplete questionnaire state, applicable missing documents, and high-severity warnings
+- Added user-facing next actions to make the review path obvious
+- Surfaced the new readiness summary in the workspace dashboard and IR3 Summary
+- Included submission blockers in export outputs
 
 ## Next tasks
-1. If Mat wants the next tranche, define the next review/export or deployment slice explicitly
-2. Otherwise keep this queue marked complete
+1. Start Tranche 3 / Slice 2: blocker-to-surface routing so each blocker points clearly to the tab or action that resolves it
+2. Then tighten applicable-document precision and review-ready export summarisation
 
 ## Known blockers
-- No active technical blocker on the completed Tranche 2 queue
-- Next work now depends on selecting the next tranche/slice beyond the currently defined queue
+- No active technical blocker on Tranche 3 / Slice 1
+- Next slice is clear and queueable
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

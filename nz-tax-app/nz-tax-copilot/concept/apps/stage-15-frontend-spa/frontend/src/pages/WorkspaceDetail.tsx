@@ -290,6 +290,7 @@ export default function WorkspaceDetail() {
   const review: ReviewPayload | undefined = reviewQuery.data || exportQuery.data?.review
   const reviewWarnings = review?.warnings || []
   const reviewEvidence = review?.evidence || []
+  const submissionReadiness = review?.submissionReadiness
   const reviewEvidenceByIr3Ref = useMemo(() => {
     return reviewEvidence.reduce((acc, item) => {
       for (const ref of item.ir3Refs || []) {
@@ -476,6 +477,56 @@ export default function WorkspaceDetail() {
             </Stack>
           </CardContent>
         </Card>
+
+
+        {submissionReadiness ? (
+          <Card>
+            <CardContent>
+              <Stack spacing={2}>
+                <Typography variant="h6">Submission readiness</Typography>
+                <Alert severity={submissionReadiness.status === 'ready_to_review' ? 'success' : 'warning'}>
+                  {submissionReadiness.status === 'ready_to_review'
+                    ? 'No explicit filing blockers are currently open. The draft looks ready for final human review before submission.'
+                    : `${submissionReadiness.blockerCount} filing blocker${submissionReadiness.blockerCount === 1 ? '' : 's'} still need attention before this draft should be treated as submission-ready.`}
+                </Alert>
+                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                  <Chip
+                    label={`Questionnaire: ${submissionReadiness.questionnaire.answeredVisible}/${submissionReadiness.questionnaire.totalVisible}`}
+                    color={submissionReadiness.questionnaire.complete ? 'success' : 'default'}
+                    variant="outlined"
+                  />
+                  <Chip
+                    label={`Documents: ${submissionReadiness.documents.receivedCount}/${submissionReadiness.documents.applicableCount}`}
+                    color={submissionReadiness.documents.receivedCount >= submissionReadiness.documents.applicableCount && submissionReadiness.documents.applicableCount > 0 ? 'success' : 'default'}
+                    variant="outlined"
+                  />
+                  <Chip
+                    label={`High-severity warnings: ${highSeverityWarningCount}`}
+                    color={highSeverityWarningCount > 0 ? 'error' : 'success'}
+                    variant="outlined"
+                  />
+                </Stack>
+                {submissionReadiness.blockers.length > 0 ? (
+                  <Stack spacing={1}>
+                    {submissionReadiness.blockers.slice(0, 4).map((blocker) => (
+                      <Alert key={blocker.code} severity={blocker.severity === 'high' ? 'error' : 'warning'}>
+                        <Typography variant="body2"><strong>{blocker.label}:</strong> {blocker.message}</Typography>
+                      </Alert>
+                    ))}
+                  </Stack>
+                ) : null}
+                {submissionReadiness.nextActions.length > 0 ? (
+                  <Stack spacing={0.5}>
+                    <Typography variant="subtitle2">Next actions</Typography>
+                    {submissionReadiness.nextActions.slice(0, 3).map((action, index) => (
+                      <Typography key={index} variant="body2" color="text.secondary">• {action}</Typography>
+                    ))}
+                  </Stack>
+                ) : null}
+              </Stack>
+            </CardContent>
+          </Card>
+        ) : null}
 
         {reviewWarnings.length > 0 ? (
           <Card>
@@ -1097,6 +1148,26 @@ export default function WorkspaceDetail() {
                               <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                                 <Chip size="small" variant="outlined" label={review.summary.studentLoanStatus.hasStatement ? 'Statement uploaded' : 'Statement missing'} color={review.summary.studentLoanStatus.hasStatement ? 'success' : 'default'} />
                                 <Chip size="small" variant="outlined" label={review.summary.studentLoanStatus.repaymentsEntered > 0 ? `Repayments entered: ${formatFieldValue(review.summary.studentLoanStatus.repaymentsEntered)}` : 'Repayments not entered yet'} color={review.summary.studentLoanStatus.repaymentsEntered > 0 ? 'success' : 'default'} />
+                              </Stack>
+                            </Stack>
+                          </Alert>
+                        </Stack>
+                      ) : null}
+
+                      {submissionReadiness ? (
+                        <Stack spacing={1.25} sx={{ mb: (review.assumptions || []).length > 0 ? 2 : 0 }}>
+                          <Typography variant="subtitle2">Submission readiness</Typography>
+                          <Alert severity={submissionReadiness.status === 'ready_to_review' ? 'success' : 'warning'}>
+                            <Stack spacing={0.75}>
+                              <Typography variant="body2">
+                                {submissionReadiness.status === 'ready_to_review'
+                                  ? 'The draft currently has no explicit filing blockers, but it should still get a final human review before submission.'
+                                  : `The draft still has ${submissionReadiness.blockerCount} explicit filing blocker${submissionReadiness.blockerCount === 1 ? '' : 's'} to clear.`}
+                              </Typography>
+                              <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                <Chip size="small" variant="outlined" label={`Questionnaire ${submissionReadiness.questionnaire.answeredVisible}/${submissionReadiness.questionnaire.totalVisible}`} color={submissionReadiness.questionnaire.complete ? 'success' : 'default'} />
+                                <Chip size="small" variant="outlined" label={`Docs ${submissionReadiness.documents.receivedCount}/${submissionReadiness.documents.applicableCount}`} color={submissionReadiness.documents.receivedCount >= submissionReadiness.documents.applicableCount && submissionReadiness.documents.applicableCount > 0 ? 'success' : 'default'} />
+                                <Chip size="small" variant="outlined" label={`Blockers ${submissionReadiness.blockerCount}`} color={submissionReadiness.blockerCount > 0 ? 'warning' : 'success'} />
                               </Stack>
                             </Stack>
                           </Alert>

@@ -1,3 +1,5 @@
+import { completionStatus } from './questionnaireEngine.js';
+
 function money(value) {
   return Number((Number(value || 0)).toFixed(2));
 }
@@ -334,6 +336,104 @@ function buildCryptoGuidance(transactions = [], docs = [], questionnaireAnswers 
   };
 }
 
+
+function buildSubmissionReadiness({ questionnaireAnswers = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {} }) {
+  const questionnaire = completionStatus(questionnaireAnswers);
+  const missingItems = [];
+
+  if (!questionnaire.complete) {
+    missingItems.push({
+      code: 'QUESTIONNAIRE_INCOMPLETE',
+      severity: 'high',
+      label: 'Complete the questionnaire',
+      message: `Answer the remaining visible questionnaire prompts (${questionnaire.answeredVisible}/${questionnaire.totalVisible} answered).`,
+    });
+  }
+
+  const applicableDocuments = [
+    {
+      docType: 'paye_summary',
+      label: 'PAYE summary',
+      required: money(map?.summary?.payeGross || 0) > 0,
+      reason: 'PAYE income has been entered and should be backed by an employer summary or year-end earnings record.',
+    },
+    {
+      docType: 'interest_dividend_slips',
+      label: 'Interest/dividend slips',
+      required: money(map?.summary?.interestIncome || 0) > 0 || money(map?.summary?.dividendIncome || 0) > 0,
+      reason: 'Interest or dividend income has been entered and should be backed by annual bank or investment statements.',
+    },
+    {
+      docType: 'student_loan_statement',
+      label: 'Student loan statement',
+      required: questionnaireAnswers.has_student_loan === true,
+      reason: 'Student loan treatment is in scope for this return.',
+    },
+    {
+      docType: 'donation_receipts',
+      label: 'Donation receipts',
+      required: money(map?.summary?.donationAmount || 0) > 0,
+      reason: 'Donation claims are included in the draft.',
+    },
+    {
+      docType: 'crypto_csv',
+      label: 'Crypto CSV/export',
+      required: crypto?.status?.saidHasCrypto === true || crypto?.status?.hasAnyCryptoActivity === true,
+      reason: 'Crypto activity was indicated or imported and should be backed by exchange or wallet exports.',
+    },
+  ]
+    .filter((item) => item.required)
+    .map((item) => ({
+      ...item,
+      received: docs.some((doc) => doc.docType === item.docType),
+    }));
+
+  for (const item of applicableDocuments.filter((item) => !item.received)) {
+    missingItems.push({
+      code: `DOC_${item.docType.toUpperCase()}_MISSING`,
+      severity: 'medium',
+      label: `Upload ${item.label}`,
+      message: item.reason,
+    });
+  }
+
+  warnings
+    .filter((warning) => warning.severity === 'high')
+    .forEach((warning) => {
+      missingItems.push({
+        code: `WARNING_${warning.code}`,
+        severity: 'high',
+        label: 'Resolve high-severity review warning',
+        message: warning.message,
+      });
+    });
+
+  const nextActions = [];
+  if (!questionnaire.complete) nextActions.push('Finish the remaining visible questionnaire questions.');
+  applicableDocuments
+    .filter((item) => !item.received)
+    .forEach((item) => nextActions.push(`Upload ${item.label.toLowerCase()} to support the draft figures.`));
+  if (warnings.some((warning) => warning.severity === 'high')) {
+    nextActions.push('Clear the high-severity review warnings before treating the draft as filing-ready.');
+  }
+  if (assumptions.length > 0) {
+    nextActions.push('Review the current assumptions and replace them with real figures or documents where possible.');
+  }
+
+  return {
+    status: missingItems.length === 0 ? 'ready_to_review' : 'action_needed',
+    blockerCount: missingItems.length,
+    questionnaire,
+    documents: {
+      applicableCount: applicableDocuments.length,
+      receivedCount: applicableDocuments.filter((item) => item.received).length,
+      items: applicableDocuments,
+    },
+    blockers: missingItems,
+    nextActions: Array.from(new Set(nextActions)),
+  };
+}
+
 export function buildReview(workspace, map, calc, docs = [], cryptoTransactions = []) {
   const adjustments = workspace?.adjustments || {};
   const questionnaireAnswers = workspace?.questionnaireAnswers || {};
@@ -396,11 +496,21 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
 
   const score = Math.max(0, 100 - warningsWithEvidence.length * 20 - assumptions.length * 8);
 
+  const submissionReadiness = buildSubmissionReadiness({
+    questionnaireAnswers,
+    map,
+    docs,
+    warnings: warningsWithEvidence,
+    assumptions,
+    crypto,
+  });
+
   return {
     readiness: {
       score,
       status: score >= 85 ? 'strong' : score >= 60 ? 'review_needed' : 'needs_attention',
     },
+    submissionReadiness,
     warnings: warningsWithEvidence,
     assumptions,
     evidence,

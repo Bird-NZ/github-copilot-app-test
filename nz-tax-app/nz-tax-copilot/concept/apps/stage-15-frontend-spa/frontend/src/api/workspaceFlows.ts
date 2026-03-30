@@ -151,6 +151,29 @@ export type ReviewPayload = {
     score: number
     status: 'strong' | 'review_needed' | 'needs_attention'
   }
+  submissionReadiness: {
+    status: 'ready_to_review' | 'action_needed'
+    blockerCount: number
+    questionnaire: QuestionnaireStatus
+    documents: {
+      applicableCount: number
+      receivedCount: number
+      items: Array<{
+        docType: string
+        label: string
+        reason: string
+        required: boolean
+        received: boolean
+      }>
+    }
+    blockers: Array<{
+      code: string
+      severity: string
+      label: string
+      message: string
+    }>
+    nextActions: string[]
+  }
   warnings: ReviewWarning[]
   assumptions: string[]
   evidence: ReviewEvidenceItem[]

@@ -237,3 +237,18 @@ Append-only ledger for active build work.
   - Next action: Commit the completed queue checkpoint and mark the queue complete unless a new tranche is defined.
   - Status: Done
   - Next update due by: n/a
+
+
+## 2026-03-30
+
+- 14:40 NZDT
+  - What changed: Inspected the post–Tranche 2 state and defined the next highest-leverage queue as Tranche 3 filing readiness, focused on making review/submission blockers explicit instead of adding another disconnected feature area.
+  - Next action: Implement Slice 1 by adding an explicit submission-readiness model to the review payload and surfacing it in the workspace UI/export path.
+  - Status: In Progress
+  - Next update due by: 14:50 NZDT
+
+- 14:49 NZDT
+  - What changed: Tranche 3 / Slice 1 is complete. Review payloads now expose submission readiness (questionnaire completeness, applicable-document coverage, blockers, next actions), the workspace UI shows it in both dashboard and IR3 Summary, and export outputs carry submission blockers. Backend smoke and frontend production build both passed.
+  - Next action: Update state/tracking docs, checkpoint commit, and continue into Slice 2 unless a real blocker appears.
+  - Status: Done
+  - Next update due by: on Slice 2 milestone or blocker

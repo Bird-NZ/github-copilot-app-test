@@ -38,6 +38,10 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
     rows.push(['review_assumption', `assumption_${index + 1}`, assumption]);
   });
 
+  (review?.submissionReadiness?.blockers || []).forEach((blocker, index) => {
+    rows.push(['submission_blocker', `blocker_${index + 1}`, `${blocker.code}: ${blocker.message}`]);
+  });
+
   (docChecklist || []).forEach((item) => {
     rows.push(['checklist', item.docType, `${item.status}:${item.count}`]);
   });
@@ -92,12 +96,13 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
       }
     }
 
-    if (review?.warnings?.length || review?.assumptions?.length) {
+    if (review?.warnings?.length || review?.assumptions?.length || review?.submissionReadiness?.blockers?.length) {
       doc.moveDown();
       doc.fontSize(14).text('Review warnings and assumptions');
       doc.fontSize(11);
       (review.warnings || []).forEach((warning) => doc.text(`Warning (${warning.severity}): ${warning.message}`));
       (review.assumptions || []).forEach((assumption) => doc.text(`Assumption: ${assumption}`));
+      (review.submissionReadiness?.blockers || []).forEach((blocker) => doc.text(`Submission blocker (${blocker.severity}): ${blocker.label} — ${blocker.message}`));
     }
 
     if (docChecklist?.length) {
