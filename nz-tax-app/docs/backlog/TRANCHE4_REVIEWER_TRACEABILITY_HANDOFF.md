@@ -48,4 +48,6 @@ Acceptance:
 ## Current slice state
 - Slice 1 complete: key-field traceability matrix
 - Slice 2 complete: traceability gap surfacing
-- Slice 3 next: reviewer follow-up pack
+- Slice 3 complete: reviewer follow-up pack
+- Slice 4 complete: source precision polish
+- Tranche 4 queue complete

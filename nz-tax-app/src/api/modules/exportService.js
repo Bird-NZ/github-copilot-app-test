@@ -24,7 +24,25 @@ function buildTraceabilitySummary(review = null) {
       label: gap.label,
       severity: gap.severity,
       reason: gap.reason,
+      fieldFamily: gap.fieldFamily,
+      requestArea: gap.requestArea,
+      requestText: gap.requestText,
+      suggestedDocTypes: gap.suggestedDocTypes || [],
     })),
+    followUpPack: {
+      headline: traceability?.followUpPack?.headline || '',
+      items: (traceability?.followUpPack?.items || []).map((item) => ({
+        id: item.id,
+        ref: item.ref,
+        label: item.label,
+        severity: item.severity,
+        fieldFamily: item.fieldFamily,
+        requestArea: item.requestArea,
+        requestText: item.requestText,
+        reason: item.reason,
+        suggestedDocTypes: item.suggestedDocTypes || [],
+      })),
+    },
   };
 }
 
@@ -115,6 +133,12 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   traceSummary.gaps.forEach((gap, index) => {
     rows.push(['traceability_gap', `gap_${index + 1}`, `${gap.ref}: ${gap.label} [${gap.severity}] ${gap.reason}`]);
   });
+  if (traceSummary.followUpPack?.headline) {
+    rows.push(['traceability_follow_up', 'headline', traceSummary.followUpPack.headline]);
+  }
+  (traceSummary.followUpPack?.items || []).forEach((item, index) => {
+    rows.push(['traceability_follow_up', `item_${index + 1}`, `${item.ref}: ${item.label} [${item.severity}] ${item.requestArea} — ${item.requestText}`]);
+  });
 
   (docChecklist || []).forEach((item) => {
     rows.push(['checklist', item.docType, `${item.label || item.docType}:${item.status}:${item.count}`]);
@@ -164,7 +188,15 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.fontSize(14).text('Reviewer traceability');
     doc.fontSize(11).text(`Key IR3 fields with attached evidence: ${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`);
     traceSummary.items.forEach((item) => doc.text(`• ${item.ref} ${item.label}: ${item.traceStatus} (${item.evidenceCount} evidence item${item.evidenceCount === 1 ? '' : 's'})`));
-    if (traceSummary.gaps.length) {
+    if (traceSummary.followUpPack?.headline) {
+      doc.moveDown(0.5);
+      doc.text(traceSummary.followUpPack.headline);
+    }
+    if (traceSummary.followUpPack?.items?.length) {
+      doc.moveDown(0.35);
+      doc.text('Reviewer follow-up pack:');
+      traceSummary.followUpPack.items.forEach((item) => doc.text(`- ${item.ref} ${item.label}: ${item.requestArea} — ${item.requestText}`));
+    } else if (traceSummary.gaps.length) {
       doc.moveDown(0.5);
       doc.text('Reviewer follow-up for traceability gaps:');
       traceSummary.gaps.forEach((gap) => doc.text(`- ${gap.ref} ${gap.label}: ${gap.reason}`));

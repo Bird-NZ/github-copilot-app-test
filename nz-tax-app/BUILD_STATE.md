@@ -15,6 +15,8 @@ Tranche 4 reviewer traceability handoff is now active. The draft already exposes
 - Workspace IR3 Summary now shows a reviewer-traceability overview so a human can quickly see evidence coverage across key fields
 - Traceability gaps are now surfaced explicitly as reviewer follow-up items for key fields that are explained but not yet evidenced
 - Export CSV/PDF/JSON now carry reviewer-traceability summary data and explicit traceability-gap follow-up lines as part of the handoff pack
+- Reviewer follow-up packs now name the next evidence request and the relevant uploaded-document area or field family for each key traceability gap
+- Source/provenance wording on key trace cards now states whether the value was entered manually, grouped from entered records, inferred, or calculated by the app instead of using vague provenance text
 - Tranche 3 remains complete and live: filing blockers, routing, applicable-document precision, export summary, and final human-review checklist are all in place
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds

@@ -24,12 +24,15 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] workspace IR3 Summary surfaces reviewer traceability coverage
   - [x] export CSV/PDF carries traceability summary for handoff
   - [x] traceability gaps surfaced explicitly for reviewer follow-up
+  - [x] export follow-up pack includes next evidence request + relevant uploaded-document area or field family
+  - [x] key trace/source wording states whether a value is entered, inferred, grouped, or calculated
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
 - files touched:
   - `nz-tax-app/docs/backlog/TRANCHE4_REVIEWER_TRACEABILITY_HANDOFF.md`
   - `nz-tax-app/src/api/modules/reviewService.js`
   - `nz-tax-app/src/api/modules/exportService.js`
+  - `nz-tax-app/src/api/modules/ir3Service.js`
   - `nz-tax-app/src/api/tests/smoke.sh`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
@@ -40,16 +43,16 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. checkpoint Slice 1
-  2. continue into Slice 2 traceability gap surfacing
-  3. stop only if a real product/runtime blocker appears
+  1. checkpoint commit for Slice 3 + Slice 4 closeout
+  2. wait for next tranche definition or deploy instruction
 - review notes:
-  - Tranche 4 was selected because reviewer trust/traceability is the tightest next leverage after live filing readiness
-  - Slices 1 and 2 are complete and validated; Slice 3 is queued next
+  - Slice 3 added reviewer follow-up packs that tell a reviewer what evidence to request next and where to request/look for it
+  - Slice 4 removed vague provenance wording from key trace cards so reviewer handoff text is more explicit about entered vs inferred vs calculated figures
+  - The currently defined Tranche 4 queue is exhausted; there is no active blocker
 - commit: pending
 - what's next:
-  1. checkpoint commit for Slice 2
-  2. continue into Slice 3 reviewer follow-up pack
+  1. commit Tranche 4 closeout
+  2. mark queue complete
 - last updated: 2026-03-30
 
 ## Update rule

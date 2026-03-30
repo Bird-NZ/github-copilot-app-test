@@ -167,6 +167,22 @@ export type ReviewTraceabilityGap = {
   label: string
   reason: string
   severity: 'medium' | 'high'
+  fieldFamily: string
+  requestArea: string
+  requestText: string
+  suggestedDocTypes: string[]
+}
+
+export type ReviewTraceabilityFollowUpItem = {
+  id: string
+  ref: string
+  label: string
+  severity: 'medium' | 'high'
+  fieldFamily: string
+  requestArea: string
+  requestText: string
+  reason: string
+  suggestedDocTypes: string[]
 }
 
 export type ReviewPayload = {
@@ -214,6 +230,10 @@ export type ReviewPayload = {
     explainedFieldCount: number
     items: ReviewTraceabilityItem[]
     gaps: ReviewTraceabilityGap[]
+    followUpPack: {
+      headline: string
+      items: ReviewTraceabilityFollowUpItem[]
+    }
   }
   summary: {
     donationAmount: number

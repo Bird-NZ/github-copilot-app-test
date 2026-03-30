@@ -42,6 +42,51 @@ const DOC_EVIDENCE_MAP = {
   },
 };
 
+const FIELD_FOLLOW_UP_MAP = {
+  '11B': {
+    fieldFamily: 'PAYE income',
+    requestArea: 'Documents tab · PAYE summary',
+    requestText: 'Request the employer PAYE summary or Inland Revenue earnings record that supports PAYE gross income and PAYE withheld.',
+    suggestedDocTypes: ['paye_summary'],
+  },
+  '11C': {
+    fieldFamily: 'PAYE tax withheld',
+    requestArea: 'Documents tab · PAYE summary',
+    requestText: 'Request the employer PAYE summary or Inland Revenue earnings record that supports PAYE gross income and PAYE withheld.',
+    suggestedDocTypes: ['paye_summary'],
+  },
+  '14': {
+    fieldFamily: 'Interest income',
+    requestArea: 'Documents tab · Interest/dividend slips',
+    requestText: 'Request the annual bank or investment statement covering interest income and any resident withholding tax.',
+    suggestedDocTypes: ['interest_dividend_slips'],
+  },
+  '14R': {
+    fieldFamily: 'Resident withholding tax on interest/dividends',
+    requestArea: 'Documents tab · Interest/dividend slips',
+    requestText: 'Request the annual bank or investment statement showing resident withholding tax deducted from interest or dividends.',
+    suggestedDocTypes: ['interest_dividend_slips'],
+  },
+  '18': {
+    fieldFamily: 'Dividend income',
+    requestArea: 'Documents tab · Interest/dividend slips',
+    requestText: 'Request the annual dividend/investment statements that support dividend income and attached credits.',
+    suggestedDocTypes: ['interest_dividend_slips'],
+  },
+  '37': {
+    fieldFamily: 'PIE tax credits / other tax already deducted',
+    requestArea: 'Adjustments and deductions · PIE/other tax deducted',
+    requestText: 'Request the annual PIE tax certificate or other withholding/tax-deducted statement that supports the credits entered for this field.',
+    suggestedDocTypes: ['interest_dividend_slips', 'other'],
+  },
+  '41': {
+    fieldFamily: 'Donation claims',
+    requestArea: 'Documents tab · Donation receipts',
+    requestText: 'Request the donation receipts that support the claimable donation amount entered in the draft.',
+    suggestedDocTypes: ['donation_receipts'],
+  },
+};
+
 const APPLICABLE_DOCUMENT_RULES = [
   {
     docType: 'paye_summary',
@@ -306,7 +351,7 @@ function buildAdjustmentSummary(adjustments = {}, mappedSummary = {}) {
       label: 'Student loan repayments entered',
       value: moneyText(adjustments.studentLoanRepayments),
       description: 'Student loan deductions or repayments currently reflected in the review context.',
-      source: 'Taken from student loan adjustments entered in this workspace.',
+      source: 'Entered manually in the student loan repayments field for this workspace.',
     },
   ];
 }
@@ -461,14 +506,44 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
 
   const gaps = items
     .filter((item) => item.evidenceCount === 0)
-    .map((item) => ({
-      ref: item.ref,
-      label: item.label,
-      reason: item.traceStatus === 'explained'
-        ? 'Explained in the draft, but no supporting evidence is attached to this key field yet.'
-        : 'This key field still needs clearer explanation/source detail and supporting evidence before reviewer handoff.',
-      severity: item.traceStatus === 'explained' ? 'medium' : 'high',
-    }));
+    .map((item) => {
+      const followUp = FIELD_FOLLOW_UP_MAP[item.ref] || {
+        fieldFamily: item.label,
+        requestArea: 'Relevant source document or field family',
+        requestText: `Request the supporting document or clearer source detail that substantiates IR3 ${item.ref} ${item.label}.`,
+        suggestedDocTypes: [],
+      };
+
+      return {
+        ref: item.ref,
+        label: item.label,
+        reason: item.traceStatus === 'explained'
+          ? 'Explained in the draft, but no supporting evidence is attached to this key field yet.'
+          : 'This key field still needs clearer explanation/source detail and supporting evidence before reviewer handoff.',
+        severity: item.traceStatus === 'explained' ? 'medium' : 'high',
+        fieldFamily: followUp.fieldFamily,
+        requestArea: followUp.requestArea,
+        requestText: followUp.requestText,
+        suggestedDocTypes: followUp.suggestedDocTypes,
+      };
+    });
+
+  const followUpPack = {
+    headline: gaps.length === 0
+      ? 'No traceability follow-up is currently required for the key reviewer handoff fields.'
+      : `${gaps.length} key field${gaps.length === 1 ? '' : 's'} still need reviewer follow-up before handoff is fully evidenced.`,
+    items: gaps.map((gap, index) => ({
+      id: `trace_follow_up_${index + 1}`,
+      ref: gap.ref,
+      label: gap.label,
+      severity: gap.severity,
+      fieldFamily: gap.fieldFamily,
+      requestArea: gap.requestArea,
+      requestText: gap.requestText,
+      reason: gap.reason,
+      suggestedDocTypes: gap.suggestedDocTypes,
+    })),
+  };
 
   return {
     keyFieldCount: items.length,
@@ -476,6 +551,7 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
     explainedFieldCount: items.filter((item) => item.source || item.note).length,
     items,
     gaps,
+    followUpPack,
   };
 }
 

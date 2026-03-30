@@ -285,3 +285,15 @@ Append-only ledger for active build work.
   - Next action: Checkpoint Slice 2, then continue into Slice 3 (reviewer follow-up pack) if the next pass should deepen handoff quality rather than widen scope.
   - Status: Done
   - Next update due by: on Slice 3 milestone or blocker
+
+- 17:43 NZDT
+  - What changed: Tranche 4 / Slice 3 is complete. Traceability gaps now produce a reviewer follow-up pack with request area + next-evidence wording in review/export surfaces, and local validation passed after fixing two in-thread wiring defects caught by validation.
+  - Next action: Continue immediately into Slice 4 (source precision polish) and tighten vague provenance wording on the key trace cards.
+  - Status: Done
+  - Next update due by: on Slice 4 milestone or blocker
+
+- 17:55 NZDT
+  - What changed: Tranche 4 / Slice 4 is complete. Key IR3 trace/source wording now states whether values are entered, grouped, inferred, or calculated, export/review follow-up pack coverage remains intact, and backend smoke + frontend production build both pass. The defined Tranche 4 queue is now exhausted.
+  - Next action: Commit the completed Tranche 4 queue checkpoint and mark the queue complete.
+  - Status: Done
+  - Next update due by: n/a

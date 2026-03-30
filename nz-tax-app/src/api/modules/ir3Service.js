@@ -99,12 +99,12 @@ export function explainIr3Values(map = {}, calc = {}) {
     ],
     summaryCards: buildSummaryCards(map, calc),
     fieldNotes: [
-      { ref: '11B', label: 'Salary or wages before tax', note: 'This is the total gross PAYE income captured from salary and wage entries.', source: 'Comes from PAYE income records entered in the workspace.' },
-      { ref: '28', label: 'Other taxable income', note: 'This groups interest, dividends, other income, and taxable crypto staking or airdrop income.', source: 'Comes from non-PAYE income entries and taxable crypto income picked up by the app.' },
-      { ref: '33', label: 'Income currently being taxed', note: 'This is your current taxable income estimate before final Inland Revenue adjustments.', source: 'Calculated from the income totals currently loaded into the draft.' },
-      { ref: '37', label: 'Estimated tax before credits', note: 'This is estimated using progressive NZ resident income tax bands.', source: 'Calculated by the app from the taxable income estimate.' },
-      { ref: '37A', label: 'Tax gap after credits', note: 'This is the gap between estimated tax and tax already deducted or credited, which is also the modeled residual income tax in this simplified draft.', source: 'Calculated by comparing estimated tax with PAYE and other current credits.' },
-      { ref: '40B', label: 'Possible provisional tax', note: 'This is only shown when modeled residual income tax is above NZ$5,000. The draft then uses the standard option as a simple estimate basis by adding 5%.', source: 'Derived from the modeled residual income tax using the current simplified provisional-tax rule.' },
+      { ref: '11B', label: 'Salary or wages before tax', note: 'This is the total gross PAYE income captured from salary and wage entries.', source: 'Entered PAYE income records are summed into IR3 11B.' },
+      { ref: '28', label: 'Other taxable income', note: 'This groups interest, dividends, other income, and taxable crypto staking or airdrop income.', source: 'Entered non-PAYE income items plus inferred taxable crypto reward income are grouped into IR3 28.' },
+      { ref: '33', label: 'Income currently being taxed', note: 'This is your current taxable income estimate before final Inland Revenue adjustments.', source: 'Calculated by the app from the current entered income totals after the draft adjustments now in scope.' },
+      { ref: '37', label: 'Estimated tax before credits', note: 'This is estimated using progressive NZ resident income tax bands.', source: 'Calculated by the app from IR3 33 using the current NZ resident tax bands.' },
+      { ref: '37A', label: 'Tax gap after credits', note: 'This is the gap between estimated tax and tax already deducted or credited, which is also the modeled residual income tax in this simplified draft.', source: 'Calculated by the app as IR3 37 less PAYE withheld, PIE credits, other entered tax deducted, and donation credits in scope.' },
+      { ref: '40B', label: 'Possible provisional tax', note: 'This is only shown when modeled residual income tax is above NZ$5,000. The draft then uses the standard option as a simple estimate basis by adding 5%.', source: 'Calculated from modeled residual income tax once the current draft is above the NZ$5,000 provisional-tax relevance threshold, then uplifted by 5% under the standard option estimate.' },
     ],
   };
 }

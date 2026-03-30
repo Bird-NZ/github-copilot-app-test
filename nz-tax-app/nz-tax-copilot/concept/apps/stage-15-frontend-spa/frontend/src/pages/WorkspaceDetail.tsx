@@ -1007,9 +1007,16 @@ export default function WorkspaceDetail() {
                         {review.traceability.gaps.length > 0 ? (
                           <Stack spacing={0.75}>
                             <Typography variant="caption" color="text.secondary">Reviewer follow-up</Typography>
-                            {review.traceability.gaps.map((gap) => (
+                            {review.traceability.followUpPack?.headline ? (
+                              <Typography variant="body2" color="text.secondary">
+                                {review.traceability.followUpPack.headline}
+                              </Typography>
+                            ) : null}
+                            {(review.traceability.followUpPack?.items?.length ? review.traceability.followUpPack.items : review.traceability.gaps).map((gap) => (
                               <Alert key={`trace-gap-${gap.ref}`} severity={gap.severity === 'high' ? 'error' : 'warning'}>
                                 <strong>{`IR3 ${gap.ref} · ${gap.label}`}</strong> — {gap.reason}
+                                {' '}
+                                {'requestArea' in gap ? `Next request: ${gap.requestText} (${gap.requestArea}).` : ''}
                               </Alert>
                             ))}
                           </Stack>
