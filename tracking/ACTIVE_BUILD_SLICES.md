@@ -16,7 +16,7 @@ Update this file when a meaningful build slice starts, changes stage, completes,
 ### NZ Tax App / Tranche 3 / filing readiness queue
 - lane: active software build
 - agent: ClawDev
-- stage: implementing
+- stage: complete
 - goal: turn the post–Tranche 2 draft into an explicit filing-readiness workflow with visible blockers, next actions, and reviewer-friendly handoff state
 - acceptance criteria:
   - [x] submission-readiness model added to review payload
@@ -49,8 +49,8 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - Slices 1 and 2 are complete and validated; queue remains active
 - commit: pending
 - what's next:
-  1. checkpoint commit for Slice 4
-  2. start Slice 5 final human-review checklist polish
+  1. checkpoint commit for Slice 5
+  2. mark Tranche 3 queue complete
 - last updated: 2026-03-30
 
 ## Update rule

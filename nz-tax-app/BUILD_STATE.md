@@ -5,10 +5,10 @@
 - Tranche 3 / Slice 2 complete (blocker-to-surface routing)
 - Tranche 3 / Slice 3 complete (applicable-document precision)
 - Tranche 3 / Slice 4 complete (review-ready export summary)
-- Tranche 3 queue remains active
+- Tranche 3 queue complete
 
 ## Current objective
-Keep tightening the filing-readiness path so the draft only asks for supporting documents when the underlying filing scope actually applies, and carry that precision cleanly into review/checklist/export surfaces.
+Tranche 3 filing readiness is complete: the draft now exposes blockers, routes fixes to the right surface, keeps applicable-document requirements precise, exports reviewer-friendly readiness summaries, and shows a final human-review checklist before handoff.
 
 ## Last completed milestones
 - Defined Tranche 3 as a filing-readiness queue focused on review/submission confidence
@@ -19,6 +19,7 @@ Keep tightening the filing-readiness path so the draft only asks for supporting 
 - Supporting-document requirements now only appear when the current draft actually brings that area into scope (PAYE, interest/dividends, donations, student loan, crypto)
 - Checklist and export surfaces now reuse the same applicable-document logic as submission readiness, so missing-doc signals stay aligned
 - Export CSV/PDF/JSON now include a concise filing-readiness summary with blockers, reviewer notes, assumptions, and next actions for handoff
+- Submission readiness now includes a final human-review checklist covering questionnaire completeness, supporting docs, warnings/assumptions, and provisional/residual tax notes
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
@@ -37,12 +38,11 @@ Keep tightening the filing-readiness path so the draft only asks for supporting 
 - Reduced the gap between “problem detected” and “where to fix it”
 
 ## Next tasks
-1. Start Tranche 3 / Slice 5: final human-review checklist polish
-2. Then close the Tranche 3 queue if no hidden readiness state remains
+1. Tranche 3 queue complete — await next tranche definition or deployment instruction
 
 ## Known blockers
-- No active technical blocker on Tranche 3 / Slice 4
-- Slice 5 is defined and ready to implement in this pass
+- No active technical blocker inside Tranche 3
+- Queue is complete rather than blocked
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

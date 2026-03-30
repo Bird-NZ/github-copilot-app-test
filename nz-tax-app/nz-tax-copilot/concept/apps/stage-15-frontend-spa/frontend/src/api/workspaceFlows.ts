@@ -180,6 +180,12 @@ export type ReviewPayload = {
       actionLabel?: string
     }>
     nextActions: string[]
+    finalReviewChecklist: Array<{
+      key: string
+      label: string
+      status: 'done' | 'review' | 'action_needed'
+      detail: string
+    }>
   }
   warnings: ReviewWarning[]
   assumptions: string[]

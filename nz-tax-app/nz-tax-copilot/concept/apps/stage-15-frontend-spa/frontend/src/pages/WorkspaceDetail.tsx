@@ -537,6 +537,16 @@ export default function WorkspaceDetail() {
                     ))}
                   </Stack>
                 ) : null}
+                {submissionReadiness.finalReviewChecklist?.length ? (
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle2">Final human-review checklist</Typography>
+                    {submissionReadiness.finalReviewChecklist.map((item) => (
+                      <Alert key={item.key} severity={item.status === 'done' ? 'success' : item.status === 'review' ? 'info' : 'warning'}>
+                        <Typography variant="body2"><strong>{item.label}:</strong> {item.detail}</Typography>
+                      </Alert>
+                    ))}
+                  </Stack>
+                ) : null}
               </Stack>
             </CardContent>
           </Card>
@@ -1195,6 +1205,15 @@ export default function WorkspaceDetail() {
                               </Stack>
                             </Stack>
                           </Alert>
+                          {submissionReadiness.finalReviewChecklist?.length ? (
+                            <Stack spacing={1}>
+                              {submissionReadiness.finalReviewChecklist.map((item) => (
+                                <Alert key={item.key} severity={item.status === 'done' ? 'success' : item.status === 'review' ? 'info' : 'warning'}>
+                                  <Typography variant="body2"><strong>{item.label}:</strong> {item.detail}</Typography>
+                                </Alert>
+                              ))}
+                            </Stack>
+                          ) : null}
                         </Stack>
                       ) : null}
                       {(review.assumptions || []).length > 0 ? (

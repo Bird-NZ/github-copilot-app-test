@@ -388,7 +388,53 @@ export function buildApplicableDocumentChecklist({ questionnaireAnswers = {}, ad
     .filter((item) => item.applicable);
 }
 
-function buildSubmissionReadiness({ questionnaireAnswers = {}, adjustments = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {} }) {
+function buildFinalReviewChecklist({ questionnaire, applicableDocuments = [], warnings = [], assumptions = [], calc = {} }) {
+  const provisionalTaxStatus = calc?.summary?.provisionalTaxStatus || {};
+  const terminalTaxToPay = money(calc?.summary?.terminalTaxToPay || 0);
+  const residualIncomeTax = money(calc?.summary?.residualIncomeTax || 0);
+  const highSeverityWarnings = warnings.filter((warning) => warning.severity === 'high').length;
+
+  return [
+    {
+      key: 'questionnaire',
+      label: 'Questionnaire complete',
+      status: questionnaire.complete ? 'done' : 'action_needed',
+      detail: questionnaire.complete
+        ? 'All visible filing-scope questions are answered.'
+        : `Still missing ${questionnaire.totalVisible - questionnaire.answeredVisible} visible questionnaire answer(s).`,
+    },
+    {
+      key: 'supporting_documents',
+      label: 'Applicable supporting documents collected',
+      status: applicableDocuments.every((item) => item.received) ? 'done' : 'action_needed',
+      detail: `${applicableDocuments.filter((item) => item.received).length}/${applicableDocuments.length} applicable document type(s) received.`,
+    },
+    {
+      key: 'warnings_assumptions',
+      label: 'Warnings and assumptions reviewed',
+      status: highSeverityWarnings === 0 && assumptions.length === 0 ? 'done' : 'review',
+      detail: `${highSeverityWarnings} high-severity warning(s), ${warnings.length} total warning(s), ${assumptions.length} assumption(s).`,
+    },
+    {
+      key: 'tax_position',
+      label: 'Residual/provisional tax position noted',
+      status: provisionalTaxStatus.relevant ? 'review' : 'done',
+      detail: provisionalTaxStatus.relevant
+        ? `Residual income tax is ${moneyText(residualIncomeTax)} and provisional tax is likely relevant under the current estimate.`
+        : `Residual income tax is ${moneyText(residualIncomeTax)} and provisional tax is not currently flagged as relevant.`,
+    },
+    {
+      key: 'submission_handoff',
+      label: 'Ready for human handoff',
+      status: questionnaire.complete && applicableDocuments.every((item) => item.received) && highSeverityWarnings === 0 ? 'done' : 'action_needed',
+      detail: terminalTaxToPay > 0
+        ? `Current draft indicates terminal tax to pay of ${moneyText(terminalTaxToPay)} before human sign-off.`
+        : 'Current draft does not show terminal tax still to pay before human sign-off.',
+    },
+  ];
+}
+
+function buildSubmissionReadiness({ questionnaireAnswers = {}, adjustments = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {}, calc = {} }) {
   const questionnaire = completionStatus(questionnaireAnswers);
   const missingItems = [];
 
@@ -458,6 +504,13 @@ function buildSubmissionReadiness({ questionnaireAnswers = {}, adjustments = {},
     },
     blockers: missingItems,
     nextActions: Array.from(new Set(nextActions)),
+    finalReviewChecklist: buildFinalReviewChecklist({
+      questionnaire,
+      applicableDocuments,
+      warnings,
+      assumptions,
+      calc,
+    }),
   };
 }
 
@@ -531,6 +584,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     warnings: warningsWithEvidence,
     assumptions,
     crypto,
+    calc,
   });
 
   return {

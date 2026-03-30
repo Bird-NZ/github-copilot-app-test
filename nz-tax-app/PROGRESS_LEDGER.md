@@ -268,3 +268,8 @@ Append-only ledger for active build work.
   - Next action: Commit Slice 4, then continue into Slice 5 (final human-review checklist polish).
   - Status: Done
   - Next update due by: on Slice 5 milestone or blocker
+- 15:39 NZDT
+  - What changed: Tranche 3 / Slice 5 is complete. Submission readiness now carries a final human-review checklist covering questionnaire completeness, supporting docs, warnings/assumptions, and residual/provisional tax notes, and the checklist is surfaced in the workspace review path.
+  - Next action: Commit Slice 5 and mark the Tranche 3 filing-readiness queue complete.
+  - Status: Done
+  - Next update due by: n/a

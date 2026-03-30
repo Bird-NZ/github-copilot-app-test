@@ -1,6 +1,6 @@
 # Tranche 3 — Filing Readiness Queue
 
-Status: active
+Status: complete
 
 Rationale:
 - Tranche 2 made the draft materially stronger: evidence confidence, deduction refinement, provisional-tax visibility, and export-pack completeness are now live.
@@ -55,4 +55,6 @@ Acceptance:
 - Slice 1 complete: explicit submission-readiness gate
 - Slice 2 complete: blocker-to-surface routing
 - Slice 3 complete: applicable-document precision
-- Next slice: Slice 4 — review-ready export summary
+- Slice 4 complete: review-ready export summary
+- Slice 5 complete: final human-review checklist polish
+- Queue complete
