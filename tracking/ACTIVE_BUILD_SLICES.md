@@ -13,26 +13,25 @@ Update this file when a meaningful build slice starts, changes stage, completes,
 
 ## Current slices
 
-### NZ Tax App / Tranche 4 / reviewer traceability handoff
+### NZ Tax App / Tranche 5 / reviewer action queue
 - lane: active software build
 - agent: ClawDev
 - stage: complete
-- goal: turn the post–Tranche 3 draft into a reviewer-traceable handoff pack with visible evidence coverage and clearer source precision on important IR3 fields
+- goal: turn the post–Tranche 4 draft into a reviewer-actionable handoff pack with one ordered queue for the next human actions instead of scattered blocker/warning/evidence-gap panels
 - acceptance criteria:
-  - [x] structured key-field traceability summary added to review payload
-  - [x] traceability includes field ref, label, value, source/note, evidence count, and trace status
-  - [x] workspace IR3 Summary surfaces reviewer traceability coverage
-  - [x] export CSV/PDF carries traceability summary for handoff
-  - [x] traceability gaps surfaced explicitly for reviewer follow-up
-  - [x] export follow-up pack includes next evidence request + relevant uploaded-document area or field family
-  - [x] key trace/source wording states whether a value is entered, inferred, grouped, or calculated
+  - [x] `reviewerActionQueue` added to review payload
+  - [x] queue combines submission blockers, traceability follow-up, warnings, and assumptions
+  - [x] action items include severity, title, detail, request text/area, and target tab where applicable
+  - [x] workspace dashboard surfaces the queue in reviewer-facing wording
+  - [x] IR3 Summary surfaces the queue in reviewer-facing wording
+  - [x] export CSV/PDF/JSON carries reviewer action queue summary data
+  - [x] queue exposes category-level counts for filing readiness / traceability / warnings / assumptions
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
 - files touched:
-  - `nz-tax-app/docs/backlog/TRANCHE4_REVIEWER_TRACEABILITY_HANDOFF.md`
+  - `nz-tax-app/docs/backlog/TRANCHE5_REVIEWER_ACTION_QUEUE.md`
   - `nz-tax-app/src/api/modules/reviewService.js`
   - `nz-tax-app/src/api/modules/exportService.js`
-  - `nz-tax-app/src/api/modules/ir3Service.js`
   - `nz-tax-app/src/api/tests/smoke.sh`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
@@ -43,16 +42,16 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. checkpoint commit for Slice 3 + Slice 4 closeout
-  2. wait for next tranche definition or deploy instruction
+  1. checkpoint commit for Tranche 5 Slice 1 + Slice 2
+  2. continue to Slice 3 if queued-item evidence-sufficiency wording is concrete enough to implement cleanly
 - review notes:
-  - Slice 3 added reviewer follow-up packs that tell a reviewer what evidence to request next and where to request/look for it
-  - Slice 4 removed vague provenance wording from key trace cards so reviewer handoff text is more explicit about entered vs inferred vs calculated figures
-  - The currently defined Tranche 4 queue is exhausted; there is no active blocker
+  - Slice 1 removed the need for a reviewer to merge filing blockers, traceability follow-up, warnings, and assumptions mentally across multiple sections
+  - Slice 2 added category counts so the reviewer can see what class of work dominates the remaining queue
+  - Next queued work is still inside the same reviewer-actionability direction, but Slice 3 should only proceed if the evidence-sufficiency wording stays specific and avoids duplicative/noisy queue items
 - commit: pending
 - what's next:
-  1. commit Tranche 4 closeout
-  2. mark queue complete
+  1. commit Tranche 5 Slice 1 + Slice 2 checkpoint
+  2. decide whether Slice 3 should start immediately or remain queued
 - last updated: 2026-03-30
 
 ## Update rule

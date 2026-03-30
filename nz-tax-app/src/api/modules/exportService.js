@@ -46,6 +46,39 @@ function buildTraceabilitySummary(review = null) {
   };
 }
 
+
+function buildReviewerActionQueueSummary(review = null) {
+  const queue = review?.reviewerActionQueue;
+  const items = queue?.items || [];
+
+  return {
+    headline: queue?.headline || (items.length === 0
+      ? 'No open reviewer actions are currently queued. The draft is ready for final human review.'
+      : `${items.length} reviewer action${items.length === 1 ? '' : 's'} are currently queued for handoff completion.`),
+    totalCount: queue?.totalCount || items.length,
+    highPriorityCount: queue?.highPriorityCount || items.filter((item) => item?.severity === 'high').length,
+    categories: (queue?.categories || []).map((item) => ({
+      category: item.category,
+      label: item.label,
+      count: item.count,
+      highPriorityCount: item.highPriorityCount,
+    })),
+    items: items.map((item) => ({
+      id: item.id,
+      sourceType: item.sourceType,
+      sourceKey: item.sourceKey,
+      severity: item.severity,
+      title: item.title,
+      detail: item.detail,
+      requestText: item.requestText,
+      requestArea: item.requestArea,
+      targetTab: item.targetTab,
+      actionLabel: item.actionLabel,
+      category: item.category,
+    })),
+  };
+}
+
 function buildFilingReadinessSummary(review = null) {
   const readiness = review?.submissionReadiness;
   const blockers = readiness?.blockers || [];
@@ -81,6 +114,7 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   const rows = [['section', 'ref', 'value']];
   const filingSummary = buildFilingReadinessSummary(review);
   const traceSummary = buildTraceabilitySummary(review);
+  const actionQueue = buildReviewerActionQueueSummary(review);
 
   for (const [k, v] of Object.entries(map)) {
     if (k === 'summary') continue;
@@ -126,6 +160,15 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
     rows.push(['filing_next_action', `action_${index + 1}`, action]);
   });
 
+  rows.push(['reviewer_action_queue', 'headline', actionQueue.headline]);
+  rows.push(['reviewer_action_queue', 'high_priority_count', String(actionQueue.highPriorityCount)]);
+  (actionQueue.categories || []).forEach((item, index) => {
+    rows.push(['reviewer_action_queue_category', `category_${index + 1}`, `${item.label}:${item.count}:${item.highPriorityCount}`]);
+  });
+  actionQueue.items.forEach((item, index) => {
+    rows.push(['reviewer_action', `item_${index + 1}`, `${item.severity}: ${item.title} -- ${item.requestArea} -- ${item.requestText}`]);
+  });
+
   rows.push(['traceability', 'coverage', `${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`]);
   traceSummary.items.forEach((item, index) => {
     rows.push(['traceability_field', `field_${index + 1}`, `${item.ref}: ${item.label} [${item.traceStatus}] evidence=${item.evidenceCount}`]);
@@ -163,6 +206,7 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     const summary = calc.summary || {};
     const filingSummary = buildFilingReadinessSummary(review);
     const traceSummary = buildTraceabilitySummary(review);
+    const actionQueue = buildReviewerActionQueueSummary(review);
     doc.fontSize(14).text('Tax position');
     doc.fontSize(11);
     doc.text(`Taxable income: ${money(summary.taxableIncome)}`);
@@ -183,6 +227,13 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.fontSize(11).text(filingSummary.headline);
     filingSummary.reviewerNotes.forEach((note) => doc.text(`• ${note}`));
     filingSummary.nextActions.forEach((action) => doc.text(`Next action: ${action}`));
+
+    doc.moveDown();
+    doc.fontSize(14).text('Reviewer action queue');
+    doc.fontSize(11).text(actionQueue.headline);
+    doc.text(`High-priority reviewer actions: ${actionQueue.highPriorityCount}/${actionQueue.totalCount}`);
+    (actionQueue.categories || []).forEach((item) => doc.text(`• ${item.label}: ${item.count} queued (${item.highPriorityCount} high priority)`));
+    actionQueue.items.slice(0, 8).forEach((item) => doc.text(`• ${item.severity.toUpperCase()} · ${item.title}: ${item.requestArea} -- ${item.requestText}`));
 
     doc.moveDown();
     doc.fontSize(14).text('Reviewer traceability');
@@ -268,6 +319,7 @@ export async function buildPdfDocument(map, calc, explanation = null, review = n
     bytesBase64: buffer.toString('base64'),
     sections: [
       { name: 'Filing Readiness Summary', values: buildFilingReadinessSummary(review) },
+      { name: 'Reviewer Action Queue', values: buildReviewerActionQueueSummary(review) },
       { name: 'Reviewer Traceability', values: buildTraceabilitySummary(review) },
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
@@ -284,6 +336,7 @@ export function buildPdfPlaceholder(map, calc, explanation = null, review = null
     generatedAt: new Date().toISOString(),
     sections: [
       { name: 'Filing Readiness Summary', values: buildFilingReadinessSummary(review) },
+      { name: 'Reviewer Action Queue', values: buildReviewerActionQueueSummary(review) },
       { name: 'Reviewer Traceability', values: buildTraceabilitySummary(review) },
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },

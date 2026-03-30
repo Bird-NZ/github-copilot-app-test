@@ -297,6 +297,7 @@ export default function WorkspaceDetail() {
   const reviewWarnings = review?.warnings || []
   const reviewEvidence = review?.evidence || []
   const submissionReadiness = review?.submissionReadiness
+  const reviewerActionQueue = review?.reviewerActionQueue
   const reviewEvidenceByIr3Ref = useMemo(() => {
     return reviewEvidence.reduce((acc, item) => {
       for (const ref of item.ir3Refs || []) {
@@ -484,6 +485,44 @@ export default function WorkspaceDetail() {
           </CardContent>
         </Card>
 
+
+        {reviewerActionQueue ? (
+          <Card>
+            <CardContent>
+              <Stack spacing={2}>
+                <Typography variant="h6">Reviewer action queue</Typography>
+                <Alert severity={reviewerActionQueue.highPriorityCount > 0 ? 'warning' : 'info'}>
+                  {reviewerActionQueue.headline}
+                </Alert>
+                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                  <Chip label={`Queued ${reviewerActionQueue.totalCount}`} variant="outlined" color={reviewerActionQueue.totalCount > 0 ? 'warning' : 'success'} />
+                  <Chip label={`High priority ${reviewerActionQueue.highPriorityCount}`} variant="outlined" color={reviewerActionQueue.highPriorityCount > 0 ? 'error' : 'success'} />
+                  {(reviewerActionQueue.categories || []).map((item) => (
+                    <Chip key={`queue-cat-${item.category}`} label={`${item.label} ${item.count}`} size="small" variant="outlined" />
+                  ))}
+                </Stack>
+                {reviewerActionQueue.items.length > 0 ? (
+                  <Stack spacing={1}>
+                    {reviewerActionQueue.items.slice(0, 6).map((item) => (
+                      <Alert
+                        key={item.id}
+                        severity={item.severity === 'high' ? 'error' : 'warning'}
+                        action={item.actionLabel ? (
+                          <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(item.targetTab))}>
+                            {item.actionLabel}
+                          </Button>
+                        ) : undefined}
+                      >
+                        <Typography variant="body2"><strong>{item.title}:</strong> {item.detail}</Typography>
+                        <Typography variant="caption" color="inherit">Next request: {item.requestText} ({item.requestArea}).</Typography>
+                      </Alert>
+                    ))}
+                  </Stack>
+                ) : null}
+              </Stack>
+            </CardContent>
+          </Card>
+        ) : null}
 
         {submissionReadiness ? (
           <Card>
@@ -981,6 +1020,44 @@ export default function WorkspaceDetail() {
                 <Alert severity="info">
                   This section turns what you entered into an IR3-style draft. Review it carefully: it is designed to help you understand your likely return, not replace your own final check.
                 </Alert>
+                {reviewerActionQueue ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Stack spacing={1.25}>
+                        <Typography variant="subtitle1">Reviewer action queue</Typography>
+                        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                          <Chip size="small" variant="outlined" color={reviewerActionQueue.highPriorityCount > 0 ? 'error' : 'success'} label={`High priority ${reviewerActionQueue.highPriorityCount}`} />
+                          <Chip size="small" variant="outlined" label={`Queued ${reviewerActionQueue.totalCount}`} />
+                          {(reviewerActionQueue.categories || []).map((item) => (
+                            <Chip key={`reviewer-action-cat-${item.category}`} size="small" variant="outlined" label={`${item.label} ${item.count}`} />
+                          ))}
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                          This combines the open reviewer work across filing blockers, evidence gaps, review warnings, and assumptions so the next human action is visible in one place.
+                        </Typography>
+                        {reviewerActionQueue.items.length > 0 ? (
+                          <Stack spacing={0.75}>
+                            {reviewerActionQueue.items.slice(0, 8).map((item) => (
+                              <Alert
+                                key={`reviewer-action-${item.id}`}
+                                severity={item.severity === 'high' ? 'error' : 'warning'}
+                                action={item.actionLabel ? (
+                                  <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(item.targetTab))}>
+                                    {item.actionLabel}
+                                  </Button>
+                                ) : undefined}
+                              >
+                                <strong>{item.title}</strong> — {item.detail} Next request: {item.requestText} ({item.requestArea}).
+                              </Alert>
+                            ))}
+                          </Stack>
+                        ) : (
+                          <Alert severity="success">No open reviewer actions are currently queued.</Alert>
+                        )}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ) : null}
                 {review?.traceability ? (
                   <Card variant="outlined">
                     <CardContent>

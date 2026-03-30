@@ -241,6 +241,25 @@ Append-only ledger for active build work.
 
 ## 2026-03-30
 
+- 18:28 NZDT
+  - What changed: Inspected the post–Tranche 4 state and defined the next highest-leverage queue as Tranche 5 reviewer action queue, aimed at collapsing blockers, evidence gaps, warnings, and assumptions into one reviewer-operable surface instead of another disconnected field expansion.
+  - Next action: Implement Slice 1 by wiring a unified `reviewerActionQueue` through review payload, workspace UI, and export surfaces.
+  - Status: In Progress
+  - Next update due by: 18:38 NZDT
+
+- 18:39 NZDT
+  - What changed: Tranche 5 / Slice 1 is complete. Review payloads now expose a unified reviewer action queue, dashboard and IR3 Summary show the queue with next-request wording, export CSV/PDF/JSON carry the same summary, and local validation passed.
+  - Next action: Continue immediately into Slice 2 (completion-aware grouping and counts) because the next refinement is clear and stays inside the same queue.
+  - Status: Done
+  - Next update due by: on Slice 2 milestone or blocker
+
+- 18:47 NZDT
+  - What changed: Tranche 5 / Slice 2 is complete. Reviewer action queues now carry per-category counts for filing readiness, traceability, review warnings, and assumptions, the workspace queue chips expose those counts, export surfaces include category-count rows/details, and local validation re-passed cleanly.
+  - Next action: Update BUILD_STATE/tracking docs, checkpoint the Tranche 5 queue progress, and decide whether Slice 3 is concrete enough to continue immediately.
+  - Status: Done
+  - Next update due by: on Slice 3 milestone or blocker
+
+
 - 14:40 NZDT
   - What changed: Inspected the post–Tranche 2 state and defined the next highest-leverage queue as Tranche 3 filing readiness, focused on making review/submission blockers explicit instead of adding another disconnected feature area.
   - Next action: Implement Slice 1 by adding an explicit submission-readiness model to the review payload and surfacing it in the workspace UI/export path.

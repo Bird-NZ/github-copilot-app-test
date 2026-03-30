@@ -1,46 +1,45 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 4 / Slice 1 complete (key-field traceability matrix)
-- Tranche 4 / Slice 2 complete (traceability gap surfacing)
-- Tranche 4 / Slice 3 queued (reviewer follow-up pack)
+- Tranche 5 / Slice 1 complete (unified reviewer action queue)
+- Tranche 5 / Slice 2 complete (completion-aware grouping and counts)
+- Tranche 4 queue complete and live
 - Tranche 3 queue complete and live
+- Tranche 2 queue complete and live
 
 ## Current objective
-Tranche 4 reviewer traceability handoff is now active. The draft already exposes filing readiness; this tranche strengthens reviewer trust by making important IR3 fields easier to trace back to explanation/source text and attached supporting evidence across app and export surfaces.
+Tranche 5 reviewer action queue is now active. After filing readiness and reviewer traceability went live, the next highest-leverage step is to make the handoff pack easier for a human reviewer to act on without mentally merging blockers, warnings, assumptions, and evidence gaps across multiple panels.
 
 ## Last completed milestones
-- Defined Tranche 4 as a reviewer-traceability queue focused on trust, source precision, and handoff quality after live filing-readiness work
-- Review payload now includes `traceability` for important IR3 fields with field ref, label, current value, note/source text, evidence count, and trace status
-- Workspace IR3 Summary now shows a reviewer-traceability overview so a human can quickly see evidence coverage across key fields
-- Traceability gaps are now surfaced explicitly as reviewer follow-up items for key fields that are explained but not yet evidenced
-- Export CSV/PDF/JSON now carry reviewer-traceability summary data and explicit traceability-gap follow-up lines as part of the handoff pack
-- Reviewer follow-up packs now name the next evidence request and the relevant uploaded-document area or field family for each key traceability gap
-- Source/provenance wording on key trace cards now states whether the value was entered manually, grouped from entered records, inferred, or calculated by the app instead of using vague provenance text
-- Tranche 3 remains complete and live: filing blockers, routing, applicable-document precision, export summary, and final human-review checklist are all in place
+- Defined Tranche 5 as a reviewer-actionability queue focused on handoff completion, evidence sufficiency, and next-step clarity after Tranche 4 traceability work
+- Review payload now includes `reviewerActionQueue`, combining open submission blockers, traceability follow-up items, review warnings, and assumptions into one ordered queue
+- Workspace dashboard and IR3 Summary now surface the reviewer action queue so the next reviewer request/action is visible in one place
+- Reviewer action queue now includes category-level counts so a reviewer can see whether the remaining work is mostly filing readiness, traceability, warnings, or assumptions
+- Export CSV/PDF/JSON now carry the reviewer action queue headline, category counts, and queued action lines as part of the handoff pack
+- Existing filing-readiness and reviewer-traceability surfaces remain intact
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 
 ## Recently completed slices
 
-### Tranche 4 / Slice 1 — key-field traceability matrix
-- Added a structured reviewer-traceability model to the review payload for important IR3 fields
-- Included explanation/source text, evidence counts, and trace status per key field
-- Surfaced a reviewer-traceability overview inside IR3 Summary
-- Added reviewer-traceability summary output to CSV/PDF handoff surfaces
+### Tranche 5 / Slice 1 — unified reviewer action queue
+- Added a structured `reviewerActionQueue` model to the review payload
+- Combined submission blockers, traceability follow-up items, review warnings, and assumptions into one ordered reviewer-facing queue
+- Surfaced the queue in dashboard and IR3 Summary
+- Added reviewer action queue output to CSV/PDF handoff surfaces
 
-### Tranche 4 / Slice 2 — traceability gap surfacing
-- Added explicit reviewer follow-up items for key fields that are explained but not yet evidenced
-- Differentiated explained-only gaps from stronger evidenced fields in the review payload and UI
-- Added traceability-gap rows to CSV/PDF handoff outputs so reviewer follow-up survives export
+### Tranche 5 / Slice 2 — completion-aware grouping and counts
+- Added per-category queue counts for filing readiness, traceability, review warnings, and assumptions
+- Surfaced those counts in the workspace queue summary chips
+- Added category-count rows/details to export surfaces so the handoff pack stays aligned with the app
 
 ## Next tasks
-1. Tranche 4 / Slice 3 — export reviewer follow-up pack for missing evidence on important fields
-2. Tranche 4 / Slice 4 — source precision polish for key field provenance wording
+1. Tranche 5 / Slice 3 — evidence-sufficiency emphasis on queued items
+2. Tranche 5 / Slice 4 — handoff-ready shortlist polish
 
 ## Known blockers
-- No active technical blocker in Tranche 4 through Slice 2
+- No active technical blocker in Tranche 5 through Slice 2
 - Slice 3 is queued, not blocked
 
 ## Real blocker threshold

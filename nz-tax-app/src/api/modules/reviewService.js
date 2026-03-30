@@ -555,6 +555,114 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
   };
 }
 
+function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [] }) {
+  const items = [];
+
+  (submissionReadiness?.blockers || []).forEach((blocker, index) => {
+    items.push({
+      id: `blocker_${blocker.code || index + 1}`,
+      sourceType: 'submission_blocker',
+      sourceKey: blocker.code || `blocker_${index + 1}`,
+      severity: blocker.severity === 'high' ? 'high' : 'medium',
+      priority: blocker.severity === 'high' ? 100 : 80,
+      title: blocker.label || 'Submission blocker',
+      detail: blocker.message || '',
+      requestText: blocker.message || '',
+      requestArea: blocker.targetTab === 'documents'
+        ? 'Documents tab'
+        : blocker.targetTab === 'ir3_summary'
+          ? 'IR3 Summary'
+          : 'Questionnaire',
+      targetTab: blocker.targetTab || 'questionnaire',
+      actionLabel: blocker.actionLabel || 'Open area',
+      category: 'filing_readiness',
+    });
+  });
+
+  const traceItems = traceability?.followUpPack?.items?.length ? traceability.followUpPack.items : (traceability?.gaps || []);
+  traceItems.forEach((gap, index) => {
+    items.push({
+      id: gap.id || `trace_gap_${gap.ref || index + 1}`,
+      sourceType: 'traceability_gap',
+      sourceKey: gap.ref || `trace_gap_${index + 1}`,
+      severity: gap.severity === 'high' ? 'high' : 'medium',
+      priority: gap.severity === 'high' ? 90 : 70,
+      title: `Evidence gap · IR3 ${gap.ref} ${gap.label}`,
+      detail: gap.reason || '',
+      requestText: gap.requestText || gap.reason || '',
+      requestArea: gap.requestArea || 'IR3 Summary',
+      targetTab: 'ir3_summary',
+      actionLabel: 'Open IR3 summary',
+      category: 'traceability',
+    });
+  });
+
+  warnings.forEach((warning, index) => {
+    items.push({
+      id: `warning_${warning.code || index + 1}`,
+      sourceType: 'review_warning',
+      sourceKey: warning.code || `warning_${index + 1}`,
+      severity: warning.severity === 'high' ? 'high' : 'medium',
+      priority: warning.severity === 'high' ? 85 : 60,
+      title: `Review warning · ${String(warning.code || 'warning').replaceAll('_', ' ')}`,
+      detail: warning.message || '',
+      requestText: warning.message || '',
+      requestArea: 'IR3 Summary · Review confidence',
+      targetTab: 'ir3_summary',
+      actionLabel: 'Open IR3 summary',
+      category: 'review_warning',
+    });
+  });
+
+  assumptions.forEach((assumption, index) => {
+    items.push({
+      id: `assumption_${index + 1}`,
+      sourceType: 'assumption',
+      sourceKey: `assumption_${index + 1}`,
+      severity: 'medium',
+      priority: 40,
+      title: `Replace assumption ${index + 1}`,
+      detail: assumption,
+      requestText: 'Replace this assumption with a confirmed figure or supporting document where possible.',
+      requestArea: 'IR3 Summary · Review confidence',
+      targetTab: 'ir3_summary',
+      actionLabel: 'Open IR3 summary',
+      category: 'assumption',
+    });
+  });
+
+  const deduped = Array.from(new Map(items.map((item) => [`${item.sourceType}:${item.sourceKey}`, item])).values())
+    .sort((a, b) => b.priority - a.priority || a.title.localeCompare(b.title));
+  const categoryOrder = ['filing_readiness', 'traceability', 'review_warning', 'assumption'];
+  const categories = categoryOrder
+    .map((category) => {
+      const categoryItems = deduped.filter((item) => item.category === category);
+      return {
+        category,
+        label: category === 'filing_readiness'
+          ? 'Filing readiness'
+          : category === 'traceability'
+            ? 'Traceability gaps'
+            : category === 'review_warning'
+              ? 'Review warnings'
+              : 'Assumptions',
+        count: categoryItems.length,
+        highPriorityCount: categoryItems.filter((item) => item.severity === 'high').length,
+      };
+    })
+    .filter((item) => item.count > 0);
+
+  return {
+    headline: deduped.length === 0
+      ? 'No open reviewer actions are currently queued. The draft is ready for final human review.'
+      : `${deduped.length} reviewer action${deduped.length === 1 ? '' : 's'} are currently queued for handoff completion.`,
+    totalCount: deduped.length,
+    highPriorityCount: deduped.filter((item) => item.severity === 'high').length,
+    categories,
+    items: deduped,
+  };
+}
+
 function buildSubmissionReadiness({ questionnaireAnswers = {}, adjustments = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {}, calc = {} }) {
   const questionnaire = completionStatus(questionnaireAnswers);
   const missingItems = [];
@@ -708,6 +816,12 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     crypto,
     calc,
   });
+  const reviewerActionQueue = buildReviewerActionQueue({
+    submissionReadiness,
+    traceability,
+    warnings: warningsWithEvidence,
+    assumptions,
+  });
 
   return {
     readiness: {
@@ -719,6 +833,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     assumptions,
     evidence,
     traceability,
+    reviewerActionQueue,
     crypto,
     summary: {
       donationAmount: money(map?.summary?.donationAmount || 0),

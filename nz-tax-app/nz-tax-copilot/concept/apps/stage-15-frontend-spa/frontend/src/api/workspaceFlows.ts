@@ -224,6 +224,30 @@ export type ReviewPayload = {
   warnings: ReviewWarning[]
   assumptions: string[]
   evidence: ReviewEvidenceItem[]
+  reviewerActionQueue: {
+    headline: string
+    totalCount: number
+    highPriorityCount: number
+    categories: Array<{
+      category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
+      label: string
+      count: number
+      highPriorityCount: number
+    }>
+    items: Array<{
+      id: string
+      sourceType: 'submission_blocker' | 'traceability_gap' | 'review_warning' | 'assumption'
+      sourceKey: string
+      severity: 'high' | 'medium'
+      title: string
+      detail: string
+      requestText: string
+      requestArea: string
+      targetTab?: 'questionnaire' | 'documents' | 'ir3_summary'
+      actionLabel?: string
+      category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
+    }>
+  }
   traceability: {
     keyFieldCount: number
     evidencedFieldCount: number
