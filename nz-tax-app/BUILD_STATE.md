@@ -1,48 +1,38 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 3 / Slice 1 complete (explicit submission-readiness gate)
-- Tranche 3 / Slice 2 complete (blocker-to-surface routing)
-- Tranche 3 / Slice 3 complete (applicable-document precision)
-- Tranche 3 / Slice 4 complete (review-ready export summary)
-- Tranche 3 queue complete
+- Tranche 4 / Slice 1 complete (key-field traceability matrix)
+- Tranche 4 / Slice 2 queued (traceability gap surfacing)
+- Tranche 3 queue complete and live
 
 ## Current objective
-Tranche 3 filing readiness is complete: the draft now exposes blockers, routes fixes to the right surface, keeps applicable-document requirements precise, exports reviewer-friendly readiness summaries, and shows a final human-review checklist before handoff.
+Tranche 4 reviewer traceability handoff is now active. The draft already exposes filing readiness; this tranche strengthens reviewer trust by making important IR3 fields easier to trace back to explanation/source text and attached supporting evidence across app and export surfaces.
 
 ## Last completed milestones
-- Defined Tranche 3 as a filing-readiness queue focused on review/submission confidence
-- Review payload now includes `submissionReadiness` with questionnaire completeness, applicable-document coverage, explicit blockers, and next actions
-- Submission blockers now carry routing metadata so the UI can send users straight to Questionnaire, Documents, or IR3 Summary
-- Workspace UI now surfaces submission readiness both at the top level and inside IR3 Summary, with action buttons on blockers
-- Export CSV/PDF/JSON now carry submission blocker data as part of the review/export pack
-- Supporting-document requirements now only appear when the current draft actually brings that area into scope (PAYE, interest/dividends, donations, student loan, crypto)
-- Checklist and export surfaces now reuse the same applicable-document logic as submission readiness, so missing-doc signals stay aligned
-- Export CSV/PDF/JSON now include a concise filing-readiness summary with blockers, reviewer notes, assumptions, and next actions for handoff
-- Submission readiness now includes a final human-review checklist covering questionnaire completeness, supporting docs, warnings/assumptions, and provisional/residual tax notes
+- Defined Tranche 4 as a reviewer-traceability queue focused on trust, source precision, and handoff quality after live filing-readiness work
+- Review payload now includes `traceability` for important IR3 fields with field ref, label, current value, note/source text, evidence count, and trace status
+- Workspace IR3 Summary now shows a reviewer-traceability overview so a human can quickly see evidence coverage across key fields
+- Export CSV/PDF/JSON now carry reviewer-traceability summary data as part of the handoff pack
+- Tranche 3 remains complete and live: filing blockers, routing, applicable-document precision, export summary, and final human-review checklist are all in place
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 
 ## Recently completed slices
 
-### Tranche 3 / Slice 1 — explicit submission-readiness gate
-- Added a new submission-readiness model to the review payload
-- Derived explicit blockers from incomplete questionnaire state, applicable missing documents, and high-severity warnings
-- Added user-facing next actions to make the review path obvious
-- Included submission blockers in export outputs
-
-### Tranche 3 / Slice 2 — blocker-to-surface routing
-- Added per-blocker routing metadata in the review payload
-- Added action buttons so blockers can jump users directly to Questionnaire, Documents, or IR3 Summary
-- Reduced the gap between “problem detected” and “where to fix it”
+### Tranche 4 / Slice 1 — key-field traceability matrix
+- Added a structured reviewer-traceability model to the review payload for important IR3 fields
+- Included explanation/source text, evidence counts, and trace status per key field
+- Surfaced a reviewer-traceability overview inside IR3 Summary
+- Added reviewer-traceability summary output to CSV/PDF handoff surfaces
 
 ## Next tasks
-1. Tranche 3 queue complete — await next tranche definition or deployment instruction
+1. Tranche 4 / Slice 2 — surface explicit traceability gaps for explained-only vs evidenced fields
+2. Tranche 4 / Slice 3 — export reviewer follow-up pack for missing evidence on important fields
 
 ## Known blockers
-- No active technical blocker inside Tranche 3
-- Queue is complete rather than blocked
+- No active technical blocker in Tranche 4 Slice 1
+- Slice 2 is queued, not blocked
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

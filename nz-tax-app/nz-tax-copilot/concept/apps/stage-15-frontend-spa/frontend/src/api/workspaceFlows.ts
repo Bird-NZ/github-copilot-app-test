@@ -151,6 +151,17 @@ export type ReviewWarning = {
   evidenceOverride?: WarningEvidenceOverride | null
 }
 
+export type ReviewTraceabilityItem = {
+  ref: string
+  label: string
+  value: unknown
+  note: string
+  source: string
+  evidenceCount: number
+  traceStatus: 'evidenced' | 'explained' | 'unexplained'
+  evidence: ReviewEvidenceItem[]
+}
+
 export type ReviewPayload = {
   readiness: {
     score: number
@@ -190,6 +201,12 @@ export type ReviewPayload = {
   warnings: ReviewWarning[]
   assumptions: string[]
   evidence: ReviewEvidenceItem[]
+  traceability: {
+    keyFieldCount: number
+    evidencedFieldCount: number
+    explainedFieldCount: number
+    items: ReviewTraceabilityItem[]
+  }
   summary: {
     donationAmount: number
     pieIncome: number

@@ -4,6 +4,24 @@ function money(value) {
   return `NZ$${Number(value || 0).toFixed(2)}`;
 }
 
+function buildTraceabilitySummary(review = null) {
+  const traceability = review?.traceability;
+  const items = traceability?.items || [];
+
+  return {
+    keyFieldCount: traceability?.keyFieldCount || items.length,
+    evidencedFieldCount: traceability?.evidencedFieldCount || items.filter((item) => item?.evidenceCount > 0).length,
+    explainedFieldCount: traceability?.explainedFieldCount || items.filter((item) => item?.source || item?.note).length,
+    items: items.map((item) => ({
+      ref: item.ref,
+      label: item.label,
+      traceStatus: item.traceStatus,
+      evidenceCount: item.evidenceCount,
+      source: item.source,
+    })),
+  };
+}
+
 function buildFilingReadinessSummary(review = null) {
   const readiness = review?.submissionReadiness;
   const blockers = readiness?.blockers || [];
@@ -38,6 +56,7 @@ function buildFilingReadinessSummary(review = null) {
 export function buildCsv(map, calc, explanation = null, review = null, docChecklist = []) {
   const rows = [['section', 'ref', 'value']];
   const filingSummary = buildFilingReadinessSummary(review);
+  const traceSummary = buildTraceabilitySummary(review);
 
   for (const [k, v] of Object.entries(map)) {
     if (k === 'summary') continue;
@@ -83,6 +102,11 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
     rows.push(['filing_next_action', `action_${index + 1}`, action]);
   });
 
+  rows.push(['traceability', 'coverage', `${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`]);
+  traceSummary.items.forEach((item, index) => {
+    rows.push(['traceability_field', `field_${index + 1}`, `${item.ref}: ${item.label} [${item.traceStatus}] evidence=${item.evidenceCount}`]);
+  });
+
   (docChecklist || []).forEach((item) => {
     rows.push(['checklist', item.docType, `${item.label || item.docType}:${item.status}:${item.count}`]);
   });
@@ -105,6 +129,7 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
 
     const summary = calc.summary || {};
     const filingSummary = buildFilingReadinessSummary(review);
+    const traceSummary = buildTraceabilitySummary(review);
     doc.fontSize(14).text('Tax position');
     doc.fontSize(11);
     doc.text(`Taxable income: ${money(summary.taxableIncome)}`);
@@ -125,6 +150,11 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.fontSize(11).text(filingSummary.headline);
     filingSummary.reviewerNotes.forEach((note) => doc.text(`• ${note}`));
     filingSummary.nextActions.forEach((action) => doc.text(`Next action: ${action}`));
+
+    doc.moveDown();
+    doc.fontSize(14).text('Reviewer traceability');
+    doc.fontSize(11).text(`Key IR3 fields with attached evidence: ${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`);
+    traceSummary.items.forEach((item) => doc.text(`• ${item.ref} ${item.label}: ${item.traceStatus} (${item.evidenceCount} evidence item${item.evidenceCount === 1 ? '' : 's'})`));
 
     if (explanation?.headline) {
       doc.moveDown();
@@ -192,6 +222,7 @@ export async function buildPdfDocument(map, calc, explanation = null, review = n
     bytesBase64: buffer.toString('base64'),
     sections: [
       { name: 'Filing Readiness Summary', values: buildFilingReadinessSummary(review) },
+      { name: 'Reviewer Traceability', values: buildTraceabilitySummary(review) },
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
       { name: 'Plain-English Summary', values: explanation || {} },
@@ -207,6 +238,7 @@ export function buildPdfPlaceholder(map, calc, explanation = null, review = null
     generatedAt: new Date().toISOString(),
     sections: [
       { name: 'Filing Readiness Summary', values: buildFilingReadinessSummary(review) },
+      { name: 'Reviewer Traceability', values: buildTraceabilitySummary(review) },
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
       { name: 'Plain-English Summary', values: explanation || {} },

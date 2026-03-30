@@ -13,22 +13,20 @@ Update this file when a meaningful build slice starts, changes stage, completes,
 
 ## Current slices
 
-### NZ Tax App / Tranche 3 / filing readiness queue
+### NZ Tax App / Tranche 4 / reviewer traceability handoff
 - lane: active software build
 - agent: ClawDev
 - stage: complete
-- goal: turn the post–Tranche 2 draft into an explicit filing-readiness workflow with visible blockers, next actions, and reviewer-friendly handoff state
+- goal: turn the post–Tranche 3 draft into a reviewer-traceable handoff pack with visible evidence coverage and clearer source precision on important IR3 fields
 - acceptance criteria:
-  - [x] submission-readiness model added to review payload
-  - [x] workspace surfaces submission-readiness state clearly
-  - [x] export path carries submission blocker data
-  - [x] blocker-to-surface routing added
+  - [x] structured key-field traceability summary added to review payload
+  - [x] traceability includes field ref, label, value, source/note, evidence count, and trace status
+  - [x] workspace IR3 Summary surfaces reviewer traceability coverage
+  - [x] export CSV/PDF carries traceability summary for handoff
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
-  - [x] applicable-document precision tightened across all review states
-  - [x] reviewer-friendly filing summary completed in export pack
 - files touched:
-  - `nz-tax-app/docs/backlog/TRANCHE3_FILING_READINESS.md`
+  - `nz-tax-app/docs/backlog/TRANCHE4_REVIEWER_TRACEABILITY_HANDOFF.md`
   - `nz-tax-app/src/api/modules/reviewService.js`
   - `nz-tax-app/src/api/modules/exportService.js`
   - `nz-tax-app/src/api/tests/smoke.sh`
@@ -41,16 +39,16 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. checkpoint Slices 1-2
-  2. continue into Slice 3 applicable-document precision
+  1. checkpoint Slice 1
+  2. continue into Slice 2 traceability gap surfacing
   3. stop only if a real product/runtime blocker appears
 - review notes:
-  - Tranche 3 was selected because review/submission confidence is the tightest next leverage after Tranche 2
-  - Slices 1 and 2 are complete and validated; queue remains active
+  - Tranche 4 was selected because reviewer trust/traceability is the tightest next leverage after live filing readiness
+  - Slice 1 is complete and validated; Slice 2 is queued next
 - commit: pending
 - what's next:
-  1. checkpoint commit for Slice 5
-  2. mark Tranche 3 queue complete
+  1. checkpoint commit for Slice 1
+  2. continue into Slice 2 traceability gap surfacing
 - last updated: 2026-03-30
 
 ## Update rule

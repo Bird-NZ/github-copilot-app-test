@@ -981,6 +981,33 @@ export default function WorkspaceDetail() {
                 <Alert severity="info">
                   This section turns what you entered into an IR3-style draft. Review it carefully: it is designed to help you understand your likely return, not replace your own final check.
                 </Alert>
+                {review?.traceability ? (
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Stack spacing={1.25}>
+                        <Typography variant="subtitle1">Reviewer traceability</Typography>
+                        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                          <Chip size="small" variant="outlined" color="success" label={`Evidenced ${review.traceability.evidencedFieldCount}/${review.traceability.keyFieldCount}`} />
+                          <Chip size="small" variant="outlined" label={`Explained ${review.traceability.explainedFieldCount}/${review.traceability.keyFieldCount}`} />
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                          This highlights the key IR3 fields that already have explanation/source text and attached supporting evidence for reviewer handoff.
+                        </Typography>
+                        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                          {review.traceability.items.map((item) => (
+                            <Chip
+                              key={`trace-${item.ref}`}
+                              size="small"
+                              variant="outlined"
+                              color={item.traceStatus === 'evidenced' ? 'success' : item.traceStatus === 'explained' ? 'default' : 'warning'}
+                              label={`IR3 ${item.ref} · ${item.label} · ${item.evidenceCount} evidence`}
+                            />
+                          ))}
+                        </Stack>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ) : null}
                 {summaryItems.length > 0 ? (
                   <Stack spacing={1}>
                     {summaryItems.map(([ref, value]) => {

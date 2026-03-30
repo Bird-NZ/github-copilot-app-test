@@ -1,4 +1,5 @@
 import { completionStatus } from './questionnaireEngine.js';
+import { explainIr3Values } from './ir3Service.js';
 
 function money(value) {
   return Number((Number(value || 0)).toFixed(2));
@@ -434,6 +435,38 @@ function buildFinalReviewChecklist({ questionnaire, applicableDocuments = [], wa
   ];
 }
 
+function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
+  const explanation = explainIr3Values(map, calc);
+  const fieldNotes = explanation?.fieldNotes || [];
+
+  const items = fieldNotes.map((field) => {
+    const fieldEvidence = evidence.filter((item) => (item.ir3Refs || []).includes(field.ref));
+    const traceStatus = fieldEvidence.length > 0 && field.source
+      ? 'evidenced'
+      : field.source || field.note
+        ? 'explained'
+        : 'unexplained';
+
+    return {
+      ref: field.ref,
+      label: field.label || field.ref,
+      value: map[field.ref] ?? calc[field.ref] ?? null,
+      note: field.note || '',
+      source: field.source || '',
+      evidenceCount: fieldEvidence.length,
+      traceStatus,
+      evidence: fieldEvidence,
+    };
+  });
+
+  return {
+    keyFieldCount: items.length,
+    evidencedFieldCount: items.filter((item) => item.evidenceCount > 0).length,
+    explainedFieldCount: items.filter((item) => item.source || item.note).length,
+    items,
+  };
+}
+
 function buildSubmissionReadiness({ questionnaireAnswers = {}, adjustments = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {}, calc = {} }) {
   const questionnaire = completionStatus(questionnaireAnswers);
   const missingItems = [];
@@ -575,6 +608,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
   }));
 
   const score = Math.max(0, 100 - warningsWithEvidence.length * 20 - assumptions.length * 8);
+  const traceability = buildFieldTraceability(map, calc, evidence);
 
   const submissionReadiness = buildSubmissionReadiness({
     questionnaireAnswers,
@@ -596,6 +630,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     warnings: warningsWithEvidence,
     assumptions,
     evidence,
+    traceability,
     crypto,
     summary: {
       donationAmount: money(map?.summary?.donationAmount || 0),

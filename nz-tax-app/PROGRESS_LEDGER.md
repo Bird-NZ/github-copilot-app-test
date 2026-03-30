@@ -273,3 +273,9 @@ Append-only ledger for active build work.
   - Next action: Commit Slice 5 and mark the Tranche 3 filing-readiness queue complete.
   - Status: Done
   - Next update due by: n/a
+
+- 17:18 NZDT
+  - What changed: Defined Tranche 4 as reviewer traceability handoff and completed Slice 1. Review payloads now include a structured key-field traceability matrix, IR3 Summary shows reviewer traceability coverage, export CSV/PDF sections carry the same summary, and local validation passed again.
+  - Next action: Checkpoint Slice 1, then continue into Slice 2 (traceability gap surfacing) if the next pass should stay inside reviewer handoff quality.
+  - Status: Done
+  - Next update due by: on Slice 2 milestone or blocker
