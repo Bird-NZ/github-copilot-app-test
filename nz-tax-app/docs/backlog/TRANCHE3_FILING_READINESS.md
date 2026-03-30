@@ -52,4 +52,6 @@ Acceptance:
 - Only stop for a real blocker that changes product direction or requires unavailable credentials/permissions.
 
 ## Current slice
-- Slice 1 in progress: explicit submission-readiness gate
+- Slice 1 complete: explicit submission-readiness gate
+- Slice 2 complete: blocker-to-surface routing
+- Next slice: Slice 3 — applicable-document precision

@@ -22,9 +22,9 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] submission-readiness model added to review payload
   - [x] workspace surfaces submission-readiness state clearly
   - [x] export path carries submission blocker data
+  - [x] blocker-to-surface routing added
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
-  - [ ] blocker-to-surface routing added
   - [ ] applicable-document precision tightened across all review states
   - [ ] reviewer-friendly filing summary completed in export pack
 - files touched:
@@ -41,16 +41,16 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. checkpoint Slice 1
-  2. continue into Slice 2 blocker-to-surface routing
+  1. checkpoint Slices 1-2
+  2. continue into Slice 3 applicable-document precision
   3. stop only if a real product/runtime blocker appears
 - review notes:
   - Tranche 3 was selected because review/submission confidence is the tightest next leverage after Tranche 2
-  - Slice 1 is complete and validated; queue remains active
+  - Slices 1 and 2 are complete and validated; queue remains active
 - commit: pending
 - what's next:
-  1. checkpoint commit for Slice 1
-  2. start Slice 2 blocker-to-surface routing
+  1. checkpoint commit for Slice 2
+  2. start Slice 3 applicable-document precision
 - last updated: 2026-03-30
 
 ## Update rule

@@ -347,6 +347,8 @@ function buildSubmissionReadiness({ questionnaireAnswers = {}, map = {}, docs = 
       severity: 'high',
       label: 'Complete the questionnaire',
       message: `Answer the remaining visible questionnaire prompts (${questionnaire.answeredVisible}/${questionnaire.totalVisible} answered).`,
+      targetTab: 'questionnaire',
+      actionLabel: 'Open questionnaire',
     });
   }
 
@@ -394,6 +396,8 @@ function buildSubmissionReadiness({ questionnaireAnswers = {}, map = {}, docs = 
       severity: 'medium',
       label: `Upload ${item.label}`,
       message: item.reason,
+      targetTab: 'documents',
+      actionLabel: 'Open documents',
     });
   }
 
@@ -405,6 +409,8 @@ function buildSubmissionReadiness({ questionnaireAnswers = {}, map = {}, docs = 
         severity: 'high',
         label: 'Resolve high-severity review warning',
         message: warning.message,
+        targetTab: 'ir3_summary',
+        actionLabel: 'Open IR3 summary',
       });
     });
 

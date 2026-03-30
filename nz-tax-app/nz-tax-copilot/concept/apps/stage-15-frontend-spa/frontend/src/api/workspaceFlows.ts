@@ -171,6 +171,8 @@ export type ReviewPayload = {
       severity: string
       label: string
       message: string
+      targetTab?: 'questionnaire' | 'documents' | 'ir3_summary'
+      actionLabel?: string
     }>
     nextActions: string[]
   }

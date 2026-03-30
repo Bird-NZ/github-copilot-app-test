@@ -252,3 +252,9 @@ Append-only ledger for active build work.
   - Next action: Update state/tracking docs, checkpoint commit, and continue into Slice 2 unless a real blocker appears.
   - Status: Done
   - Next update due by: on Slice 2 milestone or blocker
+
+- 15:00 NZDT
+  - What changed: Tranche 3 / Slice 2 is complete. Submission blockers now include routing metadata and the workspace renders action buttons that jump straight to Questionnaire, Documents, or IR3 Summary. Backend smoke and frontend production build both re-passed.
+  - Next action: Checkpoint Slice 2, then continue into Slice 3 if more precision work is worth extending in this pass.
+  - Status: Done
+  - Next update due by: on Slice 3 milestone or blocker

@@ -60,6 +60,12 @@ function formatFieldValue(value: unknown) {
   return String(value)
 }
 
+function blockerTargetTabIndex(targetTab?: 'questionnaire' | 'documents' | 'ir3_summary') {
+  if (targetTab === 'documents') return 3
+  if (targetTab === 'ir3_summary') return 5
+  return 0
+}
+
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
@@ -509,7 +515,15 @@ export default function WorkspaceDetail() {
                 {submissionReadiness.blockers.length > 0 ? (
                   <Stack spacing={1}>
                     {submissionReadiness.blockers.slice(0, 4).map((blocker) => (
-                      <Alert key={blocker.code} severity={blocker.severity === 'high' ? 'error' : 'warning'}>
+                      <Alert
+                        key={blocker.code}
+                        severity={blocker.severity === 'high' ? 'error' : 'warning'}
+                        action={blocker.actionLabel ? (
+                          <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(blocker.targetTab))}>
+                            {blocker.actionLabel}
+                          </Button>
+                        ) : undefined}
+                      >
                         <Typography variant="body2"><strong>{blocker.label}:</strong> {blocker.message}</Typography>
                       </Alert>
                     ))}

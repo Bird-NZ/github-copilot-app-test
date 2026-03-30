@@ -2,15 +2,17 @@
 
 ## Current stage
 - Tranche 3 / Slice 1 complete (explicit submission-readiness gate)
-- Tranche 3 queue is now active
+- Tranche 3 / Slice 2 complete (blocker-to-surface routing)
+- Tranche 3 queue remains active
 
 ## Current objective
-Move the app from a strong draft/export state into explicit filing-readiness flow so users can see whether the draft is ready for final human review and exactly what still blocks submission preparation.
+Keep tightening the filing-readiness path so the draft not only exposes blockers, but also routes the user directly to the surface that resolves each one.
 
 ## Last completed milestones
-- Defined Tranche 3 as a filing-readiness queue focused on review/submission confidence instead of adding another broad product area
+- Defined Tranche 3 as a filing-readiness queue focused on review/submission confidence
 - Review payload now includes `submissionReadiness` with questionnaire completeness, applicable-document coverage, explicit blockers, and next actions
-- Workspace UI now surfaces submission readiness both at the top level and inside IR3 Summary
+- Submission blockers now carry routing metadata so the UI can send users straight to Questionnaire, Documents, or IR3 Summary
+- Workspace UI now surfaces submission readiness both at the top level and inside IR3 Summary, with action buttons on blockers
 - Export CSV/PDF/JSON now carry submission blocker data as part of the review/export pack
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
@@ -22,16 +24,20 @@ Move the app from a strong draft/export state into explicit filing-readiness flo
 - Added a new submission-readiness model to the review payload
 - Derived explicit blockers from incomplete questionnaire state, applicable missing documents, and high-severity warnings
 - Added user-facing next actions to make the review path obvious
-- Surfaced the new readiness summary in the workspace dashboard and IR3 Summary
 - Included submission blockers in export outputs
 
+### Tranche 3 / Slice 2 — blocker-to-surface routing
+- Added per-blocker routing metadata in the review payload
+- Added action buttons so blockers can jump users directly to Questionnaire, Documents, or IR3 Summary
+- Reduced the gap between “problem detected” and “where to fix it”
+
 ## Next tasks
-1. Start Tranche 3 / Slice 2: blocker-to-surface routing so each blocker points clearly to the tab or action that resolves it
-2. Then tighten applicable-document precision and review-ready export summarisation
+1. Start Tranche 3 / Slice 3: applicable-document precision across all review states
+2. Then continue into review-ready export summary
 
 ## Known blockers
-- No active technical blocker on Tranche 3 / Slice 1
-- Next slice is clear and queueable
+- No active technical blocker on Tranche 3 / Slice 2
+- Slice 3 is defined but not yet implemented in this pass
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:
