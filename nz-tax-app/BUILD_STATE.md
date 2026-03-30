@@ -23,6 +23,15 @@ Tranche 5 reviewer action queue is now active. After filing readiness and review
 
 ## Recently completed slices
 
+### Tranche 5 / Slice 3 — evidence-sufficiency emphasis on queued items
+- Added explicit `supportState` and `actionType` fields to queued reviewer actions
+- Distinguished missing support, missing input, review-required, and assumed states in backend payloads and exports
+- Added reviewer-facing UI chips so queue items no longer read like generic warnings without an obvious next step
+
+### Tranche 5 / Slice 4 — handoff-ready shortlist polish
+- Added a shortlist/headline for the top reviewer actions so handoff packs can start with the highest-leverage next steps
+- Preserved full ordered queue while keeping shortlist wording aligned with export surfaces
+
 ### Tranche 5 / Slice 1 — unified reviewer action queue
 - Added a structured `reviewerActionQueue` model to the review payload
 - Combined submission blockers, traceability follow-up items, review warnings, and assumptions into one ordered reviewer-facing queue

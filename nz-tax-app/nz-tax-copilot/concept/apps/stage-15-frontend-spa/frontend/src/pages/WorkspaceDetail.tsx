@@ -66,6 +66,20 @@ function blockerTargetTabIndex(targetTab?: 'questionnaire' | 'documents' | 'ir3_
   return 0
 }
 
+function reviewerActionSupportStateLabel(value?: 'missing_support' | 'missing_input' | 'review_required' | 'assumed') {
+  if (value === 'missing_support') return 'Missing support'
+  if (value === 'missing_input') return 'Missing input'
+  if (value === 'assumed') return 'Assumed'
+  return 'Review required'
+}
+
+function reviewerActionTypeLabel(value?: 'collect_document' | 'complete_input' | 'review_tax_position' | 'replace_assumption') {
+  if (value === 'collect_document') return 'Collect document'
+  if (value === 'complete_input') return 'Complete input'
+  if (value === 'replace_assumption') return 'Replace assumption'
+  return 'Review tax position'
+}
+
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const queryClient = useQueryClient()
@@ -513,8 +527,14 @@ export default function WorkspaceDetail() {
                           </Button>
                         ) : undefined}
                       >
-                        <Typography variant="body2"><strong>{item.title}:</strong> {item.detail}</Typography>
-                        <Typography variant="caption" color="inherit">Next request: {item.requestText} ({item.requestArea}).</Typography>
+                        <Stack spacing={0.5}>
+                          <Typography variant="body2"><strong>{item.title}:</strong> {item.detail}</Typography>
+                          <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                            <Chip size="small" variant="outlined" label={reviewerActionSupportStateLabel(item.supportState)} />
+                            <Chip size="small" variant="outlined" label={reviewerActionTypeLabel(item.actionType)} />
+                          </Stack>
+                          <Typography variant="caption" color="inherit">Next request: {item.requestText} ({item.requestArea}).</Typography>
+                        </Stack>
                       </Alert>
                     ))}
                   </Stack>

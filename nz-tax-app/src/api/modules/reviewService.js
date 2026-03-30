@@ -594,6 +594,8 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
       targetTab: 'ir3_summary',
       actionLabel: 'Open IR3 summary',
       category: 'traceability',
+      supportState: 'missing_support',
+      actionType: 'collect_document',
     });
   });
 
@@ -652,6 +654,8 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     })
     .filter((item) => item.count > 0);
 
+  const shortlist = deduped.slice(0, 3);
+
   return {
     headline: deduped.length === 0
       ? 'No open reviewer actions are currently queued. The draft is ready for final human review.'
@@ -659,6 +663,10 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     totalCount: deduped.length,
     highPriorityCount: deduped.filter((item) => item.severity === 'high').length,
     categories,
+    shortlistHeadline: shortlist.length > 0
+      ? `Start with ${shortlist.map((item) => item.title).join(' · ')}`
+      : 'No shortlist actions are currently needed.',
+    shortlist,
     items: deduped,
   };
 }

@@ -15,6 +15,26 @@ Append-only ledger for active build work.
 
 ---
 
+## 2026-03-30
+
+- 18:30 NZDT
+  - What changed: Re-anchored on Tranche 5 after Slice 2 and tightened Slice 3 into a concrete shippable change: queued reviewer actions must explicitly show support state and action type rather than reading like generic warnings.
+  - Next action: Implement support/action metadata through backend, export surfaces, and reviewer-facing workspace UI; then validate backend smoke + frontend build.
+  - Status: In Progress
+  - Next update due by: 18:35 NZDT
+
+- 18:34 NZDT
+  - What changed: Slice 3 implementation landed in the review payload, export surface mapping, and workspace queue UI. During validation, duplicate patch residue caused syntax failures in frontend/backend files; those were cleaned up immediately.
+  - Next action: Re-run frontend build and backend smoke/failure tests, then decide if Slice 4 shortlist polish can be completed in the same queue run.
+  - Status: In Progress
+  - Next update due by: 18:39 NZDT
+
+- 18:38 NZDT
+  - What changed: Tranche 5 Slice 3 and Slice 4 are now complete locally. Reviewer action queue items carry explicit support/action semantics, export surfaces include the same richer wording, and the queue now exposes a concise shortlist/headline for handoff packs. Backend smoke+failure tests and frontend production build are green.
+  - Next action: Update BUILD_STATE / ACTIVE_BUILD_SLICES / tranche doc, create checkpoint commit, and mark the Tranche 5 queue complete unless deployment is explicitly requested.
+  - Status: Complete
+  - Next update due by: n/a
+
 ## 2026-03-24
 
 - 20:58 NZDT

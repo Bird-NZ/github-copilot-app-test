@@ -63,6 +63,16 @@ function buildReviewerActionQueueSummary(review = null) {
       count: item.count,
       highPriorityCount: item.highPriorityCount,
     })),
+    shortlistHeadline: queue?.shortlistHeadline || null,
+    shortlist: (queue?.shortlist || []).map((item) => ({
+      id: item.id,
+      severity: item.severity,
+      title: item.title,
+      requestText: item.requestText,
+      requestArea: item.requestArea,
+      supportState: item.supportState,
+      actionType: item.actionType,
+    })),
     items: items.map((item) => ({
       id: item.id,
       sourceType: item.sourceType,
@@ -75,6 +85,8 @@ function buildReviewerActionQueueSummary(review = null) {
       targetTab: item.targetTab,
       actionLabel: item.actionLabel,
       category: item.category,
+      supportState: item.supportState,
+      actionType: item.actionType,
     })),
   };
 }
@@ -162,11 +174,17 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
 
   rows.push(['reviewer_action_queue', 'headline', actionQueue.headline]);
   rows.push(['reviewer_action_queue', 'high_priority_count', String(actionQueue.highPriorityCount)]);
+  if (actionQueue.shortlistHeadline) {
+    rows.push(['reviewer_action_shortlist', 'headline', actionQueue.shortlistHeadline]);
+  }
   (actionQueue.categories || []).forEach((item, index) => {
     rows.push(['reviewer_action_queue_category', `category_${index + 1}`, `${item.label}:${item.count}:${item.highPriorityCount}`]);
   });
+  (actionQueue.shortlist || []).forEach((item, index) => {
+    rows.push(['reviewer_action_shortlist', `item_${index + 1}`, `${item.severity}: ${item.title} -- ${item.supportState || 'review_required'} -- ${item.actionType || 'review_tax_position'} -- ${item.requestArea} -- ${item.requestText}`]);
+  });
   actionQueue.items.forEach((item, index) => {
-    rows.push(['reviewer_action', `item_${index + 1}`, `${item.severity}: ${item.title} -- ${item.requestArea} -- ${item.requestText}`]);
+    rows.push(['reviewer_action', `item_${index + 1}`, `${item.severity}: ${item.title} -- ${item.supportState || 'review_required'} -- ${item.actionType || 'review_tax_position'} -- ${item.requestArea} -- ${item.requestText}`]);
   });
 
   rows.push(['traceability', 'coverage', `${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`]);
@@ -233,7 +251,11 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.fontSize(11).text(actionQueue.headline);
     doc.text(`High-priority reviewer actions: ${actionQueue.highPriorityCount}/${actionQueue.totalCount}`);
     (actionQueue.categories || []).forEach((item) => doc.text(`• ${item.label}: ${item.count} queued (${item.highPriorityCount} high priority)`));
-    actionQueue.items.slice(0, 8).forEach((item) => doc.text(`• ${item.severity.toUpperCase()} · ${item.title}: ${item.requestArea} -- ${item.requestText}`));
+    if (actionQueue.shortlistHeadline) {
+      doc.text(`Shortlist: ${actionQueue.shortlistHeadline}`);
+    }
+    (actionQueue.shortlist || []).forEach((item) => doc.text(`• SHORTLIST · ${item.severity.toUpperCase()} · ${item.title}: ${item.supportState || 'review_required'} / ${item.actionType || 'review_tax_position'} · ${item.requestArea} -- ${item.requestText}`));
+    actionQueue.items.slice(0, 8).forEach((item) => doc.text(`• ${item.severity.toUpperCase()} · ${item.title}: ${item.supportState || 'review_required'} / ${item.actionType || 'review_tax_position'} · ${item.requestArea} -- ${item.requestText}`));
 
     doc.moveDown();
     doc.fontSize(14).text('Reviewer traceability');
@@ -346,3 +368,4 @@ export function buildPdfPlaceholder(map, calc, explanation = null, review = null
     ],
   };
 }
+

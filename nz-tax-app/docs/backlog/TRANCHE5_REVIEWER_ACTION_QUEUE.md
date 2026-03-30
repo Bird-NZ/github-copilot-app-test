@@ -48,5 +48,5 @@ Acceptance:
 ## Current slice state
 - Slice 1 complete: unified reviewer action queue
 - Slice 2 complete: completion-aware grouping and counts
-- Slice 3 queued: evidence-sufficiency emphasis on queued items
-- Slice 4 queued: handoff-ready shortlist polish
+- Slice 3 complete: queued items now label support state and action type so missing evidence, missing input, assumption replacement, and tax-position review are distinct
+- Slice 4 complete: reviewer action queue now exposes a concise shortlist/headline for handoff packs while preserving the full ordered queue

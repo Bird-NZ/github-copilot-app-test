@@ -246,6 +246,8 @@ export type ReviewPayload = {
       targetTab?: 'questionnaire' | 'documents' | 'ir3_summary'
       actionLabel?: string
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
+      supportState?: 'missing_support' | 'missing_input' | 'review_required' | 'assumed'
+      actionType?: 'collect_document' | 'complete_input' | 'review_tax_position' | 'replace_assumption'
     }>
   }
   traceability: {
