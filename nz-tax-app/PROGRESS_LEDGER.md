@@ -279,3 +279,9 @@ Append-only ledger for active build work.
   - Next action: Checkpoint Slice 1, then continue into Slice 2 (traceability gap surfacing) if the next pass should stay inside reviewer handoff quality.
   - Status: Done
   - Next update due by: on Slice 2 milestone or blocker
+
+- 17:27 NZDT
+  - What changed: Tranche 4 / Slice 2 is complete. Reviewer traceability now exposes explicit follow-up gaps for explained-but-not-evidenced key fields, the IR3 Summary surfaces those gaps directly, export CSV/PDF includes traceability-gap lines, and local validation re-passed cleanly.
+  - Next action: Checkpoint Slice 2, then continue into Slice 3 (reviewer follow-up pack) if the next pass should deepen handoff quality rather than widen scope.
+  - Status: Done
+  - Next update due by: on Slice 3 milestone or blocker

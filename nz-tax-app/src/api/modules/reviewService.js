@@ -459,11 +459,23 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
     };
   });
 
+  const gaps = items
+    .filter((item) => item.evidenceCount === 0)
+    .map((item) => ({
+      ref: item.ref,
+      label: item.label,
+      reason: item.traceStatus === 'explained'
+        ? 'Explained in the draft, but no supporting evidence is attached to this key field yet.'
+        : 'This key field still needs clearer explanation/source detail and supporting evidence before reviewer handoff.',
+      severity: item.traceStatus === 'explained' ? 'medium' : 'high',
+    }));
+
   return {
     keyFieldCount: items.length,
     evidencedFieldCount: items.filter((item) => item.evidenceCount > 0).length,
     explainedFieldCount: items.filter((item) => item.source || item.note).length,
     items,
+    gaps,
   };
 }
 

@@ -47,4 +47,5 @@ Acceptance:
 
 ## Current slice state
 - Slice 1 complete: key-field traceability matrix
-- Slice 2 next: traceability gap surfacing
+- Slice 2 complete: traceability gap surfacing
+- Slice 3 next: reviewer follow-up pack

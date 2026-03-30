@@ -162,6 +162,13 @@ export type ReviewTraceabilityItem = {
   evidence: ReviewEvidenceItem[]
 }
 
+export type ReviewTraceabilityGap = {
+  ref: string
+  label: string
+  reason: string
+  severity: 'medium' | 'high'
+}
+
 export type ReviewPayload = {
   readiness: {
     score: number
@@ -206,6 +213,7 @@ export type ReviewPayload = {
     evidencedFieldCount: number
     explainedFieldCount: number
     items: ReviewTraceabilityItem[]
+    gaps: ReviewTraceabilityGap[]
   }
   summary: {
     donationAmount: number

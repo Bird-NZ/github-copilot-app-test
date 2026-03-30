@@ -23,6 +23,7 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] traceability includes field ref, label, value, source/note, evidence count, and trace status
   - [x] workspace IR3 Summary surfaces reviewer traceability coverage
   - [x] export CSV/PDF carries traceability summary for handoff
+  - [x] traceability gaps surfaced explicitly for reviewer follow-up
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
 - files touched:
@@ -44,11 +45,11 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   3. stop only if a real product/runtime blocker appears
 - review notes:
   - Tranche 4 was selected because reviewer trust/traceability is the tightest next leverage after live filing readiness
-  - Slice 1 is complete and validated; Slice 2 is queued next
+  - Slices 1 and 2 are complete and validated; Slice 3 is queued next
 - commit: pending
 - what's next:
-  1. checkpoint commit for Slice 1
-  2. continue into Slice 2 traceability gap surfacing
+  1. checkpoint commit for Slice 2
+  2. continue into Slice 3 reviewer follow-up pack
 - last updated: 2026-03-30
 
 ## Update rule

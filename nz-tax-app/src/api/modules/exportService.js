@@ -19,6 +19,12 @@ function buildTraceabilitySummary(review = null) {
       evidenceCount: item.evidenceCount,
       source: item.source,
     })),
+    gaps: (traceability?.gaps || []).map((gap) => ({
+      ref: gap.ref,
+      label: gap.label,
+      severity: gap.severity,
+      reason: gap.reason,
+    })),
   };
 }
 
@@ -106,6 +112,9 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   traceSummary.items.forEach((item, index) => {
     rows.push(['traceability_field', `field_${index + 1}`, `${item.ref}: ${item.label} [${item.traceStatus}] evidence=${item.evidenceCount}`]);
   });
+  traceSummary.gaps.forEach((gap, index) => {
+    rows.push(['traceability_gap', `gap_${index + 1}`, `${gap.ref}: ${gap.label} [${gap.severity}] ${gap.reason}`]);
+  });
 
   (docChecklist || []).forEach((item) => {
     rows.push(['checklist', item.docType, `${item.label || item.docType}:${item.status}:${item.count}`]);
@@ -155,6 +164,11 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.fontSize(14).text('Reviewer traceability');
     doc.fontSize(11).text(`Key IR3 fields with attached evidence: ${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`);
     traceSummary.items.forEach((item) => doc.text(`• ${item.ref} ${item.label}: ${item.traceStatus} (${item.evidenceCount} evidence item${item.evidenceCount === 1 ? '' : 's'})`));
+    if (traceSummary.gaps.length) {
+      doc.moveDown(0.5);
+      doc.text('Reviewer follow-up for traceability gaps:');
+      traceSummary.gaps.forEach((gap) => doc.text(`- ${gap.ref} ${gap.label}: ${gap.reason}`));
+    }
 
     if (explanation?.headline) {
       doc.moveDown();
