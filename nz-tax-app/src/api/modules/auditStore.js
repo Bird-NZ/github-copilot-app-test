@@ -9,6 +9,7 @@ const ACTION_LABELS = {
   'review.action_resolution.save': 'Reviewer action updated',
   'review.final_signoff.save': 'Reviewer final sign-off recorded',
   'review.final_signoff.stale': 'Reviewer final sign-off marked stale',
+  'review.operator_handoff.acknowledge': 'Operator handoff acknowledged',
 };
 
 const INCOME_TYPE_LABELS = {
@@ -103,6 +104,12 @@ function buildDetails(action, meta = {}) {
   if (action === 'review.final_signoff.stale') {
     const reason = meta.staleReason ? ` — ${meta.staleReason}` : ''
     return `Final sign-off became stale${reason}`
+  }
+
+  if (action === 'review.operator_handoff.acknowledge') {
+    const at = meta.acknowledgedAt ? ` at ${meta.acknowledgedAt}` : ''
+    const note = meta.note ? ` — Note: ${meta.note}` : ''
+    return `Operator acknowledged signed handoff${at}${note}`
   }
 
   if (action === 'questionnaire.save') {

@@ -408,3 +408,21 @@ Append-only ledger for active build work.
   - Next action: Update state docs, checkpoint commit, and mark Tranche 6 complete.
   - Status: Done
   - Next update due by: n/a
+
+- 20:28 NZDT
+  - What changed: Re-anchored after Tranche 7 completion and defined the next highest-leverage queue as Tranche 8 operator handoff confidence, focused on explicit operator acknowledgement after reviewer sign-off to remove last-mile ambiguity.
+  - Next action: Implement Slice 1 with operator handoff state/API/UI/export wiring and validate locally.
+  - Status: In Progress
+  - Next update due by: 20:38 NZDT
+
+- 20:47 NZDT
+  - What changed: Tranche 8 Slice 1 is complete. Reviewer queue now includes operator handoff state, backend now enforces fresh-signoff gate before operator acknowledgement, workspace reviewer panels expose acknowledgement action/status, exports include operator-handoff summary fields, and smoke/build both passed.
+  - Next action: Update BUILD_STATE + tracking docs, checkpoint commit Slice 1, then continue into Slice 2 (timeline/audit wording polish).
+  - Status: Done
+  - Next update due by: on Slice 2 milestone or blocker
+
+- 21:09 NZDT
+  - What changed: Tranche 8 Slice 2 is complete. Added explicit handoff timeline items (reviewer sign-off + operator acknowledgement with stale signaling), surfaced timeline in workspace and export outputs, and improved audit labeling/details for operator handoff events.
+  - Next action: Checkpoint commit Slices 1–2 together, then start Slice 3 (filing execution checkpoint semantics).
+  - Status: Done
+  - Next update due by: on Slice 3 milestone or blocker

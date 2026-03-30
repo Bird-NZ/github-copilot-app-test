@@ -555,7 +555,7 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
   };
 }
 
-function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {}, finalSignoff = null }) {
+function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {}, finalSignoff = null, operatorHandoff = null }) {
   const items = [];
 
   const handoffBlockers = [];
@@ -769,6 +769,72 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
         : 'Final reviewer sign-off is pending. Handoff pack is ready for standard sign-off.',
   };
 
+  const handoffRecord = operatorHandoff && typeof operatorHandoff === 'object' ? operatorHandoff : null;
+  const handoffAcknowledgedAt = handoffRecord?.acknowledgedAt || null;
+  const handoffAcknowledgedBy = handoffRecord?.acknowledgedBy || null;
+  const handoffNote = handoffRecord?.note ? String(handoffRecord.note) : '';
+  const handoffSignedOffAt = handoffRecord?.signedOffAt || null;
+  const handoffIsStale = Boolean(handoffAcknowledgedAt) && (
+    finalSignoffState.isStale === true
+    || (finalSignoffState.signedOffAt && handoffSignedOffAt && finalSignoffState.signedOffAt !== handoffSignedOffAt)
+  );
+  const operatorHandoffState = {
+    status: !finalSignoffState.signedOffAt
+      ? 'pending_reviewer_signoff'
+      : finalSignoffState.isStale
+        ? 'stale_reviewer_signoff'
+        : handoffAcknowledgedAt
+          ? handoffIsStale
+            ? 'stale_operator_handoff'
+            : 'acknowledged'
+          : 'pending_operator_ack',
+    acknowledgedAt: handoffAcknowledgedAt,
+    acknowledgedBy: handoffAcknowledgedBy,
+    note: handoffNote,
+    signedOffAt: handoffSignedOffAt,
+    summary: !finalSignoffState.signedOffAt
+      ? 'Operator handoff is pending because final reviewer sign-off has not been recorded yet.'
+      : finalSignoffState.isStale
+        ? 'Operator handoff is blocked because reviewer sign-off is stale. Re-sign off before operator acknowledgement.'
+        : handoffAcknowledgedAt
+          ? handoffIsStale
+            ? 'Operator acknowledgement is stale because reviewer sign-off changed. Re-acknowledge after the updated sign-off.'
+            : `Operator handoff acknowledged${handoffAcknowledgedBy ? ` by ${handoffAcknowledgedBy}` : ''}${handoffAcknowledgedAt ? ` at ${handoffAcknowledgedAt}` : ''}.`
+          : 'Reviewer sign-off is complete. Awaiting operator acknowledgement to close the handoff loop.',
+    nextStep: !finalSignoffState.signedOffAt
+      ? 'Record final reviewer sign-off first.'
+      : finalSignoffState.isStale
+        ? 'Resolve reopened issues and record reviewer sign-off again before handing off.'
+        : handoffAcknowledgedAt && !handoffIsStale
+          ? 'Proceed with filing execution and keep the acknowledgement in the closure record.'
+          : 'Operator should acknowledge receipt of the signed-off handoff pack before filing.',
+    requiresReacknowledgement: handoffIsStale,
+  };
+
+  const handoffTimelineItems = [];
+  if (finalSignoffState.signedOffAt) {
+    handoffTimelineItems.push({
+      key: 'reviewer_signoff',
+      status: finalSignoffState.isStale ? 'stale' : 'done',
+      label: 'Reviewer final sign-off',
+      at: finalSignoffState.signedOffAt,
+      by: finalSignoffState.signedOffBy,
+      detail: finalSignoffState.overrideReason
+        ? `Override reason: ${finalSignoffState.overrideReason}`
+        : 'Signed off with current handoff pack state.',
+    });
+  }
+  if (operatorHandoffState.acknowledgedAt) {
+    handoffTimelineItems.push({
+      key: 'operator_ack',
+      status: operatorHandoffState.requiresReacknowledgement ? 'stale' : 'done',
+      label: 'Operator handoff acknowledgement',
+      at: operatorHandoffState.acknowledgedAt,
+      by: operatorHandoffState.acknowledgedBy,
+      detail: operatorHandoffState.note || 'Operator confirmed handoff receipt.',
+    });
+  }
+
   return {
     handoffStatus,
     headline: handoffStatus === 'ready_for_handoff'
@@ -801,6 +867,13 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
       checklist: handoffChecklist,
     },
     finalSignoff: finalSignoffState,
+    operatorHandoff: operatorHandoffState,
+    handoffTimeline: {
+      headline: handoffTimelineItems.length > 0
+        ? 'Handoff timeline'
+        : 'No final handoff events recorded yet.',
+      items: handoffTimelineItems,
+    },
     categories: categoryOrder
       .map((category) => {
         const categoryItems = openItems.filter((item) => item.category === category);
@@ -993,6 +1066,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     assumptions,
     resolutions: workspace?.reviewerActionResolutions || {},
     finalSignoff: workspace?.reviewerFinalSignoff || null,
+    operatorHandoff: workspace?.reviewerOperatorHandoff || null,
   });
 
   return {

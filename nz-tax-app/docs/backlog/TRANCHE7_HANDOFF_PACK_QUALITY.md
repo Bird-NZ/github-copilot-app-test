@@ -1,6 +1,6 @@
 # Tranche 7 — Handoff Pack Quality
 
-Status: in progress
+Status: complete
 
 Rationale:
 - Tranche 6 made reviewer closure operational and separated open vs resolved work cleanly.

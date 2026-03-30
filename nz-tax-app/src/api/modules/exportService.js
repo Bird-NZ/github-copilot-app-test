@@ -106,6 +106,27 @@ function buildReviewerActionQueueSummary(review = null) {
       recoveryStep: queue?.finalSignoff?.recoveryStep || '',
       summary: queue?.finalSignoff?.summary || 'Final reviewer sign-off is pending.',
     },
+    operatorHandoff: {
+      status: queue?.operatorHandoff?.status || 'pending_reviewer_signoff',
+      acknowledgedAt: queue?.operatorHandoff?.acknowledgedAt || null,
+      acknowledgedBy: queue?.operatorHandoff?.acknowledgedBy || null,
+      signedOffAt: queue?.operatorHandoff?.signedOffAt || null,
+      note: queue?.operatorHandoff?.note || '',
+      summary: queue?.operatorHandoff?.summary || 'Operator handoff is pending.',
+      nextStep: queue?.operatorHandoff?.nextStep || '',
+      requiresReacknowledgement: queue?.operatorHandoff?.requiresReacknowledgement === true,
+    },
+    handoffTimeline: {
+      headline: queue?.handoffTimeline?.headline || '',
+      items: (queue?.handoffTimeline?.items || []).map((item) => ({
+        key: item.key,
+        status: item.status,
+        label: item.label,
+        at: item.at || null,
+        by: item.by || null,
+        detail: item.detail || '',
+      })),
+    },
     shortlistHeadline: queue?.shortlistHeadline || null,
     recentlyResolvedHeadline: queue?.recentlyResolvedHeadline || null,
     shortlist: (queue?.shortlist || []).map((item) => ({
@@ -277,6 +298,16 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   rows.push(['reviewer_final_signoff', 'is_stale', String(actionQueue.finalSignoff?.isStale === true)]);
   rows.push(['reviewer_final_signoff', 'stale_reason', String(actionQueue.finalSignoff?.staleReason || '')]);
   rows.push(['reviewer_final_signoff', 'recovery_step', String(actionQueue.finalSignoff?.recoveryStep || '')]);
+  rows.push(['reviewer_operator_handoff', 'status', String(actionQueue.operatorHandoff?.status || 'pending_reviewer_signoff')]);
+  rows.push(['reviewer_operator_handoff', 'summary', String(actionQueue.operatorHandoff?.summary || '')]);
+  rows.push(['reviewer_operator_handoff', 'next_step', String(actionQueue.operatorHandoff?.nextStep || '')]);
+  rows.push(['reviewer_operator_handoff', 'acknowledged_at', String(actionQueue.operatorHandoff?.acknowledgedAt || '')]);
+  rows.push(['reviewer_operator_handoff', 'acknowledged_by', String(actionQueue.operatorHandoff?.acknowledgedBy || '')]);
+  rows.push(['reviewer_operator_handoff', 'note', String(actionQueue.operatorHandoff?.note || '')]);
+  rows.push(['reviewer_handoff_timeline', 'headline', String(actionQueue.handoffTimeline?.headline || '')]);
+  (actionQueue.handoffTimeline?.items || []).forEach((item, index) => {
+    rows.push(['reviewer_handoff_timeline_item', `item_${index + 1}`, `${item.label}:${item.status}:${item.at || ''}:${item.by || ''}:${item.detail || ''}`]);
+  });
   if (actionQueue.remainingIssuesPack?.headline) {
     rows.push(['reviewer_remaining_issues', 'headline', actionQueue.remainingIssuesPack.headline]);
   }
@@ -389,6 +420,22 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
       if (actionQueue.finalSignoff.overrideReason) {
         doc.text(`Override reason: ${actionQueue.finalSignoff.overrideReason}`);
       }
+    }
+    if (actionQueue.operatorHandoff?.summary) {
+      doc.text(`Operator handoff: ${actionQueue.operatorHandoff.summary}`);
+      doc.text(`Next step: ${actionQueue.operatorHandoff.nextStep || ''}`);
+      if (actionQueue.operatorHandoff.acknowledgedAt || actionQueue.operatorHandoff.acknowledgedBy) {
+        doc.text(`Acknowledged at ${actionQueue.operatorHandoff.acknowledgedAt || 'n/a'} by ${actionQueue.operatorHandoff.acknowledgedBy || 'unknown operator'}`);
+      }
+      if (actionQueue.operatorHandoff.note) {
+        doc.text(`Operator note: ${actionQueue.operatorHandoff.note}`);
+      }
+    }
+    if (actionQueue.handoffTimeline?.items?.length) {
+      doc.text(actionQueue.handoffTimeline.headline || 'Handoff timeline');
+      actionQueue.handoffTimeline.items.forEach((item) => {
+        doc.text(`• ${item.label} (${String(item.status || '').toUpperCase()}): ${item.at || 'n/a'} by ${item.by || 'unknown'}${item.detail ? ` — ${item.detail}` : ''}`);
+      });
     }
 
     doc.moveDown();

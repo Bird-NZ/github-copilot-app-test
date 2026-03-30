@@ -1,7 +1,8 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 7 queue complete (handoff pack quality)
+- Tranche 8 queue in progress (operator handoff confidence)
+- Tranche 7 queue complete and live (handoff pack quality)
 - Tranche 6 queue complete and live (reviewer closure flow)
 - Tranche 5 queue complete and live
 - Tranche 4 queue complete and live
@@ -9,9 +10,13 @@
 - Tranche 2 queue complete and live
 
 ## Current objective
-Tranche 7 handoff-pack quality queue is complete. Final sign-off semantics and closure-drift guardrails are now in place so reviewer→operator handoff packs carry explicit sign-off readiness, override rationale (when used), and stale-signoff recovery guidance.
+Execute Tranche 8 from `docs/backlog/TRANCHE8_OPERATOR_HANDOFF_CONFIDENCE.md` so post-signoff reviewer→operator handoff is explicitly acknowledged and no longer ambiguous in workspace/export/audit surfaces.
 
 ## Last completed milestones
+- Defined Tranche 8 queue in `docs/backlog/TRANCHE8_OPERATOR_HANDOFF_CONFIDENCE.md` with ordered slices for acknowledgement, timeline/audit clarity, filing checkpoint semantics, and closure confidence summary
+- Tranche 8 Slice 1 complete: reviewer queue now includes `operatorHandoff` status/summary/next-step semantics, operator acknowledgement API gate/recording, workspace acknowledge action, and export CSV/PDF/JSON operator-handoff fields
+- Tranche 8 Slice 2 complete: handoff timeline is now explicit across review/export surfaces and audit labels/details now distinguish operator acknowledgement from reviewer sign-off/stale events
+- Backend smoke now covers operator-handoff gate failure (no fresh signoff), acknowledgement success, handoff timeline emission, and stale transition behavior when signoff drifts
 - Defined and exhausted Tranche 7 in `docs/backlog/TRANCHE7_HANDOFF_PACK_QUALITY.md` (handoff-pack checklist, export alignment, final sign-off semantics, closure-drift guardrails)
 - Reviewer queue payload now includes `handoffPack` readiness and `finalSignoff` metadata (timestamp, actor, override reason, stale/recovery semantics)
 - Workspace reviewer queue/IR3 reviewer panels now surface final sign-off action state and stale-signoff recovery steps when drift reopens queue blockers/warnings
@@ -64,11 +69,11 @@ Tranche 7 handoff-pack quality queue is complete. Final sign-off semantics and c
 - Preserved full ordered queue while keeping shortlist wording aligned with export surfaces
 
 ## Next tasks
-1. Checkpoint commit Tranche 7 Slice 3 + Slice 4 implementation and docs/state updates
-2. Re-anchor on the next explicitly defined tranche after Tranche 7 queue completion
+1. Checkpoint commit Tranche 8 Slice 1 + Slice 2 implementation and docs/state updates
+2. Start Tranche 8 Slice 3 (filing execution checkpoint semantics)
 
 ## Known blockers
-- No active technical blocker; Tranche 7 queue is complete
+- No active technical blocker; Tranche 8 Slice 3 is clear and ready
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

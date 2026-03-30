@@ -289,6 +289,18 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const saveOperatorHandoffAckMutation = useMutation({
+    mutationFn: (payload: { note?: string }) =>
+      workspaceFlowsApi.saveOperatorHandoffAck(workspaceId || '', payload),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-audit', workspaceId, auditCategory, auditSearch] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const saveWarningEvidenceOverrideMutation = useMutation({
     mutationFn: (payload: { warningCode: string; mode: 'auto' | 'manual' | 'none'; documentIds?: string[] }) =>
       workspaceFlowsApi.saveWarningEvidenceOverride(workspaceId || '', payload.warningCode, {
@@ -605,6 +617,42 @@ export default function WorkspaceDetail() {
                       <Typography variant="caption" color="inherit">Recovery step: {reviewerActionQueue.finalSignoff.recoveryStep}</Typography>
                     ) : null}
                   </Alert>
+                ) : null}
+                {reviewerActionQueue.operatorHandoff ? (
+                  <Alert
+                    severity={reviewerActionQueue.operatorHandoff.status === 'acknowledged' ? 'success' : reviewerActionQueue.operatorHandoff.status.includes('stale') ? 'warning' : 'info'}
+                    action={reviewerActionQueue.operatorHandoff.status === 'pending_operator_ack' || reviewerActionQueue.operatorHandoff.status === 'stale_operator_handoff' ? (
+                      <Button
+                        color="inherit"
+                        size="small"
+                        disabled={saveOperatorHandoffAckMutation.isPending}
+                        onClick={() => {
+                          const note = window.prompt('Optional operator acknowledgement note:', '') || ''
+                          saveOperatorHandoffAckMutation.mutate({ note: note.trim() || undefined })
+                        }}
+                      >
+                        Acknowledge handoff
+                      </Button>
+                    ) : null}
+                  >
+                    <Typography variant="body2"><strong>Operator handoff:</strong> {reviewerActionQueue.operatorHandoff.summary}</Typography>
+                    <Typography variant="caption" color="inherit">Next step: {reviewerActionQueue.operatorHandoff.nextStep}</Typography>
+                    {reviewerActionQueue.operatorHandoff.acknowledgedAt || reviewerActionQueue.operatorHandoff.acknowledgedBy ? (
+                      <Typography variant="caption" color="inherit">
+                        Acknowledged at {reviewerActionQueue.operatorHandoff.acknowledgedAt ? formatDate(reviewerActionQueue.operatorHandoff.acknowledgedAt) : '—'} by {reviewerActionQueue.operatorHandoff.acknowledgedBy || 'unknown operator'}
+                      </Typography>
+                    ) : null}
+                  </Alert>
+                ) : null}
+                {reviewerActionQueue.handoffTimeline?.items?.length ? (
+                  <Stack spacing={0.75}>
+                    <Typography variant="caption" color="text.secondary">{reviewerActionQueue.handoffTimeline.headline || 'Handoff timeline'}</Typography>
+                    {reviewerActionQueue.handoffTimeline.items.map((item) => (
+                      <Alert key={`handoff-timeline-${item.key}`} severity={item.status === 'stale' ? 'warning' : 'success'}>
+                        <Typography variant="caption"><strong>{item.label}:</strong> {item.at ? formatDate(item.at) : '—'} by {item.by || 'unknown'}{item.detail ? ` — ${item.detail}` : ''}</Typography>
+                      </Alert>
+                    ))}
+                  </Stack>
                 ) : null}
                 {reviewerActionQueue.items.length > 0 ? (
                   <Stack spacing={1}>
@@ -1234,6 +1282,36 @@ export default function WorkspaceDetail() {
                             <strong>Final sign-off:</strong> {reviewerActionQueue.finalSignoff.summary}
                             {reviewerActionQueue.finalSignoff.recoveryStep ? ` Recovery step: ${reviewerActionQueue.finalSignoff.recoveryStep}` : ''}
                           </Alert>
+                        ) : null}
+                        {reviewerActionQueue.operatorHandoff ? (
+                          <Alert
+                            severity={reviewerActionQueue.operatorHandoff.status === 'acknowledged' ? 'success' : reviewerActionQueue.operatorHandoff.status.includes('stale') ? 'warning' : 'info'}
+                            action={reviewerActionQueue.operatorHandoff.status === 'pending_operator_ack' || reviewerActionQueue.operatorHandoff.status === 'stale_operator_handoff' ? (
+                              <Button
+                                color="inherit"
+                                size="small"
+                                disabled={saveOperatorHandoffAckMutation.isPending}
+                                onClick={() => {
+                                  const note = window.prompt('Optional operator acknowledgement note:', '') || ''
+                                  saveOperatorHandoffAckMutation.mutate({ note: note.trim() || undefined })
+                                }}
+                              >
+                                Acknowledge handoff
+                              </Button>
+                            ) : null}
+                          >
+                            <strong>Operator handoff:</strong> {reviewerActionQueue.operatorHandoff.summary} Next step: {reviewerActionQueue.operatorHandoff.nextStep}
+                          </Alert>
+                        ) : null}
+                        {reviewerActionQueue.handoffTimeline?.items?.length ? (
+                          <Stack spacing={0.5}>
+                            <Typography variant="caption" color="text.secondary">{reviewerActionQueue.handoffTimeline.headline || 'Handoff timeline'}</Typography>
+                            {reviewerActionQueue.handoffTimeline.items.map((item) => (
+                              <Alert key={`ir3-handoff-timeline-${item.key}`} severity={item.status === 'stale' ? 'warning' : 'success'}>
+                                <strong>{item.label}:</strong> {item.at ? formatDate(item.at) : '—'} by {item.by || 'unknown'}{item.detail ? ` — ${item.detail}` : ''}
+                              </Alert>
+                            ))}
+                          </Stack>
                         ) : null}
                         {reviewerActionQueue.items.length > 0 ? (
                           <Stack spacing={0.75}>

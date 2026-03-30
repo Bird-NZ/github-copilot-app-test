@@ -13,6 +13,47 @@ Update this file when a meaningful build slice starts, changes stage, completes,
 
 ## Current slices
 
+### NZ Tax App / Tranche 8 / operator handoff confidence
+- lane: active software build
+- agent: ClawDev
+- stage: complete
+- goal: close the last-mile reviewer→operator ambiguity by making post-signoff operator acknowledgement explicit and drift-aware
+- acceptance criteria:
+  - [x] Tranche 8 queue doc created with ordered slices and acceptance logic
+  - [x] reviewer queue payload includes `operatorHandoff` state with status/summary/next-step metadata
+  - [x] operator acknowledgement can only be saved when reviewer sign-off is fresh
+  - [x] workspace reviewer queue surfaces operator handoff status and acknowledgement action
+  - [x] export CSV/PDF/JSON include operator handoff summary fields aligned with workspace wording
+  - [x] backend smoke validation covers acknowledgement gate + success + stale transition
+  - [x] audit labels/details distinguish signoff vs operator acknowledgement vs stale reopening
+  - [x] reviewer/export surfaces include compact handoff timeline context
+- files touched:
+  - `nz-tax-app/docs/backlog/TRANCHE8_OPERATOR_HANDOFF_CONFIDENCE.md`
+  - `nz-tax-app/src/api/modules/workspaceStore.js`
+  - `nz-tax-app/src/api/modules/reviewService.js`
+  - `nz-tax-app/src/api/modules/exportService.js`
+  - `nz-tax-app/src/api/server.js`
+  - `nz-tax-app/src/api/tests/smoke.sh`
+  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
+  - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
+  - `nz-tax-app/BUILD_STATE.md`
+  - `nz-tax-app/PROGRESS_LEDGER.md`
+  - `tracking/ACTIVE_BUILD_SLICES.md`
+- tests run:
+  - `cd nz-tax-app/src/api && bash tests/smoke.sh`
+  - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
+- verification result:
+  - reviewer queue now reports pending/acknowledged/stale operator handoff states with explicit next steps
+  - operator acknowledgement is blocked before fresh reviewer sign-off and recorded with actor/timestamp/note after sign-off
+  - stale sign-off transitions now degrade operator-handoff status so last-mile closure cannot look complete when drift reopens issues
+- review notes:
+  - Slice 1 intentionally scopes to acknowledgement confidence without yet adding filing submission confirmation semantics
+- commit: pending
+- what's next:
+  1. checkpoint commit for Tranche 8 Slice 1 + Slice 2
+  2. continue into Slice 3 (filing execution checkpoint semantics)
+- last updated: 2026-03-30
+
 ### NZ Tax App / Tranche 7 / handoff pack quality
 - lane: active software build
 - agent: ClawDev

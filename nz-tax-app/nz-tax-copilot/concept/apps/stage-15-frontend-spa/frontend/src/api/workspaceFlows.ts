@@ -267,6 +267,27 @@ export type ReviewPayload = {
       recoveryStep?: string
       summary: string
     }
+    operatorHandoff?: {
+      status: 'pending_reviewer_signoff' | 'stale_reviewer_signoff' | 'pending_operator_ack' | 'acknowledged' | 'stale_operator_handoff'
+      acknowledgedAt: string | null
+      acknowledgedBy: string | null
+      signedOffAt: string | null
+      note: string
+      summary: string
+      nextStep: string
+      requiresReacknowledgement?: boolean
+    }
+    handoffTimeline?: {
+      headline: string
+      items: Array<{
+        key: string
+        status: 'done' | 'stale'
+        label: string
+        at: string | null
+        by: string | null
+        detail: string
+      }>
+    }
     categories: Array<{
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
       label: string
@@ -475,6 +496,17 @@ export const workspaceFlowsApi = {
   ): Promise<ReviewPayload> {
     const response = await apiClient.patch(
       `/workspaces/${workspaceId}/review/final-signoff`,
+      payload,
+    )
+    return response.data?.review
+  },
+
+  async saveOperatorHandoffAck(
+    workspaceId: string,
+    payload: { note?: string }
+  ): Promise<ReviewPayload> {
+    const response = await apiClient.patch(
+      `/workspaces/${workspaceId}/review/operator-handoff`,
       payload,
     )
     return response.data?.review

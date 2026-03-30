@@ -548,6 +548,51 @@ app.patch('/workspaces/:id/review/final-signoff', requireSession, (req, res) => 
   return res.json({ review });
 });
 
+app.patch('/workspaces/:id/review/operator-handoff', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
+  const calc = calculateDraft(map);
+  const review = buildReview(workspace, map, calc, docs, cryptoTx);
+  const finalSignoff = review?.reviewerActionQueue?.finalSignoff;
+
+  if (!finalSignoff?.signedOffAt || finalSignoff?.isStale) {
+    return res.status(400).json({ error: 'OPERATOR_HANDOFF_REQUIRES_FRESH_FINAL_SIGNOFF' });
+  }
+
+  const note = typeof req.body?.note === 'string' ? req.body.note.trim() : '';
+  const operatorHandoff = {
+    acknowledgedAt: new Date().toISOString(),
+    acknowledgedBy: req.session.userId,
+    signedOffAt: finalSignoff.signedOffAt,
+    note: note || null,
+  };
+
+  const updatedWorkspace = updateWorkspace(workspace.id, req.session.userId, {
+    reviewerOperatorHandoff: operatorHandoff,
+  });
+
+  logEvent(workspace.id, {
+    action: 'review.operator_handoff.acknowledge',
+    actor: req.session.userId,
+    meta: {
+      acknowledgedAt: operatorHandoff.acknowledgedAt,
+      acknowledgedBy: operatorHandoff.acknowledgedBy,
+      signedOffAt: operatorHandoff.signedOffAt,
+      note: operatorHandoff.note,
+    },
+  });
+
+  const nextMap = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
+  const nextCalc = calculateDraft(nextMap);
+  const nextReview = buildReview(updatedWorkspace, nextMap, nextCalc, docs, cryptoTx);
+  return res.json({ review: nextReview });
+});
+
 app.patch('/workspaces/:id/review/warnings/:warningCode/evidence', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
