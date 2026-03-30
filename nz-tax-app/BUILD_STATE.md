@@ -1,16 +1,22 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 6 queue complete (reviewer closure flow)
+- Tranche 7 queue active (handoff pack quality)
+- Tranche 6 queue complete and live (reviewer closure flow)
 - Tranche 5 queue complete and live
 - Tranche 4 queue complete and live
 - Tranche 3 queue complete and live
 - Tranche 2 queue complete and live
 
 ## Current objective
-Tranche 6 is now focused on reviewer closure flow. After Tranche 5 made the next reviewer actions visible, the next highest-leverage step is to help reviewers actively work that queue to closure, preserve handoff context, and separate remaining issues from already-handled work.
+Tranche 7 now targets handoff-pack quality. After Tranche 6 established reviewer closure flow semantics, the next highest-leverage step is reducing final reviewer→operator friction with explicit handoff-pack readiness checks, clear next-step guidance, and audit-friendly completion semantics.
 
 ## Last completed milestones
+- Defined Tranche 7 in `docs/backlog/TRANCHE7_HANDOFF_PACK_QUALITY.md` and completed Slice 1 (handoff-pack checklist + next-step guidance)
+- Reviewer queue payload now includes `handoffPack` (`ready`/`action_needed`, summary, next step, checklist) to make reviewer→operator readiness explicit
+- Workspace reviewer queue/IR3 reviewer panels now surface the handoff-pack checklist directly
+- Export CSV/PDF reviewer-action sections now carry handoff-pack summary/next-step/checklist lines aligned with workspace wording
+- Backend smoke coverage now asserts handoff-pack payload + export-field structure
 - Defined and exhausted Tranche 6 in `docs/backlog/TRANCHE6_REVIEWER_CLOSURE_FLOW.md` as the reviewer-closure follow-on to the live Tranche 5 queue
 - Reviewer actions can now be marked resolved or reopened, with open vs resolved work separated in the review payload and UI
 - Resolved reviewer actions can now carry an optional reviewer closure note, which is surfaced in the UI, export payloads, and audit trail
@@ -58,11 +64,11 @@ Tranche 6 is now focused on reviewer closure flow. After Tranche 5 made the next
 - Preserved full ordered queue while keeping shortlist wording aligned with export surfaces
 
 ## Next tasks
-1. Define the next tranche after Tranche 6 based on highest-leverage reviewer or filing workflow friction
-2. Preserve Tranche 6 closure-state patterns in any follow-on reviewer/handoff work
+1. Execute Tranche 7 / Slice 3: add explicit reviewer final sign-off semantics with audit events and readiness gating/override rationale
+2. Continue Tranche 7 queue with Slice 4 closure-drift guardrails once Slice 3 is validated and checkpointed
 
 ## Known blockers
-- No active technical blocker in the completed Tranche 6 queue
+- No active technical blocker in current Tranche 7 queue
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

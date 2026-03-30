@@ -244,6 +244,17 @@ export type ReviewPayload = {
         category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
       }>
     }
+    handoffPack?: {
+      status: 'ready' | 'action_needed'
+      summary: string
+      nextStep: string
+      checklist: Array<{
+        key: string
+        label: string
+        status: 'done' | 'review' | 'action_needed'
+        detail: string
+      }>
+    }
     categories: Array<{
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
       label: string

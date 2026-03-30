@@ -696,6 +696,42 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     category: item.category,
   }));
 
+  const handoffChecklist = [
+    {
+      key: 'filing_blockers',
+      label: 'Filing blockers cleared',
+      status: openItems.some((item) => item.category === 'filing_readiness') ? 'action_needed' : 'done',
+      detail: openItems.some((item) => item.category === 'filing_readiness')
+        ? `${openItems.filter((item) => item.category === 'filing_readiness').length} filing-readiness blocker(s) still open.`
+        : 'No filing-readiness blockers remain in the reviewer queue.',
+    },
+    {
+      key: 'traceability_gaps',
+      label: 'Traceability gaps resolved',
+      status: openItems.some((item) => item.category === 'traceability') ? 'action_needed' : 'done',
+      detail: openItems.some((item) => item.category === 'traceability')
+        ? `${openItems.filter((item) => item.category === 'traceability').length} traceability gap(s) still need evidence or explanation.`
+        : 'No open traceability gaps remain in the queue.',
+    },
+    {
+      key: 'high_risk_warnings',
+      label: 'High-risk warnings reviewed',
+      status: openItems.some((item) => item.category === 'review_warning' && item.severity === 'high') ? 'review' : 'done',
+      detail: openItems.some((item) => item.category === 'review_warning' && item.severity === 'high')
+        ? `${openItems.filter((item) => item.category === 'review_warning' && item.severity === 'high').length} high-severity review warning(s) remain open.`
+        : 'No high-severity review warnings remain open.',
+    },
+    {
+      key: 'reviewer_queue',
+      label: 'Reviewer queue worked down',
+      status: openItems.length === 0 ? 'done' : 'review',
+      detail: openItems.length === 0
+        ? `All ${resolvedCount} tracked reviewer action${resolvedCount === 1 ? '' : 's'} are resolved.`
+        : `${openItems.length} reviewer action${openItems.length === 1 ? '' : 's'} still open (${resolvedCount} resolved).`,
+    },
+  ];
+  const handoffPackStatus = handoffChecklist.every((item) => item.status === 'done') ? 'ready' : 'action_needed';
+
   return {
     handoffStatus,
     headline: handoffStatus === 'ready_for_handoff'
@@ -714,6 +750,18 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
         ? 'No remaining reviewer issues are currently open.'
         : `${remainingIssues.length} remaining issue${remainingIssues.length === 1 ? '' : 's'} to carry into handoff.`,
       items: remainingIssues,
+    },
+    handoffPack: {
+      status: handoffPackStatus,
+      summary: handoffPackStatus === 'ready'
+        ? 'Handoff pack checks are complete. The draft is ready for final human reviewer sign-off and operator handoff.'
+        : 'Handoff pack still has open checks. Use the checklist below to close remaining handoff friction before sign-off.',
+      nextStep: handoffPackStatus === 'ready'
+        ? 'Run final human review and hand this draft to the filing operator with the export pack.'
+        : handoffStatus === 'blocked'
+          ? 'Resolve filing-readiness and traceability blockers first, then re-check handoff readiness.'
+          : 'Finish remaining review warnings/assumptions, then re-check handoff readiness.',
+      checklist: handoffChecklist,
     },
     categories: categoryOrder
       .map((category) => {

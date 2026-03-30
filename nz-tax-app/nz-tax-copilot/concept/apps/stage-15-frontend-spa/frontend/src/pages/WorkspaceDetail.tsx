@@ -549,6 +549,19 @@ export default function WorkspaceDetail() {
                     ))}
                   </Stack>
                 ) : null}
+                {reviewerActionQueue.handoffPack ? (
+                  <Stack spacing={1}>
+                    <Alert severity={reviewerActionQueue.handoffPack.status === 'ready' ? 'success' : 'info'}>
+                      <Typography variant="body2"><strong>Handoff pack:</strong> {reviewerActionQueue.handoffPack.summary}</Typography>
+                      <Typography variant="caption" color="inherit">Next step: {reviewerActionQueue.handoffPack.nextStep}</Typography>
+                    </Alert>
+                    {(reviewerActionQueue.handoffPack.checklist || []).map((item) => (
+                      <Alert key={`handoff-pack-${item.key}`} severity={item.status === 'done' ? 'success' : item.status === 'review' ? 'info' : 'warning'}>
+                        <Typography variant="body2"><strong>{item.label}:</strong> {item.detail}</Typography>
+                      </Alert>
+                    ))}
+                  </Stack>
+                ) : null}
                 {reviewerActionQueue.items.length > 0 ? (
                   <Stack spacing={1}>
                     {reviewerActionQueue.items.slice(0, 6).map((item) => (
@@ -1137,6 +1150,18 @@ export default function WorkspaceDetail() {
                             {reviewerActionQueue.remainingIssuesPack.items.map((item) => (
                               <Alert key={`ir3-remaining-${item.id}`} severity={item.severity === 'high' ? 'error' : 'warning'}>
                                 <strong>{item.title}</strong> — {item.requestText} ({item.requestArea}).
+                              </Alert>
+                            ))}
+                          </Stack>
+                        ) : null}
+                        {reviewerActionQueue.handoffPack ? (
+                          <Stack spacing={0.75}>
+                            <Alert severity={reviewerActionQueue.handoffPack.status === 'ready' ? 'success' : 'info'}>
+                              <strong>Handoff pack:</strong> {reviewerActionQueue.handoffPack.summary} Next step: {reviewerActionQueue.handoffPack.nextStep}
+                            </Alert>
+                            {(reviewerActionQueue.handoffPack.checklist || []).map((item) => (
+                              <Alert key={`ir3-handoff-pack-${item.key}`} severity={item.status === 'done' ? 'success' : item.status === 'review' ? 'info' : 'warning'}>
+                                <strong>{item.label}:</strong> {item.detail}
                               </Alert>
                             ))}
                           </Stack>

@@ -79,6 +79,21 @@ function buildReviewerActionQueueSummary(review = null) {
         category: item.category,
       })),
     },
+    handoffPack: {
+      status: queue?.handoffPack?.status || (items.length === 0 ? 'ready' : 'action_needed'),
+      summary: queue?.handoffPack?.summary || (items.length === 0
+        ? 'Handoff pack checks are complete. The draft is ready for final human reviewer sign-off and operator handoff.'
+        : 'Handoff pack still has open checks. Resolve remaining reviewer actions before operator handoff.'),
+      nextStep: queue?.handoffPack?.nextStep || (items.length === 0
+        ? 'Run final human review and hand this draft to the filing operator with the export pack.'
+        : 'Resolve open reviewer actions, then re-check handoff readiness.'),
+      checklist: (queue?.handoffPack?.checklist || []).map((item) => ({
+        key: item.key,
+        label: item.label,
+        status: item.status,
+        detail: item.detail,
+      })),
+    },
     shortlistHeadline: queue?.shortlistHeadline || null,
     recentlyResolvedHeadline: queue?.recentlyResolvedHeadline || null,
     shortlist: (queue?.shortlist || []).map((item) => ({
@@ -235,6 +250,12 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   rows.push(['reviewer_action_queue', 'closure_summary', String(actionQueue.closureSummary || '')]);
   rows.push(['reviewer_action_queue', 'high_priority_count', String(actionQueue.highPriorityCount)]);
   rows.push(['reviewer_action_queue', 'resolved_count', String(actionQueue.resolvedCount || 0)]);
+  rows.push(['reviewer_handoff_pack', 'status', String(actionQueue.handoffPack?.status || '')]);
+  rows.push(['reviewer_handoff_pack', 'summary', String(actionQueue.handoffPack?.summary || '')]);
+  rows.push(['reviewer_handoff_pack', 'next_step', String(actionQueue.handoffPack?.nextStep || '')]);
+  (actionQueue.handoffPack?.checklist || []).forEach((item, index) => {
+    rows.push(['reviewer_handoff_pack_check', `item_${index + 1}`, `${item.label}:${item.status}:${item.detail}`]);
+  });
   if (actionQueue.remainingIssuesPack?.headline) {
     rows.push(['reviewer_remaining_issues', 'headline', actionQueue.remainingIssuesPack.headline]);
   }
@@ -334,6 +355,11 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     (actionQueue.shortlist || []).forEach((item) => doc.text(`• SHORTLIST · ${item.severity.toUpperCase()} · ${item.title}: ${item.supportState || 'review_required'} / ${item.actionType || 'review_tax_position'} · ${item.requestArea} -- ${item.requestText}`));
     actionQueue.items.slice(0, 8).forEach((item) => doc.text(`• ${item.severity.toUpperCase()} · ${item.title}: ${item.supportState || 'review_required'} / ${item.actionType || 'review_tax_position'} · ${item.requestArea} -- ${item.requestText}`));
     (actionQueue.resolvedItems || []).slice(0, 5).forEach((item) => doc.text(`• RESOLVED · ${item.severity.toUpperCase()} · ${item.title}: ${item.requestArea} -- ${item.requestText}${item.resolutionNote ? ` -- note: ${item.resolutionNote}` : ''}`));
+    if (actionQueue.handoffPack?.summary) {
+      doc.text(`Handoff pack: ${actionQueue.handoffPack.summary}`);
+      doc.text(`Next operator step: ${actionQueue.handoffPack.nextStep || ''}`);
+      (actionQueue.handoffPack.checklist || []).forEach((item) => doc.text(`• HANDOFF CHECK · ${String(item.status || '').toUpperCase()} · ${item.label}: ${item.detail}`));
+    }
 
     doc.moveDown();
     doc.fontSize(14).text('Reviewer traceability');
