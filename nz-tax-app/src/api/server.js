@@ -403,6 +403,7 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
       updatedAt: workspace.updatedAt,
     },
     generatedAt: new Date().toISOString(),
+    filingReadinessSummary: pdf.sections.find((section) => section.name === 'Filing Readiness Summary')?.values || null,
     map,
     calc,
     explanation,

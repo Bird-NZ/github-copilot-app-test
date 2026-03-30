@@ -4,8 +4,40 @@ function money(value) {
   return `NZ$${Number(value || 0).toFixed(2)}`;
 }
 
+function buildFilingReadinessSummary(review = null) {
+  const readiness = review?.submissionReadiness;
+  const blockers = readiness?.blockers || [];
+  const assumptions = review?.assumptions || [];
+  const nextActions = readiness?.nextActions || [];
+
+  return {
+    status: readiness?.status || 'action_needed',
+    headline: readiness?.status === 'ready_to_review'
+      ? 'Ready for final human review before submission.'
+      : `${blockers.length} filing blocker${blockers.length === 1 ? '' : 's'} still need attention before submission handoff.`,
+    blockerCount: blockers.length,
+    blockers: blockers.map((blocker) => ({
+      code: blocker.code,
+      severity: blocker.severity,
+      label: blocker.label,
+      message: blocker.message,
+    })),
+    assumptions,
+    nextActions,
+    reviewerNotes: [
+      readiness?.questionnaire
+        ? `Questionnaire completeness: ${readiness.questionnaire.answeredVisible}/${readiness.questionnaire.totalVisible} visible answers captured.`
+        : null,
+      readiness?.documents
+        ? `Supporting documents received: ${readiness.documents.receivedCount}/${readiness.documents.applicableCount} applicable items.`
+        : null,
+    ].filter(Boolean),
+  };
+}
+
 export function buildCsv(map, calc, explanation = null, review = null, docChecklist = []) {
   const rows = [['section', 'ref', 'value']];
+  const filingSummary = buildFilingReadinessSummary(review);
 
   for (const [k, v] of Object.entries(map)) {
     if (k === 'summary') continue;
@@ -30,6 +62,11 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
     });
   }
 
+  rows.push(['filing_readiness', 'headline', filingSummary.headline]);
+  filingSummary.reviewerNotes.forEach((note, index) => {
+    rows.push(['filing_readiness_note', `note_${index + 1}`, note]);
+  });
+
   (review?.warnings || []).forEach((warning, index) => {
     rows.push(['review_warning', `warning_${index + 1}`, `${warning.code}: ${warning.message}`]);
   });
@@ -40,6 +77,10 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
 
   (review?.submissionReadiness?.blockers || []).forEach((blocker, index) => {
     rows.push(['submission_blocker', `blocker_${index + 1}`, `${blocker.code}: ${blocker.message}`]);
+  });
+
+  filingSummary.nextActions.forEach((action, index) => {
+    rows.push(['filing_next_action', `action_${index + 1}`, action]);
   });
 
   (docChecklist || []).forEach((item) => {
@@ -63,6 +104,7 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.moveDown();
 
     const summary = calc.summary || {};
+    const filingSummary = buildFilingReadinessSummary(review);
     doc.fontSize(14).text('Tax position');
     doc.fontSize(11);
     doc.text(`Taxable income: ${money(summary.taxableIncome)}`);
@@ -77,6 +119,12 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
       doc.text(`Standard option uplift basis: ${(Number(summary.provisionalTaxStatus.standardOptionUpliftRate || 0) * 100).toFixed(0)}%`);
       doc.text(`Provisional tax relevant: ${summary.provisionalTaxStatus.relevant ? 'Yes' : 'No'}`);
     }
+
+    doc.moveDown();
+    doc.fontSize(14).text('Filing readiness summary');
+    doc.fontSize(11).text(filingSummary.headline);
+    filingSummary.reviewerNotes.forEach((note) => doc.text(`• ${note}`));
+    filingSummary.nextActions.forEach((action) => doc.text(`Next action: ${action}`));
 
     if (explanation?.headline) {
       doc.moveDown();
@@ -143,6 +191,7 @@ export async function buildPdfDocument(map, calc, explanation = null, review = n
     filename: `ir3-draft-${new Date().toISOString().slice(0, 10)}.pdf`,
     bytesBase64: buffer.toString('base64'),
     sections: [
+      { name: 'Filing Readiness Summary', values: buildFilingReadinessSummary(review) },
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
       { name: 'Plain-English Summary', values: explanation || {} },
@@ -157,6 +206,7 @@ export function buildPdfPlaceholder(map, calc, explanation = null, review = null
     title: 'IR3 Draft Summary',
     generatedAt: new Date().toISOString(),
     sections: [
+      { name: 'Filing Readiness Summary', values: buildFilingReadinessSummary(review) },
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
       { name: 'Plain-English Summary', values: explanation || {} },

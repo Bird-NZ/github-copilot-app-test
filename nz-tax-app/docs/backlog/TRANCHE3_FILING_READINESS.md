@@ -54,4 +54,5 @@ Acceptance:
 ## Current slice
 - Slice 1 complete: explicit submission-readiness gate
 - Slice 2 complete: blocker-to-surface routing
-- Next slice: Slice 3 — applicable-document precision
+- Slice 3 complete: applicable-document precision
+- Next slice: Slice 4 — review-ready export summary

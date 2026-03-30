@@ -263,3 +263,8 @@ Append-only ledger for active build work.
   - Next action: Commit Slice 3, then start Slice 4 (review-ready export summary) and inspect the smallest reviewer-friendly export upgrade.
   - Status: Done
   - Next update due by: on Slice 4 milestone or blocker
+- 15:31 NZDT
+  - What changed: Tranche 3 / Slice 4 is complete. Export CSV/PDF/JSON now carry a dedicated filing-readiness summary with headline, blocker count, reviewer notes, assumptions, and next actions, so the pack is understandable without opening the app UI.
+  - Next action: Commit Slice 4, then continue into Slice 5 (final human-review checklist polish).
+  - Status: Done
+  - Next update due by: on Slice 5 milestone or blocker

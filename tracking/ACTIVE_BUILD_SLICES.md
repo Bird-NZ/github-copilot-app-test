@@ -26,7 +26,7 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
   - [x] applicable-document precision tightened across all review states
-  - [ ] reviewer-friendly filing summary completed in export pack
+  - [x] reviewer-friendly filing summary completed in export pack
 - files touched:
   - `nz-tax-app/docs/backlog/TRANCHE3_FILING_READINESS.md`
   - `nz-tax-app/src/api/modules/reviewService.js`
@@ -49,8 +49,8 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - Slices 1 and 2 are complete and validated; queue remains active
 - commit: pending
 - what's next:
-  1. checkpoint commit for Slice 2
-  2. start Slice 3 applicable-document precision
+  1. checkpoint commit for Slice 4
+  2. start Slice 5 final human-review checklist polish
 - last updated: 2026-03-30
 
 ## Update rule
