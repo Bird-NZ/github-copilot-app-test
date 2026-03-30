@@ -160,6 +160,14 @@ export type ReviewPayload = {
     pieTaxCredits: number
     extraTaxDeducted: number
     studentLoanRepayments: number
+    provisionalTaxStatus: {
+      threshold: number
+      standardOptionUpliftRate: number
+      relevant: boolean
+      modeledResidualIncomeTax: number
+      estimatedStandardOptionTax: number
+      estimateBasis: string
+    }
     studentLoanStatus: {
       hasStudentLoan: boolean
       hasStatement: boolean

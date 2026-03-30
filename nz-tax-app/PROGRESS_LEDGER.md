@@ -225,3 +225,15 @@ Append-only ledger for active build work.
   - Next action: Move the queue to the next deductions/calc refinement slice (provisional-tax threshold / related residual-tax polish) and continue unless a blocker appears.
   - Status: Done
   - Next update due by: on next slice milestone or blocker
+
+- 13:42 NZDT
+  - What changed: Slice 8 is complete. The simplified draft now exposes provisional-tax relevance using the official NZ baseline already gathered for this queue: modeled residual income tax above NZ$5,000 triggers visibility, and the standard option 5% uplift is used as the default estimate basis across calc/review/export/UI.
+  - Next action: Continue immediately into the next queued slice: submission-ready export pack upgrade.
+  - Status: Done
+  - Next update due by: on Slice 9 milestone or blocker
+
+- 14:06 NZDT
+  - What changed: Slice 9 is complete. Draft export CSV/PDF/JSON now include review warnings/assumptions and a supporting-document checklist, and local validation re-passed cleanly. The currently defined Tranche 2 queue is now exhausted.
+  - Next action: Commit the completed queue checkpoint and mark the queue complete unless a new tranche is defined.
+  - Status: Done
+  - Next update due by: n/a

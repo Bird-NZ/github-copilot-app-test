@@ -374,8 +374,9 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
   const review = buildReview(workspace, map, calc, docs, cryptoTx);
-  const csv = buildCsv(map, calc, explanation);
-  const pdf = await buildPdfDocument(map, calc, explanation);
+  const docChecklist = checklist(workspace.id);
+  const csv = buildCsv(map, calc, explanation, review, docChecklist);
+  const pdf = await buildPdfDocument(map, calc, explanation, review, docChecklist);
   const json = {
     workspace: {
       id: workspace.id,
@@ -389,6 +390,7 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
     calc,
     explanation,
     review,
+    checklist: docChecklist,
   };
   return res.json({ csv, pdf, json, explanation, review });
 });

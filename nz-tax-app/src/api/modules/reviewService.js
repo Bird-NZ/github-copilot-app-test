@@ -371,8 +371,13 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     assumptions.push('Student loan treatment is still provisional because no repayment/deduction amount has been entered yet.');
   }
 
-  if ((calc?.summary?.terminalTaxToPay || 0) > 5000) {
-    warnings.push({ code: 'PROVISIONAL_TAX_RISK', severity: 'medium', message: 'Estimated terminal tax is high enough that provisional tax may matter.' });
+  const provisionalTaxStatus = calc?.summary?.provisionalTaxStatus || {};
+  if (provisionalTaxStatus.relevant) {
+    warnings.push({
+      code: 'PROVISIONAL_TAX_RISK',
+      severity: 'medium',
+      message: `Modeled residual income tax is above NZ$${money(provisionalTaxStatus.threshold).toFixed(2)}, so provisional tax is likely relevant. This draft uses the standard option as a simple estimate basis: current modeled residual income tax plus 5%.`,
+    });
   }
 
   if (crypto.status.saidHasCrypto && !crypto.status.hasAnyCryptoActivity) {
@@ -406,6 +411,14 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
       pieTaxCredits: money(adjustments.pieTaxCredits),
       extraTaxDeducted: money(adjustments.extraTaxDeducted),
       studentLoanRepayments: money(adjustments.studentLoanRepayments),
+      provisionalTaxStatus: {
+        threshold: money(provisionalTaxStatus.threshold || 5000),
+        standardOptionUpliftRate: Number(provisionalTaxStatus.standardOptionUpliftRate || 0.05),
+        relevant: provisionalTaxStatus.relevant === true,
+        modeledResidualIncomeTax: money(provisionalTaxStatus.modeledResidualIncomeTax || calc?.summary?.terminalTaxToPay || 0),
+        estimatedStandardOptionTax: money(provisionalTaxStatus.estimatedStandardOptionTax || calc?.summary?.provisionalTax || 0),
+        estimateBasis: provisionalTaxStatus.estimateBasis || 'standard_option_current_modeled_rit_plus_5_percent',
+      },
       studentLoanStatus: {
         hasStudentLoan: questionnaireAnswers.has_student_loan === true,
         hasStatement: docs.some((doc) => doc.docType === 'student_loan_statement'),

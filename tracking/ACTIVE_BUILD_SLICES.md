@@ -16,7 +16,7 @@ Update this file when a meaningful build slice starts, changes stage, completes,
 ### NZ Tax App / Tranche 2 / evidence confidence queue
 - lane: active software build
 - agent: ClawDev
-- stage: implementing
+- stage: complete
 - goal: finish the evidence-confidence follow-on slices after IR3 field evidence mapping
 - acceptance criteria:
   - [x] targeted frontend evidence-flow tests added and passing
@@ -25,33 +25,35 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] audit tab evidence trail readability improved and validated
   - [x] warning-level evidence overrides persisted per warning code
   - [x] donation receipts totals + calc wiring implemented and validated
-  - [ ] PIE income + tax credit refinement implemented and validated
+  - [x] PIE income + tax credit refinement implemented and validated
+  - [x] student loan treatment visibility implemented and validated
+  - [x] tax already deducted refinement implemented and validated
+  - [x] provisional tax threshold / residual-tax polish implemented and validated
+  - [x] submission-ready export pack upgrade implemented and validated
 - files touched:
-  - `nz-tax-app/src/api/modules/documentStore.js`
-  - `nz-tax-app/src/api/modules/mappingEngine.js`
+  - `nz-tax-app/src/api/modules/calcEngine.js`
+  - `nz-tax-app/src/api/modules/exportService.js`
+  - `nz-tax-app/src/api/modules/ir3Service.js`
   - `nz-tax-app/src/api/modules/reviewService.js`
-  - `nz-tax-app/src/api/modules/auditStore.js`
   - `nz-tax-app/src/api/server.js`
   - `nz-tax-app/src/api/tests/smoke.sh`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
+  - `nz-tax-app/BUILD_STATE.md`
+  - `tracking/ACTIVE_BUILD_SLICES.md`
 - tests run:
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
-  - `cd nz-tax-app/src/api && bash tests/failure.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification plan:
-  1. inspect current PIE income/tax-credit handling gaps
-  2. implement the smallest refinement that improves calc/review trustworthiness
-  3. validate and checkpoint Slice 5
+  1. keep the queue marked complete unless a new slice is defined
+  2. start the next tranche only after the next explicit queue decision
 - review notes:
-  - Slice 3 is complete and committed as per-warning-code persistence
-  - Slice 4 is complete locally and ready to checkpoint
-  - the next ordered slice is PIE income + tax credit refinement
-- commit: `07cf980` (`Add per-warning evidence overrides`)
+  - Slice 8 and Slice 9 both landed locally and validated cleanly
+  - The currently defined overnight queue is exhausted
+- commit: pending
 - what's next:
-  1. checkpoint Slice 4 commit cleanly
-  2. inspect PIE treatment in calc/review/export copy
-  3. continue the queue unless a real blocker appears
+  1. commit the completed queue checkpoint
+  2. only open a new active slice when the next tranche is defined
 - last updated: 2026-03-30
 
 ## Update rule

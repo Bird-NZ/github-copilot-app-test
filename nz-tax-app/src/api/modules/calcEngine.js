@@ -40,7 +40,10 @@ export function calculateDraft(ir3Map) {
   const residual = roundCurrency(incomeTax.total - taxCreditsAndDeductions);
   const terminalTaxToPay = Math.max(0, residual);
   const estimatedRefund = Math.max(0, -residual);
-  const provisional = terminalTaxToPay > 5000 ? roundCurrency(terminalTaxToPay * 1.05) : 0;
+  const provisionalThreshold = 5000;
+  const standardOptionUpliftRate = 0.05;
+  const provisionalRelevant = terminalTaxToPay > provisionalThreshold;
+  const provisional = provisionalRelevant ? roundCurrency(terminalTaxToPay * (1 + standardOptionUpliftRate)) : 0;
 
   return {
     '33': taxableIncome,
@@ -58,6 +61,14 @@ export function calculateDraft(ir3Map) {
       terminalTaxToPay: roundCurrency(terminalTaxToPay),
       estimatedRefund: roundCurrency(estimatedRefund),
       provisionalTax: roundCurrency(provisional),
+      provisionalTaxStatus: {
+        threshold: provisionalThreshold,
+        standardOptionUpliftRate,
+        relevant: provisionalRelevant,
+        estimateBasis: 'standard_option_current_modeled_rit_plus_5_percent',
+        modeledResidualIncomeTax: roundCurrency(terminalTaxToPay),
+        estimatedStandardOptionTax: roundCurrency(provisional),
+      },
       taxBandBreakdown: incomeTax.breakdown,
     },
   };

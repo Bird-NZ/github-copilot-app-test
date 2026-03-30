@@ -4,8 +4,8 @@ function money(value) {
   return `NZ$${Number(value || 0).toFixed(2)}`;
 }
 
-export function buildCsv(map, calc, explanation = null) {
-  const rows = [['section','ref','value']];
+export function buildCsv(map, calc, explanation = null, review = null, docChecklist = []) {
+  const rows = [['section', 'ref', 'value']];
 
   for (const [k, v] of Object.entries(map)) {
     if (k === 'summary') continue;
@@ -30,10 +30,22 @@ export function buildCsv(map, calc, explanation = null) {
     });
   }
 
-  return rows.map(r => r.map(value => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n');
+  (review?.warnings || []).forEach((warning, index) => {
+    rows.push(['review_warning', `warning_${index + 1}`, `${warning.code}: ${warning.message}`]);
+  });
+
+  (review?.assumptions || []).forEach((assumption, index) => {
+    rows.push(['review_assumption', `assumption_${index + 1}`, assumption]);
+  });
+
+  (docChecklist || []).forEach((item) => {
+    rows.push(['checklist', item.docType, `${item.status}:${item.count}`]);
+  });
+
+  return rows.map((r) => r.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n');
 }
 
-function buildPdfBuffer(map, calc, explanation = null) {
+function buildPdfBuffer(map, calc, explanation = null, review = null, docChecklist = []) {
   return new Promise((resolve) => {
     const doc = new PDFDocument({ margin: 50 });
     const chunks = [];
@@ -56,6 +68,11 @@ function buildPdfBuffer(map, calc, explanation = null) {
     doc.text(`Estimated refund: ${money(summary.estimatedRefund)}`);
     doc.text(`Terminal tax to pay: ${money(summary.terminalTaxToPay)}`);
     doc.text(`Provisional tax estimate: ${money(summary.provisionalTax)}`);
+    if (summary.provisionalTaxStatus) {
+      doc.text(`Provisional tax threshold: ${money(summary.provisionalTaxStatus.threshold)}`);
+      doc.text(`Standard option uplift basis: ${(Number(summary.provisionalTaxStatus.standardOptionUpliftRate || 0) * 100).toFixed(0)}%`);
+      doc.text(`Provisional tax relevant: ${summary.provisionalTaxStatus.relevant ? 'Yes' : 'No'}`);
+    }
 
     if (explanation?.headline) {
       doc.moveDown();
@@ -73,6 +90,21 @@ function buildPdfBuffer(map, calc, explanation = null) {
           doc.moveDown(0.35);
         });
       }
+    }
+
+    if (review?.warnings?.length || review?.assumptions?.length) {
+      doc.moveDown();
+      doc.fontSize(14).text('Review warnings and assumptions');
+      doc.fontSize(11);
+      (review.warnings || []).forEach((warning) => doc.text(`Warning (${warning.severity}): ${warning.message}`));
+      (review.assumptions || []).forEach((assumption) => doc.text(`Assumption: ${assumption}`));
+    }
+
+    if (docChecklist?.length) {
+      doc.moveDown();
+      doc.fontSize(14).text('Supporting document checklist');
+      doc.fontSize(11);
+      docChecklist.forEach((item) => doc.text(`${item.docType}: ${item.status} (${item.count})`));
     }
 
     if (map.summary) {
@@ -97,23 +129,25 @@ function buildPdfBuffer(map, calc, explanation = null) {
   });
 }
 
-export async function buildPdfDocument(map, calc, explanation = null) {
-  const buffer = await buildPdfBuffer(map, calc, explanation);
+export async function buildPdfDocument(map, calc, explanation = null, review = null, docChecklist = []) {
+  const buffer = await buildPdfBuffer(map, calc, explanation, review, docChecklist);
   return {
     title: 'IR3 Draft Summary',
     generatedAt: new Date().toISOString(),
     mimeType: 'application/pdf',
-    filename: `ir3-draft-${new Date().toISOString().slice(0,10)}.pdf`,
+    filename: `ir3-draft-${new Date().toISOString().slice(0, 10)}.pdf`,
     bytesBase64: buffer.toString('base64'),
     sections: [
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
       { name: 'Plain-English Summary', values: explanation || {} },
-    ]
+      { name: 'Review Readiness', values: review || {} },
+      { name: 'Supporting Document Checklist', values: { items: docChecklist || [] } },
+    ],
   };
 }
 
-export function buildPdfPlaceholder(map, calc, explanation = null) {
+export function buildPdfPlaceholder(map, calc, explanation = null, review = null, docChecklist = []) {
   return {
     title: 'IR3 Draft Summary',
     generatedAt: new Date().toISOString(),
@@ -121,6 +155,8 @@ export function buildPdfPlaceholder(map, calc, explanation = null) {
       { name: 'Mapped Fields', values: map },
       { name: 'Calculated Fields', values: calc },
       { name: 'Plain-English Summary', values: explanation || {} },
-    ]
+      { name: 'Review Readiness', values: review || {} },
+      { name: 'Supporting Document Checklist', values: { items: docChecklist || [] } },
+    ],
   };
 }

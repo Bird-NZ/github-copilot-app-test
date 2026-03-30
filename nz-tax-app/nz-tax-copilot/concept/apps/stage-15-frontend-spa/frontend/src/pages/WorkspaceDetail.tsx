@@ -1063,6 +1063,25 @@ export default function WorkspaceDetail() {
                           })}
                         </Stack>
                       ) : null}
+                      {review.summary?.provisionalTaxStatus ? (
+                        <Stack spacing={1.25} sx={{ mb: review.summary?.studentLoanStatus?.hasStudentLoan || (review.assumptions || []).length > 0 ? 2 : 0 }}>
+                          <Typography variant="subtitle2">Provisional tax visibility</Typography>
+                          <Alert severity={review.summary.provisionalTaxStatus.relevant ? 'warning' : 'info'}>
+                            <Stack spacing={0.75}>
+                              <Typography variant="body2">
+                                {review.summary.provisionalTaxStatus.relevant
+                                  ? `Modeled residual income tax is ${formatFieldValue(review.summary.provisionalTaxStatus.modeledResidualIncomeTax)}, which is above the NZ$${review.summary.provisionalTaxStatus.threshold.toFixed(2)} threshold. The draft therefore surfaces provisional tax relevance and uses the standard option 5% uplift as a simple estimate basis.`
+                                  : `Modeled residual income tax is ${formatFieldValue(review.summary.provisionalTaxStatus.modeledResidualIncomeTax)}, which is not above the NZ$${review.summary.provisionalTaxStatus.threshold.toFixed(2)} threshold. Provisional tax is not currently surfaced in this draft.`}
+                              </Typography>
+                              <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                                <Chip size="small" variant="outlined" label={`Residual income tax: ${formatFieldValue(review.summary.provisionalTaxStatus.modeledResidualIncomeTax)}`} color={review.summary.provisionalTaxStatus.relevant ? 'warning' : 'default'} />
+                                <Chip size="small" variant="outlined" label={`Threshold: NZ$${review.summary.provisionalTaxStatus.threshold.toFixed(2)}`} />
+                                <Chip size="small" variant="outlined" label={`Standard option estimate: ${formatFieldValue(review.summary.provisionalTaxStatus.estimatedStandardOptionTax)}`} color={review.summary.provisionalTaxStatus.relevant ? 'warning' : 'default'} />
+                              </Stack>
+                            </Stack>
+                          </Alert>
+                        </Stack>
+                      ) : null}
                       {review.summary?.studentLoanStatus?.hasStudentLoan ? (
                         <Stack spacing={1.25} sx={{ mb: (review.assumptions || []).length > 0 ? 2 : 0 }}>
                           <Typography variant="subtitle2">Student loan treatment</Typography>

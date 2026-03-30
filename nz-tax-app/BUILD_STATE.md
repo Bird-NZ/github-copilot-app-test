@@ -4,41 +4,40 @@
 - Tranche 2 / Slice 5 complete (PIE income + tax credit refinement)
 - Tranche 2 / Slice 6 complete (student loan treatment visibility)
 - Tranche 2 / Slice 7 complete (tax already deducted refinement)
-- Tranche 2 / Slice 8 next (provisional tax threshold / residual-tax polish)
-- Queue currently active
+- Tranche 2 / Slice 8 complete (provisional tax threshold / residual-tax polish)
+- Tranche 2 / Slice 9 complete (submission-ready export pack upgrade)
+- Queue currently complete
 
 ## Current objective
-Continue the ordered queue from provisional-tax threshold / residual-tax polish onward.
+Close out the Tranche 2 queue state cleanly and prepare the next tranche definition if Mat wants further refinement.
 
-## Last completed milestone
-- Manual “other tax already deducted” adjustments now save as first-class workspace adjustments
-- IR3 field `36A` now combines PIE credits with other tax already deducted so the draft reflects more of the tax already covered
-- Review summaries, export explanations, and audit details now surface that extra tax-already-deducted amount
+## Last completed milestones
+- Slice 8 now uses the official provisional-tax baseline in the simplified model: modeled residual income tax above NZ$5,000 surfaces provisional-tax relevance, and the default estimate basis is the standard option uplift of 5%
+- Review summaries, IR3 explanations, PDF export, and workspace UI now explain the residual-tax/provisional-tax relationship explicitly
+- Slice 9 upgraded the export pack so CSV/PDF/JSON now carry review warnings/assumptions and a supporting-document checklist
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 
 ## Recently completed slices
 
-### Slice 2F — targeted frontend tests for evidence flows
-- Added a dedicated frontend evidence helper module so evidence-link selection/rendering logic is testable without page-level setup noise
-- Added focused vitest coverage for auto/manual/none evidence-link selection, multi-link document overrides, payload generation, and evidence labels
-- Kept existing Workspace Detail behaviour unchanged while making the evidence-flow contract explicit in tests
-- Commit: `fb9073d` (`Add frontend evidence flow tests`)
+### Slice 8 — provisional tax threshold / residual-tax polish
+- Added explicit provisional-tax status metadata to the calc summary
+- Refined review warnings and plain-English explanation text to use the > NZ$5,000 residual income tax threshold and standard-option 5% uplift basis
+- Added dedicated provisional-tax visibility in the workspace review UI and PDF export
 
-### Slice 2E — field-level IR3 evidence mapping
-- IR3 Summary cards now show supporting evidence chips when uploaded/review-linked documents map directly to that IR3 field
-- Existing review evidence metadata is reused; no persistence or API shape migration was required
-- PAYE summaries now map to `IR3 11A` as well as `11B` / `11C`
+### Slice 9 — submission-ready export pack upgrade
+- Extended draft export CSV with review warnings, assumptions, and checklist rows
+- Extended PDF sections to include review readiness and supporting-document checklist content
+- Extended JSON export payload to include the supporting-document checklist
 
 ## Next tasks
-1. Decide whether warning-level evidence should become manually overridable per warning, not just inferred
-2. Evaluate whether the next precision step should be field-level IR3 evidence mapping for selected refs
-3. Define the next explicit queued slice if the remaining backlog items are to continue automatically
+1. If Mat wants the next tranche, define the next review/export or deployment slice explicitly
+2. Otherwise keep this queue marked complete
 
 ## Known blockers
-- No active technical blocker for Slice 2G
-- Queue continuity is now limited by missing explicit next-slice definition after 2G unless one of the remaining backlog items is chosen as the next canonical slice
+- No active technical blocker on the completed Tranche 2 queue
+- Next work now depends on selecting the next tranche/slice beyond the currently defined queue
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:
@@ -49,7 +48,4 @@ Only stop and wait for Mat if one of these is true:
 
 ## Last validated commands
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/src/api && bash tests/smoke.sh`
-- `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm test`
-- `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
-tend && npm test`
 - `cd /home/mat/.openclaw/workspace/nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`

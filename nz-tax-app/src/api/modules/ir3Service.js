@@ -75,6 +75,7 @@ export function explainIr3Values(map = {}, calc = {}) {
   const mappedSummary = map.summary || {};
   const payable = Number(summary.terminalTaxToPay || 0);
   const refund = Number(summary.estimatedRefund || 0);
+  const provisionalTaxStatus = summary.provisionalTaxStatus || {};
 
   return {
     headline: payable > 0
@@ -92,6 +93,9 @@ export function explainIr3Values(map = {}, calc = {}) {
         : refund > 0
           ? `Based on the current draft, you may be due a refund of about ${money(refund)}.`
           : 'Based on the current draft, you are close to break-even after tax already deducted.',
+      provisionalTaxStatus.relevant
+        ? `Because the modeled residual income tax is above ${money(provisionalTaxStatus.threshold)}, the app flags provisional tax as relevant and uses the standard option as a simple estimate basis: ${money(provisionalTaxStatus.modeledResidualIncomeTax)} plus 5% = ${money(provisionalTaxStatus.estimatedStandardOptionTax)}.`
+        : `The modeled residual income tax is not above ${money(provisionalTaxStatus.threshold || 5000)}, so this draft does not currently surface a provisional tax estimate.`,
     ],
     summaryCards: buildSummaryCards(map, calc),
     fieldNotes: [
@@ -99,8 +103,8 @@ export function explainIr3Values(map = {}, calc = {}) {
       { ref: '28', label: 'Other taxable income', note: 'This groups interest, dividends, other income, and taxable crypto staking or airdrop income.', source: 'Comes from non-PAYE income entries and taxable crypto income picked up by the app.' },
       { ref: '33', label: 'Income currently being taxed', note: 'This is your current taxable income estimate before final Inland Revenue adjustments.', source: 'Calculated from the income totals currently loaded into the draft.' },
       { ref: '37', label: 'Estimated tax before credits', note: 'This is estimated using progressive NZ resident income tax bands.', source: 'Calculated by the app from the taxable income estimate.' },
-      { ref: '37A', label: 'Tax gap after credits', note: 'This is the gap between estimated tax and tax already deducted or credited.', source: 'Calculated by comparing estimated tax with PAYE and other current credits.' },
-      { ref: '40B', label: 'Possible provisional tax', note: 'This is only shown when the estimated extra tax is high enough that provisional tax may matter.', source: 'Derived from the current terminal tax estimate.' },
+      { ref: '37A', label: 'Tax gap after credits', note: 'This is the gap between estimated tax and tax already deducted or credited, which is also the modeled residual income tax in this simplified draft.', source: 'Calculated by comparing estimated tax with PAYE and other current credits.' },
+      { ref: '40B', label: 'Possible provisional tax', note: 'This is only shown when modeled residual income tax is above NZ$5,000. The draft then uses the standard option as a simple estimate basis by adding 5%.', source: 'Derived from the modeled residual income tax using the current simplified provisional-tax rule.' },
     ],
   };
 }
