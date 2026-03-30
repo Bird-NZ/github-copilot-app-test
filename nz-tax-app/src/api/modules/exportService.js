@@ -43,7 +43,7 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   });
 
   (docChecklist || []).forEach((item) => {
-    rows.push(['checklist', item.docType, `${item.status}:${item.count}`]);
+    rows.push(['checklist', item.docType, `${item.label || item.docType}:${item.status}:${item.count}`]);
   });
 
   return rows.map((r) => r.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n');
@@ -109,7 +109,7 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
       doc.moveDown();
       doc.fontSize(14).text('Supporting document checklist');
       doc.fontSize(11);
-      docChecklist.forEach((item) => doc.text(`${item.docType}: ${item.status} (${item.count})`));
+      docChecklist.forEach((item) => doc.text(`${item.label || item.docType}: ${item.status} (${item.count})${item.reason ? ` — ${item.reason}` : ''}`));
     }
 
     if (map.summary) {

@@ -3,10 +3,11 @@
 ## Current stage
 - Tranche 3 / Slice 1 complete (explicit submission-readiness gate)
 - Tranche 3 / Slice 2 complete (blocker-to-surface routing)
+- Tranche 3 / Slice 3 complete (applicable-document precision)
 - Tranche 3 queue remains active
 
 ## Current objective
-Keep tightening the filing-readiness path so the draft not only exposes blockers, but also routes the user directly to the surface that resolves each one.
+Keep tightening the filing-readiness path so the draft only asks for supporting documents when the underlying filing scope actually applies, and carry that precision cleanly into review/checklist/export surfaces.
 
 ## Last completed milestones
 - Defined Tranche 3 as a filing-readiness queue focused on review/submission confidence
@@ -14,6 +15,8 @@ Keep tightening the filing-readiness path so the draft not only exposes blockers
 - Submission blockers now carry routing metadata so the UI can send users straight to Questionnaire, Documents, or IR3 Summary
 - Workspace UI now surfaces submission readiness both at the top level and inside IR3 Summary, with action buttons on blockers
 - Export CSV/PDF/JSON now carry submission blocker data as part of the review/export pack
+- Supporting-document requirements now only appear when the current draft actually brings that area into scope (PAYE, interest/dividends, donations, student loan, crypto)
+- Checklist and export surfaces now reuse the same applicable-document logic as submission readiness, so missing-doc signals stay aligned
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
@@ -32,12 +35,12 @@ Keep tightening the filing-readiness path so the draft not only exposes blockers
 - Reduced the gap between “problem detected” and “where to fix it”
 
 ## Next tasks
-1. Start Tranche 3 / Slice 3: applicable-document precision across all review states
-2. Then continue into review-ready export summary
+1. Start Tranche 3 / Slice 4: review-ready export summary
+2. Then continue into final human-review checklist polish
 
 ## Known blockers
-- No active technical blocker on Tranche 3 / Slice 2
-- Slice 3 is defined but not yet implemented in this pass
+- No active technical blocker on Tranche 3 / Slice 3
+- Slice 4 is defined and ready to implement in this pass
 
 ## Real blocker threshold
 Only stop and wait for Mat if one of these is true:

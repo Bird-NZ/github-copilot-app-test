@@ -87,7 +87,12 @@ export type DocumentsResult = {
 
 export type ChecklistItem = {
   docType: string
-  status: 'missing' | 'received'
+  label: string
+  reason: string
+  applicable: boolean
+  required: boolean
+  received: boolean
+  status: 'missing' | 'received' | 'not_applicable'
   count: number
 }
 

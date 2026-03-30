@@ -3,7 +3,7 @@ import multer from 'multer';
 import { getSession, signin, signout, signup } from './modules/authStore.js';
 import { createWorkspace, getWorkspace, listWorkspaces, setWorkspaceQuestionnaireAnswers, updateWorkspace } from './modules/workspaceStore.js';
 import { completionStatus, getQuestionSet, visibleQuestions } from './modules/questionnaireEngine.js';
-import { addDocument, checklist, documents, updateDocumentDonationAmount, updateDocumentEvidenceLink } from './modules/documentStore.js';
+import { addDocument, documents, updateDocumentDonationAmount, updateDocumentEvidenceLink } from './modules/documentStore.js';
 import { addIncome, listIncome } from './modules/incomeStore.js';
 import { importTransactions, listTransactions, parseCsv } from './modules/cryptoStore.js';
 import { explainIr3Values, getIr3Dictionary, getIr3Field } from './modules/ir3Service.js';
@@ -11,7 +11,7 @@ import { mapToIr3 } from './modules/mappingEngine.js';
 import { calculateDraft } from './modules/calcEngine.js';
 import { buildCsv, buildPdfDocument } from './modules/exportService.js';
 import { listEvents, logEvent } from './modules/auditStore.js';
-import { buildReview, REVIEW_EVIDENCE_OPTIONS } from './modules/reviewService.js';
+import { buildApplicableDocumentChecklist, buildReview, REVIEW_EVIDENCE_OPTIONS } from './modules/reviewService.js';
 
 const app = express();
 
@@ -280,7 +280,18 @@ app.patch('/workspaces/:id/documents/:documentId/evidence-link', requireSession,
 app.get('/workspaces/:id/checklist', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
-  return res.json({ checklist: checklist(workspace.id) });
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
+  const review = buildReview(workspace, map, calculateDraft(map), docs, cryptoTx);
+  return res.json({ checklist: buildApplicableDocumentChecklist({
+    questionnaireAnswers: workspace.questionnaireAnswers || {},
+    adjustments: workspace.adjustments || {},
+    map,
+    docs,
+    crypto: review.crypto,
+  }) });
 });
 
 app.post('/workspaces/:id/income/:type', requireSession, (req, res) => {
@@ -374,7 +385,13 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   const calc = calculateDraft(map);
   const explanation = explainIr3Values(map, calc);
   const review = buildReview(workspace, map, calc, docs, cryptoTx);
-  const docChecklist = checklist(workspace.id);
+  const docChecklist = buildApplicableDocumentChecklist({
+    questionnaireAnswers: workspace.questionnaireAnswers || {},
+    adjustments: workspace.adjustments || {},
+    map,
+    docs,
+    crypto: review.crypto,
+  });
   const csv = buildCsv(map, calc, explanation, review, docChecklist);
   const pdf = await buildPdfDocument(map, calc, explanation, review, docChecklist);
   const json = {

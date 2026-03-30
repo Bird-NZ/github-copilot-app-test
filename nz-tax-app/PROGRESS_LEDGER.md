@@ -258,3 +258,8 @@ Append-only ledger for active build work.
   - Next action: Checkpoint Slice 2, then continue into Slice 3 if more precision work is worth extending in this pass.
   - Status: Done
   - Next update due by: on Slice 3 milestone or blocker
+- 15:22 NZDT
+  - What changed: Tranche 3 / Slice 3 is complete. Supporting-document applicability is now derived from live draft scope (PAYE, interest/dividends, donations, student loan, crypto) and reused across submission readiness, checklist, and export surfaces so missing-doc signals stay aligned.
+  - Next action: Commit Slice 3, then start Slice 4 (review-ready export summary) and inspect the smallest reviewer-friendly export upgrade.
+  - Status: Done
+  - Next update due by: on Slice 4 milestone or blocker

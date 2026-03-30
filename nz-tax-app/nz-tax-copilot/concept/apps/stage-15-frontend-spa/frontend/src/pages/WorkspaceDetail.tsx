@@ -773,16 +773,26 @@ export default function WorkspaceDetail() {
                     {checklist.map((item) => (
                       <Card key={item.docType} variant="outlined">
                         <CardContent>
-                          <Typography variant="body1">{item.docType}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {item.status} ({item.count})
-                          </Typography>
+                          <Stack spacing={0.75}>
+                            <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
+                              <Typography variant="body1">{item.label}</Typography>
+                              <Chip
+                                size="small"
+                                variant="outlined"
+                                color={item.status === 'received' ? 'success' : 'warning'}
+                                label={item.status === 'received' ? `Received (${item.count})` : 'Missing'}
+                              />
+                            </Stack>
+                            <Typography variant="body2" color="text.secondary">
+                              {item.reason}
+                            </Typography>
+                          </Stack>
                         </CardContent>
                       </Card>
                     ))}
                   </Stack>
                 ) : (
-                  <Alert severity="info">No checklist yet.</Alert>
+                  <Alert severity="success">No supporting documents are currently in scope for this draft.</Alert>
                 )}
 
                 <Typography variant="subtitle1">Uploaded documents</Typography>

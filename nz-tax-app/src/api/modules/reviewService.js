@@ -41,6 +41,39 @@ const DOC_EVIDENCE_MAP = {
   },
 };
 
+const APPLICABLE_DOCUMENT_RULES = [
+  {
+    docType: 'paye_summary',
+    label: 'PAYE summary',
+    applies: ({ map }) => money(map?.summary?.payeGross || 0) > 0,
+    reason: 'PAYE income has been entered and should be backed by an employer summary or year-end earnings record.',
+  },
+  {
+    docType: 'interest_dividend_slips',
+    label: 'Interest/dividend slips',
+    applies: ({ map }) => money(map?.summary?.interestIncome || 0) > 0 || money(map?.summary?.dividendIncome || 0) > 0,
+    reason: 'Interest or dividend income has been entered and should be backed by annual bank or investment statements.',
+  },
+  {
+    docType: 'student_loan_statement',
+    label: 'Student loan statement',
+    applies: ({ questionnaireAnswers, adjustments }) => questionnaireAnswers.has_student_loan === true || money(adjustments?.studentLoanRepayments || 0) > 0,
+    reason: 'Student loan treatment is in scope for this return.',
+  },
+  {
+    docType: 'donation_receipts',
+    label: 'Donation receipts',
+    applies: ({ questionnaireAnswers, map }) => questionnaireAnswers.has_donations === true || money(map?.summary?.donationAmount || 0) > 0,
+    reason: 'Donation claims are in scope or have been entered in the draft.',
+  },
+  {
+    docType: 'crypto_csv',
+    label: 'Crypto CSV/export',
+    applies: ({ questionnaireAnswers, crypto }) => questionnaireAnswers.has_crypto === true || crypto?.status?.saidHasCrypto === true || crypto?.status?.hasAnyCryptoActivity === true,
+    reason: 'Crypto activity was indicated or imported and should be backed by exchange or wallet exports.',
+  },
+];
+
 export const REVIEW_EVIDENCE_OPTIONS = [
   { key: 'auto', label: 'Use automatic link', value: null },
   { key: 'none', label: 'Do not link this document', value: { mode: 'none' } },
@@ -336,8 +369,26 @@ function buildCryptoGuidance(transactions = [], docs = [], questionnaireAnswers 
   };
 }
 
+export function buildApplicableDocumentChecklist({ questionnaireAnswers = {}, adjustments = {}, map = {}, docs = [], crypto = {} }) {
+  return APPLICABLE_DOCUMENT_RULES
+    .map((rule) => {
+      const applicable = rule.applies({ questionnaireAnswers, adjustments, map, crypto });
+      const count = docs.filter((doc) => doc.docType === rule.docType).length;
+      return {
+        docType: rule.docType,
+        label: rule.label,
+        reason: rule.reason,
+        applicable,
+        status: applicable ? (count > 0 ? 'received' : 'missing') : 'not_applicable',
+        count,
+        required: applicable,
+        received: count > 0,
+      };
+    })
+    .filter((item) => item.applicable);
+}
 
-function buildSubmissionReadiness({ questionnaireAnswers = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {} }) {
+function buildSubmissionReadiness({ questionnaireAnswers = {}, adjustments = {}, map = {}, docs = [], warnings = [], assumptions = [], crypto = {} }) {
   const questionnaire = completionStatus(questionnaireAnswers);
   const missingItems = [];
 
@@ -352,43 +403,13 @@ function buildSubmissionReadiness({ questionnaireAnswers = {}, map = {}, docs = 
     });
   }
 
-  const applicableDocuments = [
-    {
-      docType: 'paye_summary',
-      label: 'PAYE summary',
-      required: money(map?.summary?.payeGross || 0) > 0,
-      reason: 'PAYE income has been entered and should be backed by an employer summary or year-end earnings record.',
-    },
-    {
-      docType: 'interest_dividend_slips',
-      label: 'Interest/dividend slips',
-      required: money(map?.summary?.interestIncome || 0) > 0 || money(map?.summary?.dividendIncome || 0) > 0,
-      reason: 'Interest or dividend income has been entered and should be backed by annual bank or investment statements.',
-    },
-    {
-      docType: 'student_loan_statement',
-      label: 'Student loan statement',
-      required: questionnaireAnswers.has_student_loan === true,
-      reason: 'Student loan treatment is in scope for this return.',
-    },
-    {
-      docType: 'donation_receipts',
-      label: 'Donation receipts',
-      required: money(map?.summary?.donationAmount || 0) > 0,
-      reason: 'Donation claims are included in the draft.',
-    },
-    {
-      docType: 'crypto_csv',
-      label: 'Crypto CSV/export',
-      required: crypto?.status?.saidHasCrypto === true || crypto?.status?.hasAnyCryptoActivity === true,
-      reason: 'Crypto activity was indicated or imported and should be backed by exchange or wallet exports.',
-    },
-  ]
-    .filter((item) => item.required)
-    .map((item) => ({
-      ...item,
-      received: docs.some((doc) => doc.docType === item.docType),
-    }));
+  const applicableDocuments = buildApplicableDocumentChecklist({
+    questionnaireAnswers,
+    adjustments,
+    map,
+    docs,
+    crypto,
+  });
 
   for (const item of applicableDocuments.filter((item) => !item.received)) {
     missingItems.push({
@@ -453,12 +474,12 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     warnings.push({ code: 'NO_INCOME', severity: 'high', message: 'No income has been captured yet, so the draft cannot be trusted.' });
   }
 
-  if (questionnaireAnswers.has_student_loan === true && !docs.some(doc => doc.docType === 'student_loan_statement')) {
-    warnings.push({ code: 'MISSING_STUDENT_LOAN_DOC', severity: 'medium', message: 'Student loan was indicated but no student loan statement has been uploaded yet.' });
+  if ((questionnaireAnswers.has_student_loan === true || money(adjustments.studentLoanRepayments) > 0) && !docs.some(doc => doc.docType === 'student_loan_statement')) {
+    warnings.push({ code: 'MISSING_STUDENT_LOAN_DOC', severity: 'medium', message: 'Student loan treatment is in scope but no student loan statement has been uploaded yet.' });
   }
 
-  if ((adjustments.donationAmount || 0) > 0 && !docs.some(doc => doc.docType === 'donation_receipts')) {
-    warnings.push({ code: 'MISSING_DONATION_RECEIPTS', severity: 'medium', message: 'Donation claims are present without uploaded donation receipts.' });
+  if ((questionnaireAnswers.has_donations === true || money(map?.summary?.donationAmount || 0) > 0) && !docs.some(doc => doc.docType === 'donation_receipts')) {
+    warnings.push({ code: 'MISSING_DONATION_RECEIPTS', severity: 'medium', message: 'Donation claims are in scope without uploaded donation receipts.' });
   }
 
   if ((adjustments.pieIncome || 0) > 0 && !(adjustments.pieTaxCredits || 0)) {
@@ -490,8 +511,8 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     warnings.push({ code: 'CRYPTO_ACTIVITY_MISSING', severity: 'high', message: 'Crypto was indicated in the questionnaire, but no crypto transactions have been imported yet.' });
   }
 
-  if (crypto.status.hasAnyCryptoActivity && !crypto.status.hasCryptoCsv) {
-    warnings.push({ code: 'CRYPTO_EVIDENCE_MISSING', severity: 'medium', message: 'Crypto transactions exist, but no crypto CSV/export has been uploaded as supporting evidence yet.' });
+  if ((questionnaireAnswers.has_crypto === true || crypto.status.hasAnyCryptoActivity) && !crypto.status.hasCryptoCsv) {
+    warnings.push({ code: 'CRYPTO_EVIDENCE_MISSING', severity: 'medium', message: 'Crypto activity is in scope, but no crypto CSV/export has been uploaded as supporting evidence yet.' });
   }
 
   const warningsWithEvidence = warnings.map((warning) => ({
@@ -504,6 +525,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
 
   const submissionReadiness = buildSubmissionReadiness({
     questionnaireAnswers,
+    adjustments,
     map,
     docs,
     warnings: warningsWithEvidence,

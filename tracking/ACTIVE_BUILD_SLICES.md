@@ -25,7 +25,7 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] blocker-to-surface routing added
   - [x] backend smoke validation passing in-thread
   - [x] frontend production build passing in-thread
-  - [ ] applicable-document precision tightened across all review states
+  - [x] applicable-document precision tightened across all review states
   - [ ] reviewer-friendly filing summary completed in export pack
 - files touched:
   - `nz-tax-app/docs/backlog/TRANCHE3_FILING_READINESS.md`
