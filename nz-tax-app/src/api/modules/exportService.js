@@ -94,6 +94,18 @@ function buildReviewerActionQueueSummary(review = null) {
         detail: item.detail,
       })),
     },
+    finalSignoff: {
+      status: queue?.finalSignoff?.status || 'pending',
+      signedOffAt: queue?.finalSignoff?.signedOffAt || null,
+      signedOffBy: queue?.finalSignoff?.signedOffBy || null,
+      overrideReason: queue?.finalSignoff?.overrideReason || '',
+      requiresOverride: queue?.finalSignoff?.requiresOverride === true,
+      signedOffAgainstStatus: queue?.finalSignoff?.signedOffAgainstStatus || null,
+      isStale: queue?.finalSignoff?.isStale === true,
+      staleReason: queue?.finalSignoff?.staleReason || '',
+      recoveryStep: queue?.finalSignoff?.recoveryStep || '',
+      summary: queue?.finalSignoff?.summary || 'Final reviewer sign-off is pending.',
+    },
     shortlistHeadline: queue?.shortlistHeadline || null,
     recentlyResolvedHeadline: queue?.recentlyResolvedHeadline || null,
     shortlist: (queue?.shortlist || []).map((item) => ({
@@ -256,6 +268,15 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   (actionQueue.handoffPack?.checklist || []).forEach((item, index) => {
     rows.push(['reviewer_handoff_pack_check', `item_${index + 1}`, `${item.label}:${item.status}:${item.detail}`]);
   });
+  rows.push(['reviewer_final_signoff', 'status', String(actionQueue.finalSignoff?.status || 'pending')]);
+  rows.push(['reviewer_final_signoff', 'summary', String(actionQueue.finalSignoff?.summary || '')]);
+  rows.push(['reviewer_final_signoff', 'signed_off_at', String(actionQueue.finalSignoff?.signedOffAt || '')]);
+  rows.push(['reviewer_final_signoff', 'signed_off_by', String(actionQueue.finalSignoff?.signedOffBy || '')]);
+  rows.push(['reviewer_final_signoff', 'override_reason', String(actionQueue.finalSignoff?.overrideReason || '')]);
+  rows.push(['reviewer_final_signoff', 'signed_off_against_handoff_pack_status', String(actionQueue.finalSignoff?.signedOffAgainstStatus || '')]);
+  rows.push(['reviewer_final_signoff', 'is_stale', String(actionQueue.finalSignoff?.isStale === true)]);
+  rows.push(['reviewer_final_signoff', 'stale_reason', String(actionQueue.finalSignoff?.staleReason || '')]);
+  rows.push(['reviewer_final_signoff', 'recovery_step', String(actionQueue.finalSignoff?.recoveryStep || '')]);
   if (actionQueue.remainingIssuesPack?.headline) {
     rows.push(['reviewer_remaining_issues', 'headline', actionQueue.remainingIssuesPack.headline]);
   }
@@ -359,6 +380,15 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
       doc.text(`Handoff pack: ${actionQueue.handoffPack.summary}`);
       doc.text(`Next operator step: ${actionQueue.handoffPack.nextStep || ''}`);
       (actionQueue.handoffPack.checklist || []).forEach((item) => doc.text(`• HANDOFF CHECK · ${String(item.status || '').toUpperCase()} · ${item.label}: ${item.detail}`));
+    }
+    if (actionQueue.finalSignoff?.summary) {
+      doc.text(`Final sign-off: ${actionQueue.finalSignoff.summary}`);
+      if (actionQueue.finalSignoff.signedOffAt || actionQueue.finalSignoff.signedOffBy) {
+        doc.text(`Sign-off recorded at ${actionQueue.finalSignoff.signedOffAt || 'n/a'} by ${actionQueue.finalSignoff.signedOffBy || 'unknown reviewer'}`);
+      }
+      if (actionQueue.finalSignoff.overrideReason) {
+        doc.text(`Override reason: ${actionQueue.finalSignoff.overrideReason}`);
+      }
     }
 
     doc.moveDown();

@@ -133,6 +133,38 @@ function requireSession(req, res, next) {
   next();
 }
 
+function applyFinalSignoffDriftGuard({ workspace, review, actor }) {
+  const currentSignoff = workspace?.reviewerFinalSignoff;
+  const finalSignoff = review?.reviewerActionQueue?.finalSignoff;
+  if (!currentSignoff?.signedOffAt || !finalSignoff?.isStale || currentSignoff?.isStale === true) {
+    return workspace;
+  }
+
+  const nextSignoff = {
+    ...currentSignoff,
+    isStale: true,
+    staleAt: new Date().toISOString(),
+    staleReason: finalSignoff.staleReason || 'Post-sign-off changes reopened review work.',
+  };
+
+  const updated = updateWorkspace(workspace.id, actor, {
+    reviewerFinalSignoff: nextSignoff,
+  });
+
+  logEvent(workspace.id, {
+    action: 'review.final_signoff.stale',
+    actor,
+    meta: {
+      staleAt: nextSignoff.staleAt,
+      staleReason: nextSignoff.staleReason,
+      handoffStatus: review?.reviewerActionQueue?.handoffStatus || null,
+      handoffPackStatus: review?.reviewerActionQueue?.handoffPack?.status || null,
+    },
+  });
+
+  return updated;
+}
+
 app.post('/workspaces', requireSession, (req, res) => {
   const { taxYearStart, taxYearEnd } = req.body || {};
   if (!taxYearStart || !taxYearEnd) return res.status(400).json({ error: 'MISSING_FIELDS' });
@@ -459,7 +491,60 @@ app.patch('/workspaces/:id/review/actions/:actionId/status', requireSession, (re
   const docs = documents(workspace.id);
   const map = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
-  const review = buildReview(updatedWorkspace, map, calc, docs, cryptoTx);
+  let guardedWorkspace = updatedWorkspace;
+  let review = buildReview(guardedWorkspace, map, calc, docs, cryptoTx);
+  guardedWorkspace = applyFinalSignoffDriftGuard({ workspace: guardedWorkspace, review, actor: req.session.userId });
+  if (guardedWorkspace !== updatedWorkspace) {
+    review = buildReview(guardedWorkspace, map, calc, docs, cryptoTx);
+  }
+  return res.json({ review });
+});
+
+app.patch('/workspaces/:id/review/final-signoff', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
+  const calc = calculateDraft(map);
+  const reviewBeforeSignoff = buildReview(workspace, map, calc, docs, cryptoTx);
+  const handoffPackStatus = reviewBeforeSignoff?.reviewerActionQueue?.handoffPack?.status || 'action_needed';
+
+  const overrideReason = typeof req.body?.overrideReason === 'string' ? req.body.overrideReason.trim() : '';
+  if (handoffPackStatus !== 'ready' && !overrideReason) {
+    return res.status(400).json({ error: 'FINAL_SIGNOFF_REQUIRES_READY_OR_OVERRIDE' });
+  }
+
+  const finalSignoff = {
+    signedOffAt: new Date().toISOString(),
+    signedOffBy: req.session.userId,
+    overrideReason: overrideReason || null,
+    handoffPackStatusAtSignoff: handoffPackStatus,
+    isStale: false,
+    staleAt: null,
+    staleReason: null,
+  };
+
+  const updatedWorkspace = updateWorkspace(workspace.id, req.session.userId, {
+    reviewerFinalSignoff: finalSignoff,
+  });
+
+  logEvent(workspace.id, {
+    action: 'review.final_signoff.save',
+    actor: req.session.userId,
+    meta: {
+      signedOffAt: finalSignoff.signedOffAt,
+      signedOffBy: finalSignoff.signedOffBy,
+      handoffPackStatus: handoffPackStatus,
+      overrideReason: finalSignoff.overrideReason,
+    },
+  });
+
+  const nextMap = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
+  const nextCalc = calculateDraft(nextMap);
+  const review = buildReview(updatedWorkspace, nextMap, nextCalc, docs, cryptoTx);
   return res.json({ review });
 });
 
@@ -513,7 +598,12 @@ app.patch('/workspaces/:id/review/warnings/:warningCode/evidence', requireSessio
   const docs = documents(workspace.id);
   const map = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
   const calc = calculateDraft(map);
-  const review = buildReview(updatedWorkspace, map, calc, docs, cryptoTx);
+  let guardedWorkspace = updatedWorkspace;
+  let review = buildReview(guardedWorkspace, map, calc, docs, cryptoTx);
+  guardedWorkspace = applyFinalSignoffDriftGuard({ workspace: guardedWorkspace, review, actor: req.session.userId });
+  if (guardedWorkspace !== updatedWorkspace) {
+    review = buildReview(guardedWorkspace, map, calc, docs, cryptoTx);
+  }
   return res.json({ review });
 });
 

@@ -277,6 +277,18 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const saveReviewerFinalSignoffMutation = useMutation({
+    mutationFn: (payload: { overrideReason?: string }) =>
+      workspaceFlowsApi.saveReviewerFinalSignoff(workspaceId || '', payload),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-audit', workspaceId, auditCategory, auditSearch] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const saveWarningEvidenceOverrideMutation = useMutation({
     mutationFn: (payload: { warningCode: string; mode: 'auto' | 'manual' | 'none'; documentIds?: string[] }) =>
       workspaceFlowsApi.saveWarningEvidenceOverride(workspaceId || '', payload.warningCode, {
@@ -561,6 +573,38 @@ export default function WorkspaceDetail() {
                       </Alert>
                     ))}
                   </Stack>
+                ) : null}
+                {reviewerActionQueue.finalSignoff ? (
+                  <Alert
+                    severity={reviewerActionQueue.finalSignoff.status === 'signed_off' ? 'success' : reviewerActionQueue.finalSignoff.requiresOverride ? 'warning' : 'info'}
+                    action={reviewerActionQueue.finalSignoff.status !== 'signed_off' ? (
+                      <Button
+                        color="inherit"
+                        size="small"
+                        disabled={saveReviewerFinalSignoffMutation.isPending}
+                        onClick={() => {
+                          let overrideReason = ''
+                          if (reviewerActionQueue.handoffPack?.status !== 'ready') {
+                            overrideReason = window.prompt('Handoff pack is not ready. Enter override reason to record final sign-off:', '') || ''
+                            if (!overrideReason.trim()) return
+                          }
+                          saveReviewerFinalSignoffMutation.mutate({ overrideReason: overrideReason.trim() || undefined })
+                        }}
+                      >
+                        Record final sign-off
+                      </Button>
+                    ) : null}
+                  >
+                    <Typography variant="body2"><strong>Final sign-off:</strong> {reviewerActionQueue.finalSignoff.summary}</Typography>
+                    {reviewerActionQueue.finalSignoff.signedOffAt || reviewerActionQueue.finalSignoff.signedOffBy ? (
+                      <Typography variant="caption" color="inherit">
+                        Signed off at {reviewerActionQueue.finalSignoff.signedOffAt ? formatDate(reviewerActionQueue.finalSignoff.signedOffAt) : '—'} by {reviewerActionQueue.finalSignoff.signedOffBy || 'unknown reviewer'}
+                      </Typography>
+                    ) : null}
+                    {reviewerActionQueue.finalSignoff.recoveryStep ? (
+                      <Typography variant="caption" color="inherit">Recovery step: {reviewerActionQueue.finalSignoff.recoveryStep}</Typography>
+                    ) : null}
+                  </Alert>
                 ) : null}
                 {reviewerActionQueue.items.length > 0 ? (
                   <Stack spacing={1}>
@@ -1165,6 +1209,31 @@ export default function WorkspaceDetail() {
                               </Alert>
                             ))}
                           </Stack>
+                        ) : null}
+                        {reviewerActionQueue.finalSignoff ? (
+                          <Alert
+                            severity={reviewerActionQueue.finalSignoff.status === 'signed_off' ? 'success' : reviewerActionQueue.finalSignoff.requiresOverride ? 'warning' : 'info'}
+                            action={reviewerActionQueue.finalSignoff.status !== 'signed_off' ? (
+                              <Button
+                                color="inherit"
+                                size="small"
+                                disabled={saveReviewerFinalSignoffMutation.isPending}
+                                onClick={() => {
+                                  let overrideReason = ''
+                                  if (reviewerActionQueue.handoffPack?.status !== 'ready') {
+                                    overrideReason = window.prompt('Handoff pack is not ready. Enter override reason to record final sign-off:', '') || ''
+                                    if (!overrideReason.trim()) return
+                                  }
+                                  saveReviewerFinalSignoffMutation.mutate({ overrideReason: overrideReason.trim() || undefined })
+                                }}
+                              >
+                                Record final sign-off
+                              </Button>
+                            ) : null}
+                          >
+                            <strong>Final sign-off:</strong> {reviewerActionQueue.finalSignoff.summary}
+                            {reviewerActionQueue.finalSignoff.recoveryStep ? ` Recovery step: ${reviewerActionQueue.finalSignoff.recoveryStep}` : ''}
+                          </Alert>
                         ) : null}
                         {reviewerActionQueue.items.length > 0 ? (
                           <Stack spacing={0.75}>

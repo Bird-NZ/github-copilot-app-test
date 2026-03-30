@@ -555,7 +555,7 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
   };
 }
 
-function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {} }) {
+function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {}, finalSignoff = null }) {
   const items = [];
 
   const handoffBlockers = [];
@@ -731,6 +731,43 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     },
   ];
   const handoffPackStatus = handoffChecklist.every((item) => item.status === 'done') ? 'ready' : 'action_needed';
+  const signoff = finalSignoff && typeof finalSignoff === 'object' ? finalSignoff : null;
+  const signedOffAt = signoff?.signedOffAt || null;
+  const signedOffBy = signoff?.signedOffBy || null;
+  const overrideReason = signoff?.overrideReason ? String(signoff.overrideReason) : '';
+  const signedOffAgainstStatus = signoff?.handoffPackStatusAtSignoff || null;
+  const requiresOverride = handoffPackStatus !== 'ready';
+  const isStale = Boolean(signedOffAt) && signedOffAgainstStatus === 'ready' && handoffPackStatus !== 'ready';
+  const staleReason = isStale
+    ? handoffStatus === 'blocked'
+      ? 'Post-sign-off changes reopened handoff blockers. Final sign-off is now stale until blockers are resolved and sign-off is re-recorded.'
+      : 'Post-sign-off changes reopened review issues. Final sign-off is now stale until the queue returns to handoff-ready and sign-off is re-recorded.'
+    : '';
+  const recoveryStep = isStale
+    ? handoffStatus === 'blocked'
+      ? 'Resolve reopened filing-readiness/traceability blockers, confirm handoff pack is ready, then record final sign-off again.'
+      : 'Close reopened review issues, re-check handoff pack readiness, then record final sign-off again.'
+    : '';
+  const finalSignoffState = {
+    status: signedOffAt ? 'signed_off' : 'pending',
+    signedOffAt,
+    signedOffBy,
+    overrideReason,
+    requiresOverride,
+    signedOffAgainstStatus,
+    isStale,
+    staleReason,
+    recoveryStep,
+    summary: signedOffAt
+      ? isStale
+        ? staleReason
+        : overrideReason
+          ? `Final reviewer sign-off recorded${signedOffBy ? ` by ${signedOffBy}` : ''}${signedOffAt ? ` at ${signedOffAt}` : ''} with override reason: ${overrideReason}`
+          : `Final reviewer sign-off recorded${signedOffBy ? ` by ${signedOffBy}` : ''}${signedOffAt ? ` at ${signedOffAt}` : ''}.`
+      : requiresOverride
+        ? 'Final reviewer sign-off is pending. Handoff pack is not ready; an explicit override reason is required to sign off now.'
+        : 'Final reviewer sign-off is pending. Handoff pack is ready for standard sign-off.',
+  };
 
   return {
     handoffStatus,
@@ -763,6 +800,7 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
           : 'Finish remaining review warnings/assumptions, then re-check handoff readiness.',
       checklist: handoffChecklist,
     },
+    finalSignoff: finalSignoffState,
     categories: categoryOrder
       .map((category) => {
         const categoryItems = openItems.filter((item) => item.category === category);
@@ -954,6 +992,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     warnings: warningsWithEvidence,
     assumptions,
     resolutions: workspace?.reviewerActionResolutions || {},
+    finalSignoff: workspace?.reviewerFinalSignoff || null,
   });
 
   return {

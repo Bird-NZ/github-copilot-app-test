@@ -7,6 +7,8 @@ const ACTION_LABELS = {
   'document.donation_amount.save': 'Donation amount updated',
   'crypto.import_csv': 'Crypto CSV imported',
   'review.action_resolution.save': 'Reviewer action updated',
+  'review.final_signoff.save': 'Reviewer final sign-off recorded',
+  'review.final_signoff.stale': 'Reviewer final sign-off marked stale',
 };
 
 const INCOME_TYPE_LABELS = {
@@ -90,6 +92,17 @@ function buildDetails(action, meta = {}) {
     const title = meta.title || meta.actionId || 'reviewer action'
     const status = meta.status === 'resolved' ? 'Resolved' : 'Reopened'
     return meta.note ? `${status}: ${title} — ${meta.note}` : `${status}: ${title}`
+  }
+
+  if (action === 'review.final_signoff.save') {
+    const signedAt = meta.signedOffAt ? ` at ${meta.signedOffAt}` : ''
+    const override = meta.overrideReason ? ` — Override reason: ${meta.overrideReason}` : ''
+    return `Final sign-off recorded${signedAt}${override}`
+  }
+
+  if (action === 'review.final_signoff.stale') {
+    const reason = meta.staleReason ? ` — ${meta.staleReason}` : ''
+    return `Final sign-off became stale${reason}`
   }
 
   if (action === 'questionnaire.save') {

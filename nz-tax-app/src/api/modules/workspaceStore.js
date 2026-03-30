@@ -20,6 +20,7 @@ export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd
     },
     warningEvidenceOverrides: {},
     reviewerActionResolutions: {},
+    reviewerFinalSignoff: null,
     createdAt: now,
     updatedAt: now,
   };

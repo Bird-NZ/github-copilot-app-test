@@ -23,12 +23,18 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - [x] reviewer queue payload includes handoff-pack status/summary/next-step/checklist fields
   - [x] checklist explicitly reports filing blockers, traceability gaps, high-risk warnings, and queue-workdown status
   - [x] workspace reviewer queue surfaces handoff-pack checklist and guidance
-  - [x] backend smoke validation covers new handoff-pack payload fields
   - [x] export CSV/PDF handoff-pack summary fields align with workspace handoff-pack wording
+  - [x] explicit reviewer final sign-off action exists with ready-gate + override rationale semantics
+  - [x] sign-off timestamp/actor/override rationale are surfaced in workspace and export payloads
+  - [x] post-sign-off drift marks sign-off stale, shows recovery steps, and logs drift audit events
+  - [x] backend smoke validation covers sign-off + stale-drift transitions
 - files touched:
   - `nz-tax-app/docs/backlog/TRANCHE7_HANDOFF_PACK_QUALITY.md`
+  - `nz-tax-app/src/api/modules/workspaceStore.js`
+  - `nz-tax-app/src/api/modules/auditStore.js`
   - `nz-tax-app/src/api/modules/reviewService.js`
   - `nz-tax-app/src/api/modules/exportService.js`
+  - `nz-tax-app/src/api/server.js`
   - `nz-tax-app/src/api/tests/smoke.sh`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/api/workspaceFlows.ts`
   - `nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend/src/pages/WorkspaceDetail.tsx`
@@ -39,15 +45,16 @@ Update this file when a meaningful build slice starts, changes stage, completes,
   - `cd nz-tax-app/src/api && bash tests/smoke.sh`
   - `cd nz-tax-app/nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`
 - verification result:
-  - reviewer surfaces now show a dedicated handoff-pack summary, next step, and checklist status lines
-  - reviewer queue payload now emits handoff-pack readiness semantics for downstream export/operator alignment
+  - reviewer queue now carries explicit final-signoff state (pending/signed-off), ready-gate override handling, and stale-signoff recovery guidance
+  - export CSV/PDF/JSON surfaces include final-signoff metadata and stale/recovery fields aligned with reviewer wording
+  - stale drift is recorded in audit trail when post-sign-off queue changes reopen handoff blockers
 - review notes:
-  - Slice 1 intentionally focused on clarity/packaging leverage without widening tax-policy scope
-  - Slice 2 carried the same semantics into export surfaces so operator packs read the same as workspace status
+  - Slice 3 added dedicated reviewer final-signoff semantics distinct from per-item resolution events
+  - Slice 4 added closure-drift guardrails so reopened blockers invalidate prior ready-signoff and force explicit re-signoff
 - commit: pending
 - what's next:
-  1. checkpoint commit for Tranche 7 Slice 1 + Slice 2
-  2. start Tranche 7 Slice 3 (explicit reviewer final sign-off semantics)
+  1. checkpoint commit for Tranche 7 Slice 3 + Slice 4
+  2. mark queue exhausted and re-anchor on the next tranche definition
 - last updated: 2026-03-30
 
 ### NZ Tax App / Tranche 6 / reviewer closure flow

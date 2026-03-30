@@ -48,5 +48,5 @@ Acceptance:
 ## Current slice state
 - Slice 1 complete: handoff-pack checklist + next-step guidance
 - Slice 2 complete: export-facing handoff-pack summary alignment
-- Slice 3 queued
-- Slice 4 queued
+- Slice 3 complete: explicit reviewer final sign-off semantics with ready-gate + override rationale
+- Slice 4 complete: closure-drift guardrails (stale sign-off detection + drift audit semantics)

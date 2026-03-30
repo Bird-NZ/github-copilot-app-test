@@ -47,6 +47,18 @@ Append-only ledger for active build work.
   - Status: Done
   - Next update due by: on Slice 3 milestone or blocker
 
+- 20:34 NZDT
+  - What changed: Tranche 7 Slice 3 implementation landed. Added explicit reviewer final-signoff API action + ready-gate/override semantics, wired distinct audit event logging, and surfaced sign-off metadata in workspace + export payloads.
+  - Next action: Implement Slice 4 closure-drift guardrails (stale sign-off semantics + drift audit transitions), then re-run backend smoke and frontend build.
+  - Status: In Progress
+  - Next update due by: 20:42 NZDT
+
+- 20:45 NZDT
+  - What changed: Tranche 7 Slice 4 implementation landed. Final sign-off now marks stale when post-sign-off drift reopens handoff blockers, recovery guidance is exposed in reviewer queue surfaces/exports, and stale transitions emit dedicated audit events.
+  - Next action: Run full validation, update BUILD_STATE / ACTIVE_BUILD_SLICES / tranche docs, and checkpoint commit to close Tranche 7 queue.
+  - Status: Done
+  - Next update due by: on commit checkpoint or blocker
+
 - 18:30 NZDT
   - What changed: Re-anchored on Tranche 5 after Slice 2 and tightened Slice 3 into a concrete shippable change: queued reviewer actions must explicitly show support state and action type rather than reading like generic warnings.
   - Next action: Implement support/action metadata through backend, export surfaces, and reviewer-facing workspace UI; then validate backend smoke + frontend build.

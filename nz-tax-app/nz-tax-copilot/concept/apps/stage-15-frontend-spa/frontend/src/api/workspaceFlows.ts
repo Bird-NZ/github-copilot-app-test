@@ -255,6 +255,18 @@ export type ReviewPayload = {
         detail: string
       }>
     }
+    finalSignoff?: {
+      status: 'pending' | 'signed_off'
+      signedOffAt: string | null
+      signedOffBy: string | null
+      overrideReason: string
+      requiresOverride: boolean
+      signedOffAgainstStatus: 'ready' | 'action_needed' | null
+      isStale?: boolean
+      staleReason?: string
+      recoveryStep?: string
+      summary: string
+    }
     categories: Array<{
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
       label: string
@@ -452,6 +464,17 @@ export const workspaceFlowsApi = {
   ): Promise<ReviewPayload> {
     const response = await apiClient.patch(
       `/workspaces/${workspaceId}/review/warnings/${encodeURIComponent(warningCode)}/evidence`,
+      payload,
+    )
+    return response.data?.review
+  },
+
+  async saveReviewerFinalSignoff(
+    workspaceId: string,
+    payload: { overrideReason?: string }
+  ): Promise<ReviewPayload> {
+    const response = await apiClient.patch(
+      `/workspaces/${workspaceId}/review/final-signoff`,
       payload,
     )
     return response.data?.review
