@@ -225,10 +225,25 @@ export type ReviewPayload = {
   assumptions: string[]
   evidence: ReviewEvidenceItem[]
   reviewerActionQueue: {
+    handoffStatus: 'ready_for_handoff' | 'review_in_progress' | 'blocked'
     headline: string
+    closureSummary: string
+    totalTrackedCount: number
     totalCount: number
     resolvedCount: number
     highPriorityCount: number
+    handoffBlockers: string[]
+    remainingIssuesPack: {
+      headline: string
+      items: Array<{
+        id: string
+        title: string
+        severity: 'high' | 'medium'
+        requestArea: string
+        requestText: string
+        category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
+      }>
+    }
     categories: Array<{
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
       label: string
@@ -271,6 +286,26 @@ export type ReviewPayload = {
       resolvedAt?: string | null
       resolutionNote?: string
     }>
+    recentlyResolved: Array<{
+      id: string
+      sourceType: 'submission_blocker' | 'traceability_gap' | 'review_warning' | 'assumption'
+      sourceKey: string
+      severity: 'high' | 'medium'
+      title: string
+      detail: string
+      requestText: string
+      requestArea: string
+      targetTab?: 'questionnaire' | 'documents' | 'ir3_summary'
+      actionLabel?: string
+      category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
+      supportState?: 'missing_support' | 'missing_input' | 'review_required' | 'assumed'
+      actionType?: 'collect_document' | 'complete_input' | 'review_tax_position' | 'replace_assumption'
+      resolutionStatus?: 'open' | 'resolved'
+      resolvedAt?: string | null
+      resolutionNote?: string
+    }>
+    shortlistHeadline: string
+    recentlyResolvedHeadline?: string
   }
   traceability: {
     keyFieldCount: number

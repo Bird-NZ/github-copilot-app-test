@@ -52,9 +52,12 @@ function buildReviewerActionQueueSummary(review = null) {
   const items = queue?.items || [];
 
   return {
+    handoffStatus: queue?.handoffStatus || (items.length === 0 ? 'ready_for_handoff' : 'blocked'),
     headline: queue?.headline || (items.length === 0
-      ? 'No open reviewer actions are currently queued. The draft is ready for final human review.'
-      : `${items.length} reviewer action${items.length === 1 ? '' : 's'} are currently queued for handoff completion.`),
+      ? 'Reviewer closure is complete. The draft now looks ready to hand off.'
+      : `${items.length} reviewer action${items.length === 1 ? '' : 's'} remain open and final handoff is still blocked.`),
+    closureSummary: queue?.closureSummary || '',
+    totalTrackedCount: queue?.totalTrackedCount || ((queue?.resolvedItems || []).length + items.length),
     totalCount: queue?.totalCount || items.length,
     highPriorityCount: queue?.highPriorityCount || items.filter((item) => item?.severity === 'high').length,
     resolvedCount: queue?.resolvedCount || (queue?.resolvedItems || []).length,
@@ -64,7 +67,20 @@ function buildReviewerActionQueueSummary(review = null) {
       count: item.count,
       highPriorityCount: item.highPriorityCount,
     })),
+    handoffBlockers: queue?.handoffBlockers || [],
+    remainingIssuesPack: {
+      headline: queue?.remainingIssuesPack?.headline || '',
+      items: (queue?.remainingIssuesPack?.items || []).map((item) => ({
+        id: item.id,
+        title: item.title,
+        severity: item.severity,
+        requestArea: item.requestArea,
+        requestText: item.requestText,
+        category: item.category,
+      })),
+    },
     shortlistHeadline: queue?.shortlistHeadline || null,
+    recentlyResolvedHeadline: queue?.recentlyResolvedHeadline || null,
     shortlist: (queue?.shortlist || []).map((item) => ({
       id: item.id,
       severity: item.severity,
@@ -95,6 +111,24 @@ function buildReviewerActionQueueSummary(review = null) {
       resolvedAt: item.resolvedAt || null,
     })),
     resolvedItems: (queue?.resolvedItems || []).map((item) => ({
+      id: item.id,
+      sourceType: item.sourceType,
+      sourceKey: item.sourceKey,
+      severity: item.severity,
+      title: item.title,
+      detail: item.detail,
+      requestText: item.requestText,
+      requestArea: item.requestArea,
+      targetTab: item.targetTab,
+      actionLabel: item.actionLabel,
+      category: item.category,
+      supportState: item.supportState,
+      actionType: item.actionType,
+      resolutionStatus: item.resolutionStatus,
+      resolvedAt: item.resolvedAt || null,
+      resolutionNote: item.resolutionNote || '',
+    })),
+    recentlyResolved: (queue?.recentlyResolved || queue?.resolvedItems || []).map((item) => ({
       id: item.id,
       sourceType: item.sourceType,
       sourceKey: item.sourceKey,
@@ -197,8 +231,16 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   });
 
   rows.push(['reviewer_action_queue', 'headline', actionQueue.headline]);
+  rows.push(['reviewer_action_queue', 'handoff_status', String(actionQueue.handoffStatus || '')]);
+  rows.push(['reviewer_action_queue', 'closure_summary', String(actionQueue.closureSummary || '')]);
   rows.push(['reviewer_action_queue', 'high_priority_count', String(actionQueue.highPriorityCount)]);
   rows.push(['reviewer_action_queue', 'resolved_count', String(actionQueue.resolvedCount || 0)]);
+  if (actionQueue.remainingIssuesPack?.headline) {
+    rows.push(['reviewer_remaining_issues', 'headline', actionQueue.remainingIssuesPack.headline]);
+  }
+  (actionQueue.remainingIssuesPack?.items || []).forEach((item, index) => {
+    rows.push(['reviewer_remaining_issue', `item_${index + 1}`, `${item.severity}: ${item.title} -- ${item.requestArea} -- ${item.requestText}`]);
+  });
   if (actionQueue.shortlistHeadline) {
     rows.push(['reviewer_action_shortlist', 'headline', actionQueue.shortlistHeadline]);
   }
@@ -277,9 +319,15 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.moveDown();
     doc.fontSize(14).text('Reviewer action queue');
     doc.fontSize(11).text(actionQueue.headline);
+    if (actionQueue.closureSummary) doc.text(actionQueue.closureSummary);
+    doc.text(`Handoff status: ${String(actionQueue.handoffStatus || 'blocked').replaceAll('_', ' ')}`);
     doc.text(`High-priority reviewer actions: ${actionQueue.highPriorityCount}/${actionQueue.totalCount}`);
     doc.text(`Resolved reviewer actions: ${actionQueue.resolvedCount || 0}`);
     (actionQueue.categories || []).forEach((item) => doc.text(`• ${item.label}: ${item.count} queued (${item.highPriorityCount} high priority)`));
+    if (actionQueue.remainingIssuesPack?.headline) {
+      doc.text(`Remaining issues: ${actionQueue.remainingIssuesPack.headline}`);
+    }
+    (actionQueue.remainingIssuesPack?.items || []).forEach((item) => doc.text(`• REMAINING · ${item.severity.toUpperCase()} · ${item.title}: ${item.requestArea} -- ${item.requestText}`));
     if (actionQueue.shortlistHeadline) {
       doc.text(`Shortlist: ${actionQueue.shortlistHeadline}`);
     }

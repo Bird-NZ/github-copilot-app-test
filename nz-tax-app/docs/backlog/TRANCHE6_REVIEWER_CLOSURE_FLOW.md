@@ -1,6 +1,6 @@
 # Tranche 6 — Reviewer Closure Flow
 
-Status: active
+Status: complete
 
 Rationale:
 - Tranche 5 made the reviewer’s next actions visible in one ordered queue.
@@ -46,7 +46,8 @@ Acceptance:
 - Only stop for a real blocker that changes product direction or requires unavailable credentials/permissions.
 
 ## Current slice state
-- Slice 1 in progress: reviewer action resolution tracking
-- Slice 2 queued: reviewer closure notes
-- Slice 3 queued: handoff-ready completion summary
-- Slice 4 queued: issue-resolution pack polish
+- Slice 1 complete: reviewer action resolution tracking
+- Slice 2 complete: reviewer closure notes
+- Slice 3 complete: handoff-ready completion summary
+- Slice 4 complete: issue-resolution pack polish
+- Tranche 6 queue complete

@@ -558,6 +558,8 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
 function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {} }) {
   const items = [];
 
+  const handoffBlockers = [];
+
   (submissionReadiness?.blockers || []).forEach((blocker, index) => {
     items.push({
       id: `blocker_${blocker.code || index + 1}`,
@@ -577,6 +579,7 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
       actionLabel: blocker.actionLabel || 'Open area',
       category: 'filing_readiness',
     });
+    handoffBlockers.push(blocker.label || blocker.message || 'Outstanding filing blocker');
   });
 
   const traceItems = traceability?.followUpPack?.items?.length ? traceability.followUpPack.items : (traceability?.gaps || []);
@@ -597,6 +600,7 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
       supportState: 'missing_support',
       actionType: 'collect_document',
     });
+    handoffBlockers.push(`Traceability gap · IR3 ${gap.ref} ${gap.label}`);
   });
 
   warnings.forEach((warning, index) => {
@@ -661,16 +665,56 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     resolutionNote: resolutions[item.id]?.note || '',
   }));
   const openItems = withResolution.filter((item) => item.resolutionStatus !== 'resolved');
-  const resolvedItems = withResolution.filter((item) => item.resolutionStatus === 'resolved');
+  const resolvedItems = withResolution
+    .filter((item) => item.resolutionStatus === 'resolved')
+    .sort((a, b) => String(b.resolvedAt || '').localeCompare(String(a.resolvedAt || '')) || b.priority - a.priority);
   const shortlist = openItems.slice(0, 3);
+  const recentlyResolved = resolvedItems.slice(0, 3);
+  const totalTrackedCount = withResolution.length;
+  const resolvedCount = resolvedItems.length;
+  const openHighPriorityCount = openItems.filter((item) => item.severity === 'high').length;
+  const unresolvedHandoffBlockers = openItems.filter((item) => item.category === 'filing_readiness' || item.category === 'traceability');
+  const handoffStatus = openItems.length === 0
+    ? 'ready_for_handoff'
+    : unresolvedHandoffBlockers.length > 0
+      ? 'blocked'
+      : 'review_in_progress';
+  const closureSummary = totalTrackedCount === 0
+    ? 'No reviewer action items are currently tracked. The draft is ready for final human review and handoff.'
+    : handoffStatus === 'ready_for_handoff'
+      ? `All ${resolvedCount} tracked reviewer action${resolvedCount === 1 ? '' : 's'} are resolved. The draft now reads as handoff-ready pending final human review.`
+      : handoffStatus === 'blocked'
+        ? `${resolvedCount} of ${totalTrackedCount} reviewer action${totalTrackedCount === 1 ? '' : 's'} are resolved. Final handoff is still blocked by ${unresolvedHandoffBlockers.length} core item${unresolvedHandoffBlockers.length === 1 ? '' : 's'}: ${unresolvedHandoffBlockers.slice(0, 3).map((item) => item.title).join(' · ')}${unresolvedHandoffBlockers.length > 3 ? '…' : ''}`
+        : `${resolvedCount} of ${totalTrackedCount} reviewer action${totalTrackedCount === 1 ? '' : 's'} are resolved. Remaining work is now mostly review polish rather than handoff-blocking gaps.`;
+
+  const remainingIssues = openItems.slice(0, 5).map((item) => ({
+    id: item.id,
+    title: item.title,
+    severity: item.severity,
+    requestArea: item.requestArea,
+    requestText: item.requestText,
+    category: item.category,
+  }));
 
   return {
-    headline: openItems.length === 0
-      ? 'No open reviewer actions are currently queued. The draft is ready for final human review.'
-      : `${openItems.length} reviewer action${openItems.length === 1 ? '' : 's'} are currently queued for handoff completion.`,
+    handoffStatus,
+    headline: handoffStatus === 'ready_for_handoff'
+      ? 'Reviewer closure is complete. The draft now looks ready to hand off.'
+      : handoffStatus === 'blocked'
+        ? `${openItems.length} reviewer action${openItems.length === 1 ? '' : 's'} remain open and final handoff is still blocked.`
+        : `${openItems.length} reviewer action${openItems.length === 1 ? '' : 's'} remain open, but the draft is now in final review/polish rather than blocked handoff recovery.`,
+    closureSummary,
+    totalTrackedCount,
     totalCount: openItems.length,
-    resolvedCount: resolvedItems.length,
-    highPriorityCount: openItems.filter((item) => item.severity === 'high').length,
+    resolvedCount,
+    highPriorityCount: openHighPriorityCount,
+    handoffBlockers: unresolvedHandoffBlockers.map((item) => item.title),
+    remainingIssuesPack: {
+      headline: remainingIssues.length === 0
+        ? 'No remaining reviewer issues are currently open.'
+        : `${remainingIssues.length} remaining issue${remainingIssues.length === 1 ? '' : 's'} to carry into handoff.`,
+      items: remainingIssues,
+    },
     categories: categoryOrder
       .map((category) => {
         const categoryItems = openItems.filter((item) => item.category === category);
@@ -689,11 +733,17 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
       })
       .filter((item) => item.count > 0),
     shortlistHeadline: shortlist.length > 0
-      ? `Start with ${shortlist.map((item) => item.title).join(' · ')}`
+      ? handoffStatus === 'blocked'
+        ? `Start with the handoff blockers: ${shortlist.map((item) => item.title).join(' · ')}`
+        : `Finish the last review pass with ${shortlist.map((item) => item.title).join(' · ')}`
       : 'No shortlist actions are currently needed.',
+    recentlyResolvedHeadline: recentlyResolved.length > 0
+      ? `Recently resolved (${recentlyResolved.length})`
+      : 'No recently resolved actions yet.',
     shortlist,
     items: openItems,
     resolvedItems,
+    recentlyResolved,
   };
 }
 

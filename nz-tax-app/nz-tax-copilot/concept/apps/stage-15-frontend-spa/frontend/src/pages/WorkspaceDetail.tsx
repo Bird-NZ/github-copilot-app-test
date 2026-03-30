@@ -521,17 +521,34 @@ export default function WorkspaceDetail() {
             <CardContent>
               <Stack spacing={2}>
                 <Typography variant="h6">Reviewer action queue</Typography>
-                <Alert severity={reviewerActionQueue.highPriorityCount > 0 ? 'warning' : 'info'}>
-                  {reviewerActionQueue.headline}
+                <Alert severity={reviewerActionQueue.handoffStatus === 'ready_for_handoff' ? 'success' : reviewerActionQueue.handoffStatus === 'blocked' ? 'warning' : 'info'}>
+                  <strong>{reviewerActionQueue.headline}</strong>
+                  {reviewerActionQueue.closureSummary ? ` ${reviewerActionQueue.closureSummary}` : ''}
                 </Alert>
                 <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                  <Chip label={`Queued ${reviewerActionQueue.totalCount}`} variant="outlined" color={reviewerActionQueue.totalCount > 0 ? 'warning' : 'success'} />
-                  <Chip label={`Resolved ${reviewerActionQueue.resolvedCount || 0}`} variant="outlined" color={(reviewerActionQueue.resolvedCount || 0) > 0 ? 'success' : 'default'} />
+                  <Chip label={reviewerActionQueue.handoffStatus === 'ready_for_handoff' ? 'Handoff ready' : reviewerActionQueue.handoffStatus === 'blocked' ? 'Handoff blocked' : 'Review in progress'} variant="outlined" color={reviewerActionQueue.handoffStatus === 'ready_for_handoff' ? 'success' : reviewerActionQueue.handoffStatus === 'blocked' ? 'warning' : 'info'} />
+                  <Chip label={`Open ${reviewerActionQueue.totalCount}`} variant="outlined" color={reviewerActionQueue.totalCount > 0 ? 'warning' : 'success'} />
+                  <Chip label={`Resolved ${reviewerActionQueue.resolvedCount || 0}/${reviewerActionQueue.totalTrackedCount || reviewerActionQueue.resolvedCount || 0}`} variant="outlined" color={(reviewerActionQueue.resolvedCount || 0) > 0 ? 'success' : 'default'} />
                   <Chip label={`High priority ${reviewerActionQueue.highPriorityCount}`} variant="outlined" color={reviewerActionQueue.highPriorityCount > 0 ? 'error' : 'success'} />
                   {(reviewerActionQueue.categories || []).map((item) => (
                     <Chip key={`queue-cat-${item.category}`} label={`${item.label} ${item.count}`} size="small" variant="outlined" />
                   ))}
                 </Stack>
+                {reviewerActionQueue.handoffBlockers?.length ? (
+                  <Alert severity="warning">
+                    <strong>Still blocking handoff:</strong> {reviewerActionQueue.handoffBlockers.slice(0, 3).join(' · ')}{reviewerActionQueue.handoffBlockers.length > 3 ? '…' : ''}
+                  </Alert>
+                ) : null}
+                {reviewerActionQueue.remainingIssuesPack?.items?.length ? (
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle2">{reviewerActionQueue.remainingIssuesPack.headline || 'Remaining issues'}</Typography>
+                    {reviewerActionQueue.remainingIssuesPack.items.map((item) => (
+                      <Alert key={`remaining-${item.id}`} severity={item.severity === 'high' ? 'error' : 'warning'}>
+                        <Typography variant="body2"><strong>{item.title}</strong> — {item.requestText} ({item.requestArea}).</Typography>
+                      </Alert>
+                    ))}
+                  </Stack>
+                ) : null}
                 {reviewerActionQueue.items.length > 0 ? (
                   <Stack spacing={1}>
                     {reviewerActionQueue.items.slice(0, 6).map((item) => (
@@ -568,10 +585,10 @@ export default function WorkspaceDetail() {
                     ))}
                   </Stack>
                 ) : null}
-                {(reviewerActionQueue.resolvedItems || []).length > 0 ? (
+                {(reviewerActionQueue.recentlyResolved || reviewerActionQueue.resolvedItems || []).length > 0 ? (
                   <Stack spacing={1}>
-                    <Typography variant="subtitle2">Recently resolved</Typography>
-                    {(reviewerActionQueue.resolvedItems || []).slice(0, 3).map((item) => (
+                    <Typography variant="subtitle2">{reviewerActionQueue.recentlyResolvedHeadline || 'Recently resolved'}</Typography>
+                    {(reviewerActionQueue.recentlyResolved || reviewerActionQueue.resolvedItems || []).slice(0, 3).map((item) => (
                       <Alert
                         key={`resolved-${item.id}`}
                         severity="success"
@@ -1098,16 +1115,32 @@ export default function WorkspaceDetail() {
                       <Stack spacing={1.25}>
                         <Typography variant="subtitle1">Reviewer action queue</Typography>
                         <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                          <Chip size="small" variant="outlined" color={reviewerActionQueue.handoffStatus === 'ready_for_handoff' ? 'success' : reviewerActionQueue.handoffStatus === 'blocked' ? 'warning' : 'info'} label={reviewerActionQueue.handoffStatus === 'ready_for_handoff' ? 'Handoff ready' : reviewerActionQueue.handoffStatus === 'blocked' ? 'Handoff blocked' : 'Review in progress'} />
                           <Chip size="small" variant="outlined" color={reviewerActionQueue.highPriorityCount > 0 ? 'error' : 'success'} label={`High priority ${reviewerActionQueue.highPriorityCount}`} />
-                          <Chip size="small" variant="outlined" label={`Queued ${reviewerActionQueue.totalCount}`} />
-                          <Chip size="small" variant="outlined" color={(reviewerActionQueue.resolvedCount || 0) > 0 ? 'success' : 'default'} label={`Resolved ${reviewerActionQueue.resolvedCount || 0}`} />
+                          <Chip size="small" variant="outlined" label={`Open ${reviewerActionQueue.totalCount}`} />
+                          <Chip size="small" variant="outlined" color={(reviewerActionQueue.resolvedCount || 0) > 0 ? 'success' : 'default'} label={`Resolved ${reviewerActionQueue.resolvedCount || 0}/${reviewerActionQueue.totalTrackedCount || reviewerActionQueue.resolvedCount || 0}`} />
                           {(reviewerActionQueue.categories || []).map((item) => (
                             <Chip key={`reviewer-action-cat-${item.category}`} size="small" variant="outlined" label={`${item.label} ${item.count}`} />
                           ))}
                         </Stack>
                         <Typography variant="body2" color="text.secondary">
-                          This combines the open reviewer work across filing blockers, evidence gaps, review warnings, and assumptions so the next human action is visible in one place.
+                          {reviewerActionQueue.closureSummary || 'This combines the open reviewer work across filing blockers, evidence gaps, review warnings, and assumptions so the next human action is visible in one place.'}
                         </Typography>
+                        {reviewerActionQueue.handoffBlockers?.length ? (
+                          <Alert severity="warning">
+                            <strong>Still blocking handoff:</strong> {reviewerActionQueue.handoffBlockers.slice(0, 3).join(' · ')}{reviewerActionQueue.handoffBlockers.length > 3 ? '…' : ''}
+                          </Alert>
+                        ) : null}
+                        {reviewerActionQueue.remainingIssuesPack?.items?.length ? (
+                          <Stack spacing={0.75}>
+                            <Typography variant="body2" color="text.secondary">{reviewerActionQueue.remainingIssuesPack.headline || 'Remaining issues pack'}</Typography>
+                            {reviewerActionQueue.remainingIssuesPack.items.map((item) => (
+                              <Alert key={`ir3-remaining-${item.id}`} severity={item.severity === 'high' ? 'error' : 'warning'}>
+                                <strong>{item.title}</strong> — {item.requestText} ({item.requestArea}).
+                              </Alert>
+                            ))}
+                          </Stack>
+                        ) : null}
                         {reviewerActionQueue.items.length > 0 ? (
                           <Stack spacing={0.75}>
                             {reviewerActionQueue.items.slice(0, 8).map((item) => (
@@ -1142,10 +1175,10 @@ export default function WorkspaceDetail() {
                         ) : (
                           <Alert severity="success">No open reviewer actions are currently queued.</Alert>
                         )}
-                        {(reviewerActionQueue.resolvedItems || []).length > 0 ? (
+                        {(reviewerActionQueue.recentlyResolved || reviewerActionQueue.resolvedItems || []).length > 0 ? (
                           <Stack spacing={0.75}>
-                            <Typography variant="body2" color="text.secondary">Recently resolved reviewer actions</Typography>
-                            {(reviewerActionQueue.resolvedItems || []).slice(0, 5).map((item) => (
+                            <Typography variant="body2" color="text.secondary">{reviewerActionQueue.recentlyResolvedHeadline || 'Recently resolved reviewer actions'}</Typography>
+                            {(reviewerActionQueue.recentlyResolved || reviewerActionQueue.resolvedItems || []).slice(0, 5).map((item) => (
                               <Alert
                                 key={`ir3-resolved-${item.id}`}
                                 severity="success"

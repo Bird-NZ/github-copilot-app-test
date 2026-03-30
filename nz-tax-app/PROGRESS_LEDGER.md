@@ -354,3 +354,15 @@ Append-only ledger for active build work.
   - Next action: Update BUILD_STATE / ACTIVE_BUILD_SLICES, create a checkpoint commit, and continue only if Slice 3 can be started without reopening tranche scope.
   - Status: Done
   - Next update due by: n/a
+
+- 19:37 NZDT
+  - What changed: Tranche 6 Slice 3 is complete. Reviewer queue payloads/exports now expose explicit handoff status, closure progress, and handoff blockers; workspace reviewer surfaces now clearly distinguish reviewed/polish state from genuinely handoff-ready state; shortlist and recently resolved items are split cleanly.
+  - Next action: Continue immediately into Slice 4 so unresolved work can be handed off as a concise remaining-issues pack instead of another mixed queue dump.
+  - Status: Done
+  - Next update due by: on Slice 4 milestone or blocker
+
+- 19:40 NZDT
+  - What changed: Tranche 6 Slice 4 is complete. Review payloads now include a compact remaining-issues pack, workspace and export surfaces skim unresolved work separately from resolved history, and backend smoke plus frontend production build both re-passed. The defined Tranche 6 queue is now exhausted.
+  - Next action: Update state docs, checkpoint commit, and mark Tranche 6 complete.
+  - Status: Done
+  - Next update due by: n/a
