@@ -555,7 +555,7 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
   };
 }
 
-function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [] }) {
+function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {} }) {
   const items = [];
 
   (submissionReadiness?.blockers || []).forEach((blocker, index) => {
@@ -654,20 +654,46 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     })
     .filter((item) => item.count > 0);
 
-  const shortlist = deduped.slice(0, 3);
+  const withResolution = deduped.map((item) => ({
+    ...item,
+    resolutionStatus: resolutions[item.id]?.status === 'resolved' ? 'resolved' : 'open',
+    resolvedAt: resolutions[item.id]?.resolvedAt || null,
+    resolutionNote: resolutions[item.id]?.note || '',
+  }));
+  const openItems = withResolution.filter((item) => item.resolutionStatus !== 'resolved');
+  const resolvedItems = withResolution.filter((item) => item.resolutionStatus === 'resolved');
+  const shortlist = openItems.slice(0, 3);
 
   return {
-    headline: deduped.length === 0
+    headline: openItems.length === 0
       ? 'No open reviewer actions are currently queued. The draft is ready for final human review.'
-      : `${deduped.length} reviewer action${deduped.length === 1 ? '' : 's'} are currently queued for handoff completion.`,
-    totalCount: deduped.length,
-    highPriorityCount: deduped.filter((item) => item.severity === 'high').length,
-    categories,
+      : `${openItems.length} reviewer action${openItems.length === 1 ? '' : 's'} are currently queued for handoff completion.`,
+    totalCount: openItems.length,
+    resolvedCount: resolvedItems.length,
+    highPriorityCount: openItems.filter((item) => item.severity === 'high').length,
+    categories: categoryOrder
+      .map((category) => {
+        const categoryItems = openItems.filter((item) => item.category === category);
+        return {
+          category,
+          label: category === 'filing_readiness'
+            ? 'Filing readiness'
+            : category === 'traceability'
+              ? 'Traceability gaps'
+              : category === 'review_warning'
+                ? 'Review warnings'
+                : 'Assumptions',
+          count: categoryItems.length,
+          highPriorityCount: categoryItems.filter((item) => item.severity === 'high').length,
+        };
+      })
+      .filter((item) => item.count > 0),
     shortlistHeadline: shortlist.length > 0
       ? `Start with ${shortlist.map((item) => item.title).join(' · ')}`
       : 'No shortlist actions are currently needed.',
     shortlist,
-    items: deduped,
+    items: openItems,
+    resolvedItems,
   };
 }
 
@@ -829,6 +855,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     traceability,
     warnings: warningsWithEvidence,
     assumptions,
+    resolutions: workspace?.reviewerActionResolutions || {},
   });
 
   return {

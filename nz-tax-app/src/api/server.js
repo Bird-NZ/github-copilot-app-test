@@ -413,6 +413,56 @@ app.get('/workspaces/:id/export/draft', requireSession, async (req, res) => {
   return res.json({ csv, pdf, json, explanation, review });
 });
 
+
+app.patch('/workspaces/:id/review/actions/:actionId/status', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const actionId = String(req.params.actionId || '').trim();
+  if (!actionId) return res.status(400).json({ error: 'ACTION_ID_REQUIRED' });
+
+  const status = req.body?.status;
+  if (status !== 'open' && status !== 'resolved') {
+    return res.status(400).json({ error: 'INVALID_REVIEW_ACTION_STATUS' });
+  }
+
+  const note = typeof req.body?.note === 'string' ? req.body.note.trim() : '';
+
+  const current = { ...(workspace.reviewerActionResolutions || {}) };
+  if (status === 'resolved') {
+    current[actionId] = {
+      status: 'resolved',
+      resolvedAt: new Date().toISOString(),
+      note,
+    };
+  } else {
+    delete current[actionId];
+  }
+
+  const updatedWorkspace = updateWorkspace(workspace.id, req.session.userId, {
+    reviewerActionResolutions: current,
+  });
+
+  logEvent(workspace.id, {
+    action: 'review.action_resolution.save',
+    actor: req.session.userId,
+    meta: {
+      actionId,
+      status,
+      title: req.body?.title || null,
+      note: note || null,
+    },
+  });
+
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
+  const calc = calculateDraft(map);
+  const review = buildReview(updatedWorkspace, map, calc, docs, cryptoTx);
+  return res.json({ review });
+});
+
 app.patch('/workspaces/:id/review/warnings/:warningCode/evidence', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });

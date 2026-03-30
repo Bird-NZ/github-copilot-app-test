@@ -6,6 +6,7 @@ const ACTION_LABELS = {
   'document.upload': 'Document uploaded',
   'document.donation_amount.save': 'Donation amount updated',
   'crypto.import_csv': 'Crypto CSV imported',
+  'review.action_resolution.save': 'Reviewer action updated',
 };
 
 const INCOME_TYPE_LABELS = {
@@ -83,6 +84,12 @@ function buildDetails(action, meta = {}) {
       .filter(([, value]) => Number(value || 0) > 0)
       .map(([label, value]) => `${label}: ${Number(value).toFixed(2)}`)
     return parts.length > 0 ? parts.join(' · ') : 'Adjustment values updated'
+  }
+
+  if (action === 'review.action_resolution.save') {
+    const title = meta.title || meta.actionId || 'reviewer action'
+    const status = meta.status === 'resolved' ? 'Resolved' : 'Reopened'
+    return meta.note ? `${status}: ${title} — ${meta.note}` : `${status}: ${title}`
   }
 
   if (action === 'questionnaire.save') {

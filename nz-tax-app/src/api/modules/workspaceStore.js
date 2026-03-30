@@ -19,6 +19,7 @@ export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd
       studentLoanRepayments: 0,
     },
     warningEvidenceOverrides: {},
+    reviewerActionResolutions: {},
     createdAt: now,
     updatedAt: now,
   };

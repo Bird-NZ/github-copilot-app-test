@@ -261,6 +261,22 @@ export default function WorkspaceDetail() {
     },
   })
 
+  const saveReviewerActionStatusMutation = useMutation({
+    mutationFn: (payload: { actionId: string; status: 'open' | 'resolved'; title?: string; note?: string }) =>
+      workspaceFlowsApi.saveReviewerActionStatus(workspaceId || '', payload.actionId, {
+        status: payload.status,
+        title: payload.title,
+        note: payload.note,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace-export', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-review', workspaceId] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-audit', workspaceId, auditCategory, auditSearch] })
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace'] })
+    },
+  })
+
   const saveWarningEvidenceOverrideMutation = useMutation({
     mutationFn: (payload: { warningCode: string; mode: 'auto' | 'manual' | 'none'; documentIds?: string[] }) =>
       workspaceFlowsApi.saveWarningEvidenceOverride(workspaceId || '', payload.warningCode, {
@@ -510,6 +526,7 @@ export default function WorkspaceDetail() {
                 </Alert>
                 <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                   <Chip label={`Queued ${reviewerActionQueue.totalCount}`} variant="outlined" color={reviewerActionQueue.totalCount > 0 ? 'warning' : 'success'} />
+                  <Chip label={`Resolved ${reviewerActionQueue.resolvedCount || 0}`} variant="outlined" color={(reviewerActionQueue.resolvedCount || 0) > 0 ? 'success' : 'default'} />
                   <Chip label={`High priority ${reviewerActionQueue.highPriorityCount}`} variant="outlined" color={reviewerActionQueue.highPriorityCount > 0 ? 'error' : 'success'} />
                   {(reviewerActionQueue.categories || []).map((item) => (
                     <Chip key={`queue-cat-${item.category}`} label={`${item.label} ${item.count}`} size="small" variant="outlined" />
@@ -521,11 +538,23 @@ export default function WorkspaceDetail() {
                       <Alert
                         key={item.id}
                         severity={item.severity === 'high' ? 'error' : 'warning'}
-                        action={item.actionLabel ? (
-                          <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(item.targetTab))}>
-                            {item.actionLabel}
-                          </Button>
-                        ) : undefined}
+                        action={
+                          <Stack direction="row" spacing={1}>
+                            {item.actionLabel ? (
+                              <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(item.targetTab))}>
+                                {item.actionLabel}
+                              </Button>
+                            ) : null}
+                            <Button
+                              color="inherit"
+                              size="small"
+                              disabled={saveReviewerActionStatusMutation.isPending}
+                              onClick={() => saveReviewerActionStatusMutation.mutate({ actionId: item.id, status: 'resolved', title: item.title })}
+                            >
+                              Resolve
+                            </Button>
+                          </Stack>
+                        }
                       >
                         <Stack spacing={0.5}>
                           <Typography variant="body2"><strong>{item.title}:</strong> {item.detail}</Typography>
@@ -535,6 +564,29 @@ export default function WorkspaceDetail() {
                           </Stack>
                           <Typography variant="caption" color="inherit">Next request: {item.requestText} ({item.requestArea}).</Typography>
                         </Stack>
+                      </Alert>
+                    ))}
+                  </Stack>
+                ) : null}
+                {(reviewerActionQueue.resolvedItems || []).length > 0 ? (
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle2">Recently resolved</Typography>
+                    {(reviewerActionQueue.resolvedItems || []).slice(0, 3).map((item) => (
+                      <Alert
+                        key={`resolved-${item.id}`}
+                        severity="success"
+                        action={
+                          <Button
+                            color="inherit"
+                            size="small"
+                            disabled={saveReviewerActionStatusMutation.isPending}
+                            onClick={() => saveReviewerActionStatusMutation.mutate({ actionId: item.id, status: 'open', title: item.title })}
+                          >
+                            Reopen
+                          </Button>
+                        }
+                      >
+                        <Typography variant="body2"><strong>{item.title}</strong> resolved{item.resolvedAt ? ` at ${formatDate(item.resolvedAt)}` : ''}{item.resolutionNote ? ` — ${item.resolutionNote}` : ''}.</Typography>
                       </Alert>
                     ))}
                   </Stack>
@@ -1048,6 +1100,7 @@ export default function WorkspaceDetail() {
                         <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                           <Chip size="small" variant="outlined" color={reviewerActionQueue.highPriorityCount > 0 ? 'error' : 'success'} label={`High priority ${reviewerActionQueue.highPriorityCount}`} />
                           <Chip size="small" variant="outlined" label={`Queued ${reviewerActionQueue.totalCount}`} />
+                          <Chip size="small" variant="outlined" color={(reviewerActionQueue.resolvedCount || 0) > 0 ? 'success' : 'default'} label={`Resolved ${reviewerActionQueue.resolvedCount || 0}`} />
                           {(reviewerActionQueue.categories || []).map((item) => (
                             <Chip key={`reviewer-action-cat-${item.category}`} size="small" variant="outlined" label={`${item.label} ${item.count}`} />
                           ))}
@@ -1061,11 +1114,26 @@ export default function WorkspaceDetail() {
                               <Alert
                                 key={`reviewer-action-${item.id}`}
                                 severity={item.severity === 'high' ? 'error' : 'warning'}
-                                action={item.actionLabel ? (
-                                  <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(item.targetTab))}>
-                                    {item.actionLabel}
-                                  </Button>
-                                ) : undefined}
+                                action={
+                                  <Stack direction="row" spacing={1}>
+                                    {item.actionLabel ? (
+                                      <Button color="inherit" size="small" onClick={() => setTab(blockerTargetTabIndex(item.targetTab))}>
+                                        {item.actionLabel}
+                                      </Button>
+                                    ) : null}
+                                    <Button
+                                      color="inherit"
+                                      size="small"
+                                      disabled={saveReviewerActionStatusMutation.isPending}
+                                      onClick={() => {
+                                        const note = window.prompt(`Optional resolution note for \"${item.title}\"`, '') || ''
+                                        saveReviewerActionStatusMutation.mutate({ actionId: item.id, status: 'resolved', title: item.title, note })
+                                      }}
+                                    >
+                                      Resolve
+                                    </Button>
+                                  </Stack>
+                                }
                               >
                                 <strong>{item.title}</strong> — {item.detail} Next request: {item.requestText} ({item.requestArea}).
                               </Alert>
@@ -1074,6 +1142,29 @@ export default function WorkspaceDetail() {
                         ) : (
                           <Alert severity="success">No open reviewer actions are currently queued.</Alert>
                         )}
+                        {(reviewerActionQueue.resolvedItems || []).length > 0 ? (
+                          <Stack spacing={0.75}>
+                            <Typography variant="body2" color="text.secondary">Recently resolved reviewer actions</Typography>
+                            {(reviewerActionQueue.resolvedItems || []).slice(0, 5).map((item) => (
+                              <Alert
+                                key={`ir3-resolved-${item.id}`}
+                                severity="success"
+                                action={
+                                  <Button
+                                    color="inherit"
+                                    size="small"
+                                    disabled={saveReviewerActionStatusMutation.isPending}
+                                    onClick={() => saveReviewerActionStatusMutation.mutate({ actionId: item.id, status: 'open', title: item.title })}
+                                  >
+                                    Reopen
+                                  </Button>
+                                }
+                              >
+                                <strong>{item.title}</strong> resolved{item.resolvedAt ? ` at ${formatDate(item.resolvedAt)}` : ''}{item.resolutionNote ? ` — ${item.resolutionNote}` : ''}.
+                              </Alert>
+                            ))}
+                          </Stack>
+                        ) : null}
                       </Stack>
                     </CardContent>
                   </Card>

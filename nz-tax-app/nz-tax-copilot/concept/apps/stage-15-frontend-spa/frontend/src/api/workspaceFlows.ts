@@ -227,6 +227,7 @@ export type ReviewPayload = {
   reviewerActionQueue: {
     headline: string
     totalCount: number
+    resolvedCount: number
     highPriorityCount: number
     categories: Array<{
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
@@ -248,6 +249,27 @@ export type ReviewPayload = {
       category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
       supportState?: 'missing_support' | 'missing_input' | 'review_required' | 'assumed'
       actionType?: 'collect_document' | 'complete_input' | 'review_tax_position' | 'replace_assumption'
+      resolutionStatus?: 'open' | 'resolved'
+      resolvedAt?: string | null
+      resolutionNote?: string
+    }>
+    resolvedItems: Array<{
+      id: string
+      sourceType: 'submission_blocker' | 'traceability_gap' | 'review_warning' | 'assumption'
+      sourceKey: string
+      severity: 'high' | 'medium'
+      title: string
+      detail: string
+      requestText: string
+      requestArea: string
+      targetTab?: 'questionnaire' | 'documents' | 'ir3_summary'
+      actionLabel?: string
+      category: 'filing_readiness' | 'traceability' | 'review_warning' | 'assumption'
+      supportState?: 'missing_support' | 'missing_input' | 'review_required' | 'assumed'
+      actionType?: 'collect_document' | 'complete_input' | 'review_tax_position' | 'replace_assumption'
+      resolutionStatus?: 'open' | 'resolved'
+      resolvedAt?: string | null
+      resolutionNote?: string
     }>
   }
   traceability: {
@@ -361,6 +383,19 @@ export const workspaceFlowsApi = {
 
   async getReview(workspaceId: string): Promise<ReviewPayload> {
     const response = await apiClient.get(`/workspaces/${workspaceId}/review`)
+    return response.data?.review
+  },
+
+
+  async saveReviewerActionStatus(
+    workspaceId: string,
+    actionId: string,
+    payload: { status: 'open' | 'resolved'; title?: string; note?: string }
+  ): Promise<ReviewPayload> {
+    const response = await apiClient.patch(
+      `/workspaces/${workspaceId}/review/actions/${encodeURIComponent(actionId)}/status`,
+      payload,
+    )
     return response.data?.review
   },
 

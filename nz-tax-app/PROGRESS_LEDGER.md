@@ -336,3 +336,21 @@ Append-only ledger for active build work.
   - Next action: Commit the completed Tranche 4 queue checkpoint and mark the queue complete.
   - Status: Done
   - Next update due by: n/a
+
+- 19:08 NZDT
+  - What changed: Re-anchored on the live post–Tranche 5 reviewer queue, defined the next queue explicitly as Tranche 6 reviewer closure flow, and selected the smallest shippable slice: reviewer action resolution tracking.
+  - Next action: Implement persisted reviewer-action resolution state through backend, export surfaces, and workspace reviewer queue; then validate locally.
+  - Status: In Progress
+  - Next update due by: 19:18 NZDT
+
+- 19:18 NZDT
+  - What changed: Tranche 6 Slice 1 landed locally. Reviewer actions can now be resolved/reopened, review payloads separate open vs resolved items with counts, exports carry closure summary, and backend smoke plus frontend build both passed.
+  - Next action: Continue immediately into Slice 2 by adding reviewer closure notes instead of stopping at bare status toggles.
+  - Status: Done
+  - Next update due by: 19:28 NZDT
+
+- 19:29 NZDT
+  - What changed: Tranche 6 Slice 2 is complete. Resolve actions now support an optional reviewer note, resolved items show that note in workspace/export views, audit wording includes the closure context, and local validation re-passed cleanly.
+  - Next action: Update BUILD_STATE / ACTIVE_BUILD_SLICES, create a checkpoint commit, and continue only if Slice 3 can be started without reopening tranche scope.
+  - Status: Done
+  - Next update due by: n/a

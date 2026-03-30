@@ -57,6 +57,7 @@ function buildReviewerActionQueueSummary(review = null) {
       : `${items.length} reviewer action${items.length === 1 ? '' : 's'} are currently queued for handoff completion.`),
     totalCount: queue?.totalCount || items.length,
     highPriorityCount: queue?.highPriorityCount || items.filter((item) => item?.severity === 'high').length,
+    resolvedCount: queue?.resolvedCount || (queue?.resolvedItems || []).length,
     categories: (queue?.categories || []).map((item) => ({
       category: item.category,
       label: item.label,
@@ -72,6 +73,9 @@ function buildReviewerActionQueueSummary(review = null) {
       requestArea: item.requestArea,
       supportState: item.supportState,
       actionType: item.actionType,
+      resolutionStatus: item.resolutionStatus,
+      resolvedAt: item.resolvedAt || null,
+      resolutionNote: item.resolutionNote || '',
     })),
     items: items.map((item) => ({
       id: item.id,
@@ -87,6 +91,26 @@ function buildReviewerActionQueueSummary(review = null) {
       category: item.category,
       supportState: item.supportState,
       actionType: item.actionType,
+      resolutionStatus: item.resolutionStatus,
+      resolvedAt: item.resolvedAt || null,
+    })),
+    resolvedItems: (queue?.resolvedItems || []).map((item) => ({
+      id: item.id,
+      sourceType: item.sourceType,
+      sourceKey: item.sourceKey,
+      severity: item.severity,
+      title: item.title,
+      detail: item.detail,
+      requestText: item.requestText,
+      requestArea: item.requestArea,
+      targetTab: item.targetTab,
+      actionLabel: item.actionLabel,
+      category: item.category,
+      supportState: item.supportState,
+      actionType: item.actionType,
+      resolutionStatus: item.resolutionStatus,
+      resolvedAt: item.resolvedAt || null,
+      resolutionNote: item.resolutionNote || '',
     })),
   };
 }
@@ -174,6 +198,7 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
 
   rows.push(['reviewer_action_queue', 'headline', actionQueue.headline]);
   rows.push(['reviewer_action_queue', 'high_priority_count', String(actionQueue.highPriorityCount)]);
+  rows.push(['reviewer_action_queue', 'resolved_count', String(actionQueue.resolvedCount || 0)]);
   if (actionQueue.shortlistHeadline) {
     rows.push(['reviewer_action_shortlist', 'headline', actionQueue.shortlistHeadline]);
   }
@@ -185,6 +210,9 @@ export function buildCsv(map, calc, explanation = null, review = null, docCheckl
   });
   actionQueue.items.forEach((item, index) => {
     rows.push(['reviewer_action', `item_${index + 1}`, `${item.severity}: ${item.title} -- ${item.supportState || 'review_required'} -- ${item.actionType || 'review_tax_position'} -- ${item.requestArea} -- ${item.requestText}`]);
+  });
+  (actionQueue.resolvedItems || []).forEach((item, index) => {
+    rows.push(['reviewer_action_resolved', `item_${index + 1}`, `${item.severity}: ${item.title} -- resolved -- ${item.requestArea} -- ${item.requestText}`]);
   });
 
   rows.push(['traceability', 'coverage', `${traceSummary.evidencedFieldCount}/${traceSummary.keyFieldCount}`]);
@@ -250,12 +278,14 @@ function buildPdfBuffer(map, calc, explanation = null, review = null, docCheckli
     doc.fontSize(14).text('Reviewer action queue');
     doc.fontSize(11).text(actionQueue.headline);
     doc.text(`High-priority reviewer actions: ${actionQueue.highPriorityCount}/${actionQueue.totalCount}`);
+    doc.text(`Resolved reviewer actions: ${actionQueue.resolvedCount || 0}`);
     (actionQueue.categories || []).forEach((item) => doc.text(`• ${item.label}: ${item.count} queued (${item.highPriorityCount} high priority)`));
     if (actionQueue.shortlistHeadline) {
       doc.text(`Shortlist: ${actionQueue.shortlistHeadline}`);
     }
     (actionQueue.shortlist || []).forEach((item) => doc.text(`• SHORTLIST · ${item.severity.toUpperCase()} · ${item.title}: ${item.supportState || 'review_required'} / ${item.actionType || 'review_tax_position'} · ${item.requestArea} -- ${item.requestText}`));
     actionQueue.items.slice(0, 8).forEach((item) => doc.text(`• ${item.severity.toUpperCase()} · ${item.title}: ${item.supportState || 'review_required'} / ${item.actionType || 'review_tax_position'} · ${item.requestArea} -- ${item.requestText}`));
+    (actionQueue.resolvedItems || []).slice(0, 5).forEach((item) => doc.text(`• RESOLVED · ${item.severity.toUpperCase()} · ${item.title}: ${item.requestArea} -- ${item.requestText}${item.resolutionNote ? ` -- note: ${item.resolutionNote}` : ''}`));
 
     doc.moveDown();
     doc.fontSize(14).text('Reviewer traceability');

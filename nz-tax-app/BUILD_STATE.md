@@ -1,27 +1,39 @@
 # NZ Tax App — Build State
 
 ## Current stage
-- Tranche 5 / Slice 1 complete (unified reviewer action queue)
-- Tranche 5 / Slice 2 complete (completion-aware grouping and counts)
+- Tranche 6 / Slice 1 complete (reviewer action resolution tracking)
+- Tranche 6 / Slice 2 complete (reviewer closure notes)
+- Tranche 6 / Slice 3 queued (handoff-ready completion summary)
+- Tranche 5 queue complete and live
 - Tranche 4 queue complete and live
 - Tranche 3 queue complete and live
 - Tranche 2 queue complete and live
 
 ## Current objective
-Tranche 5 reviewer action queue is now active. After filing readiness and reviewer traceability went live, the next highest-leverage step is to make the handoff pack easier for a human reviewer to act on without mentally merging blockers, warnings, assumptions, and evidence gaps across multiple panels.
+Tranche 6 is now focused on reviewer closure flow. After Tranche 5 made the next reviewer actions visible, the next highest-leverage step is to help reviewers actively work that queue to closure, preserve handoff context, and separate remaining issues from already-handled work.
 
 ## Last completed milestones
-- Defined Tranche 5 as a reviewer-actionability queue focused on handoff completion, evidence sufficiency, and next-step clarity after Tranche 4 traceability work
-- Review payload now includes `reviewerActionQueue`, combining open submission blockers, traceability follow-up items, review warnings, and assumptions into one ordered queue
-- Workspace dashboard and IR3 Summary now surface the reviewer action queue so the next reviewer request/action is visible in one place
-- Reviewer action queue now includes category-level counts so a reviewer can see whether the remaining work is mostly filing readiness, traceability, warnings, or assumptions
-- Export CSV/PDF/JSON now carry the reviewer action queue headline, category counts, and queued action lines as part of the handoff pack
-- Existing filing-readiness and reviewer-traceability surfaces remain intact
+- Defined Tranche 6 in `docs/backlog/TRANCHE6_REVIEWER_CLOSURE_FLOW.md` as the next queue after the live Tranche 5 reviewer-action queue
+- Reviewer actions can now be marked resolved or reopened, with open vs resolved work separated in the review payload and UI
+- Review/export surfaces now expose resolved reviewer-action counts so closure progress is visible in handoff packs
+- Resolved reviewer actions can now carry an optional reviewer closure note, which is surfaced in the UI, export payloads, and audit trail
+- Existing filing-readiness, traceability, and Tranche 5 queue surfaces remain intact while gaining closure-state context
 - Local validation passed:
   - backend smoke test (`cd src/api && bash tests/smoke.sh`) succeeds
   - frontend build (`cd nz-tax-copilot/concept/apps/stage-15-frontend-spa/frontend && npm run build`) succeeds
 
 ## Recently completed slices
+
+### Tranche 6 / Slice 1 — reviewer action resolution tracking
+- Added persisted reviewer-action resolution state keyed by queued action id
+- Split reviewer-action payloads into open items vs resolved items with resolved counts
+- Added resolve/reopen controls to workspace reviewer-queue surfaces
+- Extended CSV/PDF/JSON export surfaces with reviewer-action resolution summary
+
+### Tranche 6 / Slice 2 — reviewer closure notes
+- Added optional reviewer closure notes when resolving an action
+- Surfaced those notes in the workspace resolved-items view and export surfaces
+- Logged reviewer closure updates in the audit trail with note-aware wording
 
 ### Tranche 5 / Slice 3 — evidence-sufficiency emphasis on queued items
 - Added explicit `supportState` and `actionType` fields to queued reviewer actions
@@ -32,23 +44,12 @@ Tranche 5 reviewer action queue is now active. After filing readiness and review
 - Added a shortlist/headline for the top reviewer actions so handoff packs can start with the highest-leverage next steps
 - Preserved full ordered queue while keeping shortlist wording aligned with export surfaces
 
-### Tranche 5 / Slice 1 — unified reviewer action queue
-- Added a structured `reviewerActionQueue` model to the review payload
-- Combined submission blockers, traceability follow-up items, review warnings, and assumptions into one ordered reviewer-facing queue
-- Surfaced the queue in dashboard and IR3 Summary
-- Added reviewer action queue output to CSV/PDF handoff surfaces
-
-### Tranche 5 / Slice 2 — completion-aware grouping and counts
-- Added per-category queue counts for filing readiness, traceability, review warnings, and assumptions
-- Surfaced those counts in the workspace queue summary chips
-- Added category-count rows/details to export surfaces so the handoff pack stays aligned with the app
-
 ## Next tasks
-1. Tranche 5 / Slice 3 — evidence-sufficiency emphasis on queued items
-2. Tranche 5 / Slice 4 — handoff-ready shortlist polish
+1. Tranche 6 / Slice 3 — handoff-ready completion summary
+2. Tranche 6 / Slice 4 — issue-resolution pack polish
 
 ## Known blockers
-- No active technical blocker in Tranche 5 through Slice 2
+- No active technical blocker in Tranche 6 through Slice 2
 - Slice 3 is queued, not blocked
 
 ## Real blocker threshold
