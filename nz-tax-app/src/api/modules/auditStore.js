@@ -10,6 +10,7 @@ const ACTION_LABELS = {
   'review.final_signoff.save': 'Reviewer final sign-off recorded',
   'review.final_signoff.stale': 'Reviewer final sign-off marked stale',
   'review.operator_handoff.acknowledge': 'Operator handoff acknowledged',
+  'review.filing_checkpoint.save': 'Filing checkpoint updated',
 };
 
 const INCOME_TYPE_LABELS = {
@@ -110,6 +111,14 @@ function buildDetails(action, meta = {}) {
     const at = meta.acknowledgedAt ? ` at ${meta.acknowledgedAt}` : ''
     const note = meta.note ? ` — Note: ${meta.note}` : ''
     return `Operator acknowledged signed handoff${at}${note}`
+  }
+
+  if (action === 'review.filing_checkpoint.save') {
+    const status = meta.status ? `Status: ${titleCase(meta.status)}` : 'Status updated'
+    const submittedAt = meta.submittedAt ? ` — Submitted: ${meta.submittedAt}` : ''
+    const confirmedAt = meta.confirmedAt ? ` — Confirmed: ${meta.confirmedAt}` : ''
+    const reference = meta.irdReference ? ` — IRD ref: ${meta.irdReference}` : ''
+    return `${status}${submittedAt}${confirmedAt}${reference}`
   }
 
   if (action === 'questionnaire.save') {

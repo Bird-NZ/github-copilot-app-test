@@ -593,6 +593,60 @@ app.patch('/workspaces/:id/review/operator-handoff', requireSession, (req, res) 
   return res.json({ review: nextReview });
 });
 
+app.patch('/workspaces/:id/review/filing-checkpoint', requireSession, (req, res) => {
+  const workspace = getWorkspace(req.params.id, req.session.userId);
+  if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });
+
+  const status = req.body?.status;
+  if (!['not_started', 'submitted', 'confirmed'].includes(status)) {
+    return res.status(400).json({ error: 'INVALID_FILING_CHECKPOINT_STATUS' });
+  }
+
+  const income = listIncome(workspace.id);
+  const cryptoTx = listTransactions(workspace.id);
+  const docs = documents(workspace.id);
+  const map = mapToIr3({ income, cryptoTx, adjustments: workspace.adjustments || {}, docs });
+  const calc = calculateDraft(map);
+  const review = buildReview(workspace, map, calc, docs, cryptoTx);
+  if (review?.reviewerActionQueue?.operatorHandoff?.status !== 'acknowledged' && status !== 'not_started') {
+    return res.status(400).json({ error: 'FILING_CHECKPOINT_REQUIRES_OPERATOR_ACK' });
+  }
+
+  const submittedAt = status === 'submitted' || status === 'confirmed'
+    ? (typeof req.body?.submittedAt === 'string' && req.body.submittedAt.trim() ? req.body.submittedAt.trim() : new Date().toISOString())
+    : null;
+  const confirmedAt = status === 'confirmed'
+    ? (typeof req.body?.confirmedAt === 'string' && req.body.confirmedAt.trim() ? req.body.confirmedAt.trim() : new Date().toISOString())
+    : null;
+  const irdReference = typeof req.body?.irdReference === 'string' ? req.body.irdReference.trim() : '';
+  const note = typeof req.body?.note === 'string' ? req.body.note.trim() : '';
+
+  const filingCheckpoint = {
+    status,
+    submittedAt,
+    confirmedAt,
+    irdReference: irdReference || null,
+    note: note || null,
+    updatedAt: new Date().toISOString(),
+    updatedBy: req.session.userId,
+  };
+
+  const updatedWorkspace = updateWorkspace(workspace.id, req.session.userId, {
+    reviewerFilingCheckpoint: filingCheckpoint,
+  });
+
+  logEvent(workspace.id, {
+    action: 'review.filing_checkpoint.save',
+    actor: req.session.userId,
+    meta: filingCheckpoint,
+  });
+
+  const nextMap = mapToIr3({ income, cryptoTx, adjustments: updatedWorkspace.adjustments || {}, docs });
+  const nextCalc = calculateDraft(nextMap);
+  const nextReview = buildReview(updatedWorkspace, nextMap, nextCalc, docs, cryptoTx);
+  return res.json({ review: nextReview });
+});
+
 app.patch('/workspaces/:id/review/warnings/:warningCode/evidence', requireSession, (req, res) => {
   const workspace = getWorkspace(req.params.id, req.session.userId);
   if (!workspace) return res.status(404).json({ error: 'WORKSPACE_NOT_FOUND' });

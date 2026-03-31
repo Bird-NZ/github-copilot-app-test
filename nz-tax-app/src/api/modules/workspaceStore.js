@@ -22,6 +22,7 @@ export function createWorkspace({ userId = 'demo-user', taxYearStart, taxYearEnd
     reviewerActionResolutions: {},
     reviewerFinalSignoff: null,
     reviewerOperatorHandoff: null,
+    reviewerFilingCheckpoint: null,
     createdAt: now,
     updatedAt: now,
   };

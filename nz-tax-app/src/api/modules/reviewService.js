@@ -555,7 +555,7 @@ function buildFieldTraceability(map = {}, calc = {}, evidence = []) {
   };
 }
 
-function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {}, finalSignoff = null, operatorHandoff = null }) {
+function buildReviewerActionQueue({ submissionReadiness = null, traceability = null, warnings = [], assumptions = [], resolutions = {}, finalSignoff = null, operatorHandoff = null, filingCheckpoint = null }) {
   const items = [];
 
   const handoffBlockers = [];
@@ -835,6 +835,45 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
     });
   }
 
+  const filingStateRecord = filingCheckpoint && typeof filingCheckpoint === 'object' ? filingCheckpoint : null;
+  const filingStatus = ['not_started', 'submitted', 'confirmed'].includes(filingStateRecord?.status)
+    ? filingStateRecord.status
+    : 'not_started';
+  const filingBlockedByHandoff = operatorHandoffState.status !== 'acknowledged';
+  const filingExecution = {
+    status: filingStatus,
+    submittedAt: filingStateRecord?.submittedAt || null,
+    confirmedAt: filingStateRecord?.confirmedAt || null,
+    irdReference: filingStateRecord?.irdReference || '',
+    note: filingStateRecord?.note || '',
+    summary: filingBlockedByHandoff
+      ? 'Filing execution checkpoint is locked until operator handoff is acknowledged.'
+      : filingStatus === 'confirmed'
+        ? `Filing marked confirmed${filingStateRecord?.confirmedAt ? ` at ${filingStateRecord.confirmedAt}` : ''}${filingStateRecord?.irdReference ? ` (IRD ref: ${filingStateRecord.irdReference})` : ''}.`
+        : filingStatus === 'submitted'
+          ? `Filing marked submitted${filingStateRecord?.submittedAt ? ` at ${filingStateRecord.submittedAt}` : ''}${filingStateRecord?.irdReference ? ` (IRD ref: ${filingStateRecord.irdReference})` : ''}.`
+          : 'Operator handoff acknowledged, but filing has not yet been marked submitted.',
+    nextStep: filingBlockedByHandoff
+      ? 'Capture operator handoff acknowledgement before setting filing status.'
+      : filingStatus === 'confirmed'
+        ? 'No further filing checkpoint action required unless reopen/drift occurs.'
+        : filingStatus === 'submitted'
+          ? 'Mark filing as confirmed when IRD confirmation/reference is available.'
+          : 'Mark filing as submitted once operator lodges the return.',
+    blockedByHandoff: filingBlockedByHandoff,
+  };
+
+  if (filingExecution.submittedAt || filingExecution.confirmedAt) {
+    handoffTimelineItems.push({
+      key: 'filing_execution',
+      status: 'done',
+      label: filingExecution.status === 'confirmed' ? 'Filing confirmed' : 'Filing submitted',
+      at: filingExecution.confirmedAt || filingExecution.submittedAt,
+      by: filingStateRecord?.updatedBy || null,
+      detail: filingExecution.irdReference ? `IRD ref: ${filingExecution.irdReference}` : (filingExecution.note || 'Filing checkpoint updated.'),
+    });
+  }
+
   return {
     handoffStatus,
     headline: handoffStatus === 'ready_for_handoff'
@@ -874,6 +913,7 @@ function buildReviewerActionQueue({ submissionReadiness = null, traceability = n
         : 'No final handoff events recorded yet.',
       items: handoffTimelineItems,
     },
+    filingExecution,
     categories: categoryOrder
       .map((category) => {
         const categoryItems = openItems.filter((item) => item.category === category);
@@ -1067,6 +1107,7 @@ export function buildReview(workspace, map, calc, docs = [], cryptoTransactions 
     resolutions: workspace?.reviewerActionResolutions || {},
     finalSignoff: workspace?.reviewerFinalSignoff || null,
     operatorHandoff: workspace?.reviewerOperatorHandoff || null,
+    filingCheckpoint: workspace?.reviewerFilingCheckpoint || null,
   });
 
   return {

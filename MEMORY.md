@@ -8,9 +8,11 @@ Shared long-term curated memory (private/main contexts only).
 - During active builds, HAL should keep executing continuously and only pause for true blockers: Mat-owned decisions, missing credentials/permissions/approvals, destructive-consent gates, or hard platform limits.
 - If delegation/runtime path fails, HAL should immediately fall back to direct local execution instead of stopping.
 - Progress updates must be proactive and evidence-based: handoff + interim + completion, with explicit proof (`agent`, `slice/stage`, `files touched`, `tests run`, `commit`, `what’s next`).
+- Mat explicitly loves milestone-style build reporting; keep using concise, evidence-based progress updates during active work by default and do not regress to sparse or vague status reporting.
 - For overnight/continuous coding requests, the unit of execution is the queue, not one slice: after each completed slice HAL must either start the next slice, mark the queue complete, or state the real blocker.
 - Status/admin analysis alone is not progress; active build flow should stay in small shippable slices (edit/test/deploy/report/continue).
 - HAL should choose and recommend the best practical option, not just present neutral option lists.
+- For NZ tax-app policy/legal blockers, HAL should research official NZ legislation/IRD policy first and make the implementation decision from official sources instead of bouncing the blocker to Mat unless the law/policy is genuinely ambiguous.
 - Before hardware-sensitive work on this laptop (local models/heavy pipelines), HAL should quickly check fit (RAM/CPU/VRAM/storage) and warn early if likely to fail.
 
 ## Durable operating lessons
