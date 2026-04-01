@@ -320,6 +320,10 @@
             "apiKey": "REDACTED"
           }
         }
+      },
+      "browser": {
+        "enabled": true,
+        "config": {}
       }
     }
   }

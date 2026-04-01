@@ -39,7 +39,7 @@
       "name": "7am daily weather brief",
       "enabled": true,
       "createdAtMs": 1770582853515,
-      "updatedAtMs": 1774893611754,
+      "updatedAtMs": 1774980019308,
       "schedule": {
         "kind": "cron",
         "expr": "0 7 * * *",
@@ -58,15 +58,13 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774980000000,
-        "lastRunAtMs": 1774893601178,
-        "lastStatus": "error",
-        "lastDurationMs": 10576,
-        "consecutiveErrors": 1,
-        "lastRunStatus": "error",
-        "lastDeliveryStatus": "unknown",
-        "lastError": "Error: All models failed (2): openai/gpt-5.3-codex: No API key found for provider \"openai\". You are authenticated with OpenAI Codex OAuth. Use openai-codex/gpt-5.4 (OAuth) or set OPENAI_API_KEY to use openai/gpt-5.4. (auth) | openai-codex/gpt-5.3-codex: \u26a0\ufe0f API rate limit reached. Please try again later. (rate_limit)",
-        "lastErrorReason": "rate_limit"
+        "nextRunAtMs": 1775066400000,
+        "lastRunAtMs": 1774980002261,
+        "lastStatus": "ok",
+        "lastDurationMs": 17047,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
         "after": 1,
@@ -81,7 +79,7 @@
       "name": "daily github backup push",
       "enabled": true,
       "createdAtMs": 1770848698317,
-      "updatedAtMs": 1774866611088,
+      "updatedAtMs": 1774953017885,
       "schedule": {
         "kind": "cron",
         "expr": "30 23 * * *",
@@ -100,15 +98,14 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774953000000,
-        "lastRunAtMs": 1774866600039,
-        "lastStatus": "error",
-        "lastDurationMs": 11049,
-        "consecutiveErrors": 1,
-        "lastRunStatus": "error",
+        "nextRunAtMs": 1775039400000,
+        "lastRunAtMs": 1774953000047,
+        "lastStatus": "ok",
+        "lastDurationMs": 17838,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown",
-        "lastErrorReason": "rate_limit",
-        "runningAtMs": 1774953000011
+        "runningAtMs": 1775039400018
       },
       "failureAlert": {
         "after": 1,
@@ -123,7 +120,7 @@
       "name": "Monitor @onchaindomainer (light every 3h)",
       "enabled": true,
       "createdAtMs": 1771033467347,
-      "updatedAtMs": 1774943487296,
+      "updatedAtMs": 1775029857275,
       "schedule": {
         "kind": "every",
         "everyMs": 10800000,
@@ -143,10 +140,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774954229124,
-        "lastRunAtMs": 1774943429124,
+        "nextRunAtMs": 1775040640915,
+        "lastRunAtMs": 1775029840915,
         "lastStatus": "ok",
-        "lastDurationMs": 58172,
+        "lastDurationMs": 16360,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -287,7 +284,7 @@
       "name": "Reviewer hybrid audit (6h light + trigger deep)",
       "enabled": true,
       "createdAtMs": 1771129529499,
-      "updatedAtMs": 1774943760870,
+      "updatedAtMs": 1775030174466,
       "schedule": {
         "kind": "every",
         "everyMs": 21600000,
@@ -307,10 +304,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774965352738,
-        "lastRunAtMs": 1774943752738,
+        "nextRunAtMs": 1775051766585,
+        "lastRunAtMs": 1775030166585,
         "lastStatus": "ok",
-        "lastDurationMs": 8132,
+        "lastDurationMs": 7881,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -328,7 +325,7 @@
       "name": "CCIS fast mode daily patch bundle",
       "enabled": true,
       "createdAtMs": 1771133307985,
-      "updatedAtMs": 1774943604280,
+      "updatedAtMs": 1775030004874,
       "schedule": {
         "kind": "every",
         "everyMs": 86400000,
@@ -348,10 +345,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1775029984799,
-        "lastRunAtMs": 1774943584799,
+        "nextRunAtMs": 1775116384956,
+        "lastRunAtMs": 1775029984956,
         "lastStatus": "ok",
-        "lastDurationMs": 19481,
+        "lastDurationMs": 19918,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -400,7 +397,7 @@
       "name": "Reviewer daily full audit digest + log writer",
       "enabled": true,
       "createdAtMs": 1771205129571,
-      "updatedAtMs": 1774943584799,
+      "updatedAtMs": 1775019637276,
       "schedule": {
         "kind": "cron",
         "expr": "0 18 * * *",
@@ -420,10 +417,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1775019600000,
-        "lastRunAtMs": 1774943487296,
+        "nextRunAtMs": 1775106000000,
+        "lastRunAtMs": 1775019602336,
         "lastStatus": "ok",
-        "lastDurationMs": 97503,
+        "lastDurationMs": 34940,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -473,7 +470,7 @@
       "name": "Daily: World Mobile ecosystem news + progress update",
       "enabled": true,
       "createdAtMs": 1771571388520,
-      "updatedAtMs": 1774943709545,
+      "updatedAtMs": 1775028649492,
       "schedule": {
         "kind": "cron",
         "expr": "30 20 * * *",
@@ -492,10 +489,10 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1775028600000,
-        "lastRunAtMs": 1774943604280,
+        "nextRunAtMs": 1775115000000,
+        "lastRunAtMs": 1775028600212,
         "lastStatus": "ok",
-        "lastDurationMs": 105265,
+        "lastDurationMs": 49280,
         "consecutiveErrors": 0,
         "lastRunStatus": "ok",
         "lastDeliveryStatus": "unknown"
@@ -513,7 +510,7 @@
       "name": "Daily Reviewer RSI Cycle",
       "enabled": true,
       "createdAtMs": 1771640437799,
-      "updatedAtMs": 1774900811902,
+      "updatedAtMs": 1774987217047,
       "schedule": {
         "kind": "cron",
         "expr": "0 9 * * *",
@@ -532,15 +529,13 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774987200000,
-        "lastRunAtMs": 1774900801328,
-        "lastStatus": "error",
-        "lastDurationMs": 10574,
-        "consecutiveErrors": 1,
-        "lastRunStatus": "error",
-        "lastDeliveryStatus": "unknown",
-        "lastError": "Error: All models failed (2): openai/gpt-5.3-codex: No API key found for provider \"openai\". You are authenticated with OpenAI Codex OAuth. Use openai-codex/gpt-5.4 (OAuth) or set OPENAI_API_KEY to use openai/gpt-5.4. (auth) | openai-codex/gpt-5.3-codex: \u26a0\ufe0f API rate limit reached. Please try again later. (rate_limit)",
-        "lastErrorReason": "rate_limit"
+        "nextRunAtMs": 1775073600000,
+        "lastRunAtMs": 1774987201285,
+        "lastStatus": "ok",
+        "lastDurationMs": 15762,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
         "after": 1,
@@ -555,7 +550,7 @@
       "name": "Group unmentioned-reply RSI (HAL+Bender)",
       "enabled": true,
       "createdAtMs": 1771719448586,
-      "updatedAtMs": 1774905313366,
+      "updatedAtMs": 1774991707045,
       "schedule": {
         "kind": "cron",
         "expr": "15 10 * * *",
@@ -575,15 +570,15 @@
         "bestEffort": true
       },
       "state": {
-        "nextRunAtMs": 1774991700000,
-        "lastRunAtMs": 1774905302634,
+        "nextRunAtMs": 1775078100000,
+        "lastRunAtMs": 1774991702820,
         "lastStatus": "error",
-        "lastDurationMs": 10732,
-        "consecutiveErrors": 1,
+        "lastDurationMs": 4225,
+        "consecutiveErrors": 2,
         "lastRunStatus": "error",
         "lastDeliveryStatus": "unknown",
-        "lastError": "Error: All models failed (2): openai/gpt-5.3-codex: No API key found for provider \"openai\". You are authenticated with OpenAI Codex OAuth. Use openai-codex/gpt-5.4 (OAuth) or set OPENAI_API_KEY to use openai/gpt-5.4. (auth) | openai-codex/gpt-5.3-codex: \u26a0\ufe0f API rate limit reached. Please try again later. (rate_limit)",
-        "lastErrorReason": "rate_limit"
+        "lastErrorReason": "rate_limit",
+        "lastError": "\u26a0\ufe0f You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors."
       },
       "failureAlert": {
         "after": 1,
@@ -637,7 +632,7 @@
       "name": "8am daily AI research brief",
       "enabled": true,
       "createdAtMs": 1773384015419,
-      "updatedAtMs": 1774897256368,
+      "updatedAtMs": 1774983684161,
       "schedule": {
         "kind": "cron",
         "expr": "0 8 * * *",
@@ -657,14 +652,13 @@
         "bestEffort": true
       },
       "state": {
-        "consecutiveErrors": 8,
-        "nextRunAtMs": 1774983600000,
-        "lastRunAtMs": 1774897200042,
-        "lastRunStatus": "error",
-        "lastStatus": "error",
-        "lastDurationMs": 56326,
-        "lastDeliveryStatus": "unknown",
-        "lastError": "Ollama API error 500: {\"error\":\"model requires more system memory (16.8 GiB) than is available (3.7 GiB)\"}"
+        "consecutiveErrors": 0,
+        "nextRunAtMs": 1775070000000,
+        "lastRunAtMs": 1774983602267,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 81894,
+        "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
         "after": 1,
@@ -719,7 +713,7 @@
       "name": "9pm daily backup health check",
       "enabled": true,
       "createdAtMs": 1773384015419,
-      "updatedAtMs": 1774944011458,
+      "updatedAtMs": 1775030410113,
       "schedule": {
         "kind": "cron",
         "expr": "0 21 * * *",
@@ -739,11 +733,11 @@
       },
       "state": {
         "consecutiveErrors": 0,
-        "nextRunAtMs": 1775030400000,
-        "lastRunAtMs": 1774944000061,
+        "nextRunAtMs": 1775116800000,
+        "lastRunAtMs": 1775030400204,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 11397,
+        "lastDurationMs": 9909,
         "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
@@ -800,7 +794,7 @@
       "name": "healthcheck:security-audit",
       "enabled": true,
       "createdAtMs": 1773991806959,
-      "updatedAtMs": 1774943747698,
+      "updatedAtMs": 1775030164039,
       "schedule": {
         "kind": "every",
         "everyMs": 21600000,
@@ -821,11 +815,11 @@
       },
       "state": {
         "consecutiveErrors": 0,
-        "nextRunAtMs": 1774965309545,
-        "lastRunAtMs": 1774943709545,
+        "nextRunAtMs": 1775051710017,
+        "lastRunAtMs": 1775030110017,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 38153,
+        "lastDurationMs": 54022,
         "lastDeliveryStatus": "unknown"
       },
       "failureAlert": {
@@ -882,7 +876,7 @@
       "name": "Daily memory health check",
       "enabled": true,
       "createdAtMs": 1774253919845,
-      "updatedAtMs": 1774944923280,
+      "updatedAtMs": 1775031357140,
       "schedule": {
         "kind": "cron",
         "expr": "15 21 * * *",
@@ -908,14 +902,13 @@
         "cooldownMs": 1800000
       },
       "state": {
-        "nextRunAtMs": 1775031300000,
-        "lastRunAtMs": 1774944900047,
+        "nextRunAtMs": 1775117700000,
+        "lastRunAtMs": 1775031300279,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 23233,
-        "lastDeliveryStatus": "not-delivered",
-        "consecutiveErrors": 0,
-        "lastDelivered": false
+        "lastDurationMs": 56861,
+        "lastDeliveryStatus": "unknown",
+        "consecutiveErrors": 0
       }
     }
   ]
