@@ -1,0 +1,321 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.5.2",
+    "lastTouchedAt": "2026-05-03T03:39:28.160Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-05-03T01:50:26.343Z",
+    "lastRunVersion": "2026.5.2",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://127.0.0.1:11434",
+        "apiKey": "REDACTED",
+        "api": "ollama",
+        "models": [
+          {
+            "id": "qwen3.5:latest",
+            "name": "Qwen 3.5 Local",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 262144,
+            "maxTokens": 81920
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai-codex/gpt-5.4",
+        "fallbacks": []
+      },
+      "models": {
+        "openai-codex/gpt-5.3-codex": {},
+        "openai/gpt-5.4-mini": {},
+        "openai/gpt-5.4": {},
+        "openai-codex/gpt-5.4": {},
+        "openai-codex/gpt-5.5": {}
+      },
+      "workspace": "/home/mat/.openclaw/workspace",
+      "memorySearch": {
+        "extraPaths": [
+          "specs",
+          "nz-tax-app/docs"
+        ]
+      },
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h",
+        "keepLastAssistants": 3,
+        "softTrimRatio": 0.3,
+        "hardClearRatio": 0.5,
+        "minPrunableToolChars": 50000,
+        "tools": {
+          "deny": [
+            "browser",
+            "canvas"
+          ]
+        },
+        "softTrim": {
+          "maxChars": 4000,
+          "headChars": 1500,
+          "tailChars": 1500
+        },
+        "hardClear": {
+          "enabled": true,
+          "placeholder": "[Old tool result content cleared]"
+        }
+      },
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokensFloor": 40000,
+        "identifierPolicy": "strict",
+        "postCompactionSections": [
+          "Memory Protocol",
+          "Every Session",
+          "Safety"
+        ],
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 6000,
+          "prompt": "Write any lasting notes to memory/YYYY-MM-DD.md or MEMORY.md as appropriate; reply with NO_REPLY if nothing durable needs saving.",
+          "systemPrompt": "Session nearing compaction. Store durable memories now."
+        }
+      },
+      "subagents": {
+        "runTimeoutSeconds": 1800
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "model": "openai-codex/gpt-5.5",
+        "subagents": {
+          "allowAgents": [
+            "*"
+          ]
+        }
+      },
+      {
+        "id": "bender",
+        "name": "bender",
+        "workspace": "/home/mat/.openclaw/workspace-bender",
+        "agentDir": "/home/mat/.openclaw/agents/bender/agent",
+        "model": "openai-codex/gpt-5.4",
+        "identity": {
+          "name": "Bender",
+          "theme": "chaotic group-chat robot",
+          "emoji": "\ud83e\udd16",
+          "avatar": "_(not set yet)"
+        },
+        "groupChat": {
+          "mentionPatterns": [
+            "@bender",
+            "bender",
+            "Bender",
+            "@BENDER-ISH"
+          ],
+          "historyLimit": 80
+        },
+        "sandbox": {
+          "mode": "off"
+        },
+        "tools": {
+          "profile": "full",
+          "byProvider": {
+            "whatsapp": {
+              "deny": [
+                "exec",
+                "gateway",
+                "nodes",
+                "browser",
+                "canvas",
+                "sessions_send",
+                "sessions_spawn",
+                "process",
+                "read",
+                "write",
+                "edit"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "clawdev",
+        "name": "ClawDev",
+        "workspace": "/home/mat/.openclaw/workspace-clawdev",
+        "agentDir": "/home/mat/.openclaw/agents/clawdev/agent",
+        "model": "openai-codex/gpt-5.4"
+      },
+      {
+        "id": "clawresearch",
+        "name": "ClawResearch",
+        "workspace": "/home/mat/.openclaw/workspace-clawresearch",
+        "agentDir": "/home/mat/.openclaw/agents/clawresearch/agent",
+        "model": "openai-codex/gpt-5.4"
+      }
+    ]
+  },
+  "tools": {
+    "allow": [
+      "read",
+      "write",
+      "edit",
+      "exec",
+      "process",
+      "web_search",
+      "web_fetch",
+      "sessions_list",
+      "sessions_history",
+      "sessions_send",
+      "subagents",
+      "session_status",
+      "image",
+      "memory_get",
+      "memory_search",
+      "sessions_spawn",
+      "sessions_yield"
+    ],
+    "web": {
+      "search": {
+        "enabled": true
+      }
+    }
+  },
+  "bindings": [
+    {
+      "agentId": "main",
+      "match": {
+        "channel": "whatsapp",
+        "peer": {
+          "kind": "direct",
+          "id": "+64274382968"
+        }
+      }
+    },
+    {
+      "agentId": "bender",
+      "match": {
+        "channel": "whatsapp"
+      }
+    }
+  ],
+  "messages": {
+    "tts": {
+      "auto": "inbound",
+      "provider": "microsoft",
+      "modelOverrides": {
+        "enabled": true
+      }
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    },
+    "gmail": {}
+  },
+  "channels": {
+    "whatsapp": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "selfChatMode": false,
+      "groupAllowFrom": [
+        "*"
+      ],
+      "groupPolicy": "allowlist",
+      "groups": {
+        "WLG Lads": {
+          "requireMention": true
+        },
+        "*": {
+          "requireMention": true
+        },
+        "64274382968-1522024842@g.us": {
+          "requireMention": true
+        },
+        "120363406697414600@g.us": {
+          "requireMention": false
+        }
+      },
+      "debounceMs": 0,
+      "mediaMaxMb": 50
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "REDACTED"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": []
+    }
+  },
+  "plugins": {
+    "entries": {
+      "whatsapp": {
+        "enabled": true,
+        "config": {}
+      },
+      "brave": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "apiKey": "REDACTED"
+          }
+        }
+      },
+      "browser": {
+        "enabled": true,
+        "config": {}
+      },
+      "openai": {
+        "enabled": true
+      }
+    }
+  }
+}
